@@ -1,3 +1,4 @@
+import json
 import math
 from datetime import date
 
@@ -191,6 +192,9 @@ def bootstrap(returns: pd.Series, samples: int, draws: int, seed: int = 42) -> p
 
 st.title("資產配置回測工作台")
 
+if "holdings_default" not in st.session_state:
+    st.session_state.holdings_default = DEFAULT_HOLDINGS.copy()
+
 with st.sidebar:
     st.header("回測設定")
     start = st.date_input("開始日", date(2014, 8, 31))
@@ -212,8 +216,30 @@ st.subheader("持股與比例")
 usd_twd, fx_date = latest_usd_twd()
 st.caption(f"USD/TWD 使用 yfinance `TWD=X` 最新匯率：{usd_twd:.4f}，日期：{fx_date}")
 
+with st.expander("每個人自己的預設設定", expanded=False):
+    uploaded = st.file_uploader("上傳自己的設定 JSON", type=["json"])
+    if uploaded is not None:
+        try:
+            rows = json.loads(uploaded.getvalue().decode("utf-8"))
+            loaded = pd.DataFrame(rows)
+            required = ["name", "ticker", "amount", "currency"]
+            if not set(required).issubset(loaded.columns):
+                st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
+            else:
+                st.session_state.holdings_default = loaded[required].copy()
+                st.success("已載入你的設定，本次使用這份作為預設。")
+        except Exception as exc:
+            st.error(f"設定檔讀取失敗：{exc}")
+
+    st.download_button(
+        "下載目前預設設定 JSON",
+        st.session_state.holdings_default.to_json(orient="records", force_ascii=False, indent=2).encode("utf-8"),
+        "my_portfolio_settings.json",
+        "application/json",
+    )
+
 edited = st.data_editor(
-    DEFAULT_HOLDINGS,
+    st.session_state.holdings_default,
     num_rows="dynamic",
     use_container_width=True,
     column_config={
@@ -227,6 +253,7 @@ edited = st.data_editor(
 edited = edited.dropna(subset=["ticker"]).copy()
 edited["ticker"] = edited["ticker"].astype(str).str.strip()
 edited = add_twd_values(edited, usd_twd)
+st.session_state.holdings_default = edited[["name", "ticker", "amount", "currency"]].copy()
 
 col1, col2, col3 = st.columns(3)
 col1.metric("總資產台幣等值", f"{edited['twd_value'].sum():,.0f}")
