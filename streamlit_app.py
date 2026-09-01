@@ -30,6 +30,13 @@ DEFAULT_HOLDINGS = pd.DataFrame(
 st.set_page_config(page_title="資產配置回測工作台", layout="wide")
 
 
+def raise_supabase_error(response: requests.Response) -> None:
+    if response.ok:
+        return
+    detail = response.text.strip()
+    raise RuntimeError(f"Supabase HTTP {response.status_code}: {detail[:800]}")
+
+
 def clean_fx(series: pd.Series, max_daily_move: float = 0.20) -> pd.Series:
     clean = series.astype(float).copy()
     bad = clean.pct_change(fill_method=None).abs() > max_daily_move
@@ -88,16 +95,35 @@ def portfolio_settings_payload(holdings: pd.DataFrame) -> list[dict]:
 
 
 def supabase_configured() -> bool:
-    return bool(st.secrets.get("SUPABASE_URL")) and bool(st.secrets.get("SUPABASE_KEY"))
+    return bool(st.secrets.get("SUPABASE_URL")) and bool(supabase_key())
+
+
+def supabase_key() -> str:
+    return st.secrets.get("SUPABASE_SERVICE_ROLE_KEY") or st.secrets.get("SUPABASE_KEY") or ""
+
+
+def supabase_key_label() -> str:
+    key = supabase_key()
+    if not key:
+        return "未設定"
+    if st.secrets.get("SUPABASE_SERVICE_ROLE_KEY"):
+        return "service_role"
+    if key.startswith("eyJ"):
+        return "legacy anon JWT"
+    if key.startswith("sb_publishable_"):
+        return "publishable key"
+    return "unknown"
 
 
 def supabase_headers() -> dict[str, str]:
-    key = st.secrets["SUPABASE_KEY"]
-    return {
+    key = supabase_key()
+    headers = {
         "apikey": key,
-        "Authorization": f"Bearer {key}",
         "Content-Type": "application/json",
     }
+    if key.startswith("eyJ"):
+        headers["Authorization"] = f"Bearer {key}"
+    return headers
 
 
 def supabase_rest_url() -> str:
@@ -107,11 +133,19 @@ def supabase_rest_url() -> str:
     return f"{base_url}/rest/v1"
 
 
+def test_supabase_connection() -> tuple[bool, str]:
+    url = f"{supabase_rest_url()}/portfolio_settings?select=user_key&limit=1"
+    response = requests.get(url, headers=supabase_headers(), timeout=15)
+    if response.ok:
+        return True, f"連線成功：HTTP {response.status_code}"
+    return False, f"HTTP {response.status_code}: {response.text[:300]}"
+
+
 def load_settings_from_db(user_key: str) -> pd.DataFrame | None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
-    response.raise_for_status()
+    raise_supabase_error(response)
     rows = response.json()
     if not rows:
         return None
@@ -127,7 +161,7 @@ def save_settings_to_db(user_key: str, holdings: pd.DataFrame) -> None:
         "settings": portfolio_settings_payload(holdings),
     }
     response = requests.post(url, headers=headers, json=body, timeout=15)
-    response.raise_for_status()
+    raise_supabase_error(response)
 
 
 def rebalance_months(freq: str) -> int | None:
@@ -273,6 +307,18 @@ with st.expander("每個人自己的預設設定", expanded=False):
     st.session_state.user_key = user_key.strip()
 
     if supabase_configured():
+        st.caption(f"Supabase URL: {supabase_rest_url()}")
+        st.caption(f"Supabase key 類型: {supabase_key_label()}")
+        if st.button("測試 Supabase 連線"):
+            try:
+                ok, message = test_supabase_connection()
+                if ok:
+                    st.success(message)
+                else:
+                    st.error(message)
+            except Exception as exc:
+                st.error(f"連線測試失敗：{exc}")
+
         db_col1, db_col2 = st.columns(2)
         if db_col1.button("從資料庫載入"):
             if not st.session_state.user_key:
