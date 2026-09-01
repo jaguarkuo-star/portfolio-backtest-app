@@ -277,6 +277,10 @@ st.title("資產配置回測工作台")
 
 if "holdings_default" not in st.session_state:
     st.session_state.holdings_default = DEFAULT_HOLDINGS.copy()
+if "editor_data" not in st.session_state:
+    st.session_state.editor_data = st.session_state.holdings_default.copy()
+if "editor_key" not in st.session_state:
+    st.session_state.editor_key = 0
 
 with st.sidebar:
     st.header("回測設定")
@@ -327,6 +331,8 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.warning("找不到這個保存代號的設定。")
                     else:
                         st.session_state.holdings_default = loaded
+                        st.session_state.editor_data = loaded.copy()
+                        st.session_state.editor_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
                 except Exception as exc:
@@ -336,7 +342,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.error("請先輸入保存代號。")
             else:
                 try:
-                    save_settings_to_db(st.session_state.user_key, st.session_state.holdings_default)
+                    save_settings_to_db(st.session_state.user_key, st.session_state.editor_data)
                     st.success("已儲存。之後用同一個保存代號即可載入。")
                 except Exception as exc:
                     st.error(f"資料庫儲存失敗：{exc}")
@@ -353,33 +359,42 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
             else:
                 st.session_state.holdings_default = loaded[required].copy()
+                st.session_state.editor_data = loaded[required].copy()
+                st.session_state.editor_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
+                st.rerun()
         except Exception as exc:
             st.error(f"設定檔讀取失敗：{exc}")
 
     st.download_button(
         "下載目前預設設定 JSON",
-        st.session_state.holdings_default.to_json(orient="records", force_ascii=False, indent=2).encode("utf-8"),
+        st.session_state.editor_data.to_json(orient="records", force_ascii=False, indent=2).encode("utf-8"),
         "my_portfolio_settings.json",
         "application/json",
     )
 
-edited = st.data_editor(
-    st.session_state.holdings_default,
-    num_rows="dynamic",
-    use_container_width=True,
-    column_config={
-        "name": "名稱",
-        "ticker": "Ticker",
-        "amount": st.column_config.NumberColumn("原幣金額", min_value=0, step=100),
-        "currency": st.column_config.SelectboxColumn("幣別", options=["TWD", "USD"]),
-    },
-)
+with st.form("holdings_form"):
+    edited_raw = st.data_editor(
+        st.session_state.editor_data,
+        num_rows="dynamic",
+        use_container_width=True,
+        key=f"holdings_editor_{st.session_state.editor_key}",
+        column_config={
+            "name": "名稱",
+            "ticker": "Ticker",
+            "amount": st.column_config.NumberColumn("原幣金額", min_value=0, step=100),
+            "currency": st.column_config.SelectboxColumn("幣別", options=["TWD", "USD"]),
+        },
+    )
+    apply_holdings = st.form_submit_button("套用持股變更")
 
-edited = edited.dropna(subset=["ticker"]).copy()
-edited["ticker"] = edited["ticker"].astype(str).str.strip()
-edited = add_twd_values(edited, usd_twd)
-st.session_state.holdings_default = edited[["name", "ticker", "amount", "currency"]].copy()
+if apply_holdings:
+    edited_raw = edited_raw.dropna(subset=["ticker"]).copy()
+    edited_raw["ticker"] = edited_raw["ticker"].astype(str).str.strip()
+    st.session_state.editor_data = edited_raw[["name", "ticker", "amount", "currency"]].copy()
+
+edited = add_twd_values(st.session_state.editor_data, usd_twd)
+st.caption("輸入表格後請先按「套用持股變更」，再儲存或執行回測。")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("總資產台幣等值", f"{edited['twd_value'].sum():,.0f}")
