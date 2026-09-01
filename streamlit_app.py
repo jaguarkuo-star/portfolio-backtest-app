@@ -100,8 +100,15 @@ def supabase_headers() -> dict[str, str]:
     }
 
 
+def supabase_rest_url() -> str:
+    base_url = st.secrets["SUPABASE_URL"].rstrip("/")
+    if base_url.endswith("/rest/v1"):
+        return base_url
+    return f"{base_url}/rest/v1"
+
+
 def load_settings_from_db(user_key: str) -> pd.DataFrame | None:
-    url = f"{st.secrets['SUPABASE_URL'].rstrip('/')}/rest/v1/portfolio_settings"
+    url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
     response.raise_for_status()
@@ -113,7 +120,7 @@ def load_settings_from_db(user_key: str) -> pd.DataFrame | None:
 
 
 def save_settings_to_db(user_key: str, holdings: pd.DataFrame) -> None:
-    url = f"{st.secrets['SUPABASE_URL'].rstrip('/')}/rest/v1/portfolio_settings"
+    url = f"{supabase_rest_url()}/portfolio_settings"
     headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
     body = {
         "user_key": user_key,
