@@ -441,10 +441,11 @@ if st.button("執行回測", type="primary"):
         b = bootstrap(port, int(samples), int(draws))
 
     st.subheader("回測結果")
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1, c2, c3 = st.columns(3)
     c1.metric("總報酬", f"{s['total_return']:.2%}")
     c2.metric("CAGR", f"{s['cagr']:.2%}")
     c3.metric("實質 CAGR", f"{s['real_cagr']:.2%}")
+    c4, c5, c6 = st.columns(3)
     c4.metric("波動", f"{s['volatility']:.2%}")
     c5.metric("最大回撤", f"{s['max_drawdown']:.2%}")
     c6.metric("Beta", f"{ab['beta']:.3f}")
