@@ -281,6 +281,10 @@ if "editor_data" not in st.session_state:
     st.session_state.editor_data = st.session_state.holdings_default.copy()
 if "editor_key" not in st.session_state:
     st.session_state.editor_key = 0
+if "usd_twd" not in st.session_state:
+    st.session_state.usd_twd = 31.673
+if "usd_twd_date" not in st.session_state:
+    st.session_state.usd_twd_date = "預設值"
 
 with st.sidebar:
     st.header("回測設定")
@@ -300,8 +304,24 @@ with st.sidebar:
         st.cache_data.clear()
 
 st.subheader("持股與比例")
-usd_twd, fx_date = latest_usd_twd()
-st.caption(f"USD/TWD 使用 yfinance `TWD=X` 最新匯率：{usd_twd:.4f}，日期：{fx_date}")
+fx_col1, fx_col2 = st.columns([1, 3])
+with fx_col1:
+    if st.button("更新 USD/TWD 匯率"):
+        try:
+            st.session_state.usd_twd, st.session_state.usd_twd_date = latest_usd_twd()
+            st.success("匯率已更新。")
+        except Exception as exc:
+            st.warning(f"暫時無法更新匯率，先使用目前畫面匯率：{exc}")
+with fx_col2:
+    st.session_state.usd_twd = st.number_input(
+        "USD/TWD 匯率",
+        min_value=1.0,
+        value=float(st.session_state.usd_twd),
+        step=0.01,
+        format="%.4f",
+    )
+usd_twd = float(st.session_state.usd_twd)
+st.caption(f"目前畫面換算使用 USD/TWD：{usd_twd:.4f}，來源日期：{st.session_state.usd_twd_date}")
 
 with st.expander("每個人自己的預設設定", expanded=False):
     user_key = st.text_input("資料庫保存代號", value=st.session_state.get("user_key", ""))
@@ -438,6 +458,9 @@ if st.button("執行回測", type="primary"):
         prices = close[[h["ticker"] for h in holdings]].copy()
         if "TWD=X" in close.columns:
             fx = clean_fx(close["TWD=X"])
+            if not fx.dropna().empty:
+                st.session_state.usd_twd = float(fx.dropna().iloc[-1])
+                st.session_state.usd_twd_date = pd.Timestamp(fx.dropna().index[-1]).strftime("%Y-%m-%d")
             for h in holdings:
                 if h.get("currency") == "USD":
                     prices[h["ticker"]] = prices[h["ticker"]] * fx
