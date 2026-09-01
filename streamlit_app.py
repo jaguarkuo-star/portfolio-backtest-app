@@ -1,11 +1,13 @@
 import json
 import math
 from datetime import date
+from urllib.parse import quote
 
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import requests
 import streamlit as st
 import yfinance as yf
 
@@ -76,6 +78,49 @@ def add_twd_values(holdings: pd.DataFrame, usd_twd: float) -> pd.DataFrame:
     total = df["twd_value"].sum()
     df["weight"] = df["twd_value"] / total if total > 0 else 0.0
     return df
+
+
+def portfolio_settings_payload(holdings: pd.DataFrame) -> list[dict]:
+    cols = ["name", "ticker", "amount", "currency"]
+    payload = holdings[cols].copy()
+    payload["amount"] = pd.to_numeric(payload["amount"], errors="coerce").fillna(0.0)
+    return payload.to_dict("records")
+
+
+def supabase_configured() -> bool:
+    return bool(st.secrets.get("SUPABASE_URL")) and bool(st.secrets.get("SUPABASE_KEY"))
+
+
+def supabase_headers() -> dict[str, str]:
+    key = st.secrets["SUPABASE_KEY"]
+    return {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+    }
+
+
+def load_settings_from_db(user_key: str) -> pd.DataFrame | None:
+    url = f"{st.secrets['SUPABASE_URL'].rstrip('/')}/rest/v1/portfolio_settings"
+    params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
+    response = requests.get(url + params, headers=supabase_headers(), timeout=15)
+    response.raise_for_status()
+    rows = response.json()
+    if not rows:
+        return None
+    settings = rows[0]["settings"]
+    return pd.DataFrame(settings)[["name", "ticker", "amount", "currency"]]
+
+
+def save_settings_to_db(user_key: str, holdings: pd.DataFrame) -> None:
+    url = f"{st.secrets['SUPABASE_URL'].rstrip('/')}/rest/v1/portfolio_settings"
+    headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
+    body = {
+        "user_key": user_key,
+        "settings": portfolio_settings_payload(holdings),
+    }
+    response = requests.post(url, headers=headers, json=body, timeout=15)
+    response.raise_for_status()
 
 
 def rebalance_months(freq: str) -> int | None:
@@ -217,6 +262,37 @@ usd_twd, fx_date = latest_usd_twd()
 st.caption(f"USD/TWD 使用 yfinance `TWD=X` 最新匯率：{usd_twd:.4f}，日期：{fx_date}")
 
 with st.expander("每個人自己的預設設定", expanded=False):
+    user_key = st.text_input("資料庫保存代號", value=st.session_state.get("user_key", ""))
+    st.session_state.user_key = user_key.strip()
+
+    if supabase_configured():
+        db_col1, db_col2 = st.columns(2)
+        if db_col1.button("從資料庫載入"):
+            if not st.session_state.user_key:
+                st.error("請先輸入保存代號。")
+            else:
+                try:
+                    loaded = load_settings_from_db(st.session_state.user_key)
+                    if loaded is None:
+                        st.warning("找不到這個保存代號的設定。")
+                    else:
+                        st.session_state.holdings_default = loaded
+                        st.success("已從資料庫載入設定。")
+                        st.rerun()
+                except Exception as exc:
+                    st.error(f"資料庫載入失敗：{exc}")
+        if db_col2.button("儲存目前設定到資料庫"):
+            if not st.session_state.user_key:
+                st.error("請先輸入保存代號。")
+            else:
+                try:
+                    save_settings_to_db(st.session_state.user_key, st.session_state.holdings_default)
+                    st.success("已儲存。之後用同一個保存代號即可載入。")
+                except Exception as exc:
+                    st.error(f"資料庫儲存失敗：{exc}")
+    else:
+        st.info("尚未設定 Supabase secrets；目前只能用 JSON 下載/上傳保存。")
+
     uploaded = st.file_uploader("上傳自己的設定 JSON", type=["json"])
     if uploaded is not None:
         try:
