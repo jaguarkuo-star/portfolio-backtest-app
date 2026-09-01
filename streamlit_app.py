@@ -16,13 +16,10 @@ TRADING_DAYS = 252
 
 DEFAULT_HOLDINGS = pd.DataFrame(
     [
-        {"name": "博智", "ticker": "8155.TWO", "amount": 369500, "currency": "TWD"},
-        {"name": "德微", "ticker": "3675.TWO", "amount": 278500, "currency": "TWD"},
-        {"name": "可成", "ticker": "2474.TW", "amount": 213500, "currency": "TWD"},
-        {"name": "群創", "ticker": "3481.TW", "amount": 147900, "currency": "TWD"},
-        {"name": "精測", "ticker": "6510.TWO", "amount": 125000, "currency": "TWD"},
-        {"name": "ACN", "ticker": "ACN", "amount": 1859, "currency": "USD"},
-        {"name": "ORCL", "ticker": "ORCL", "amount": 1691, "currency": "USD"},
+        {"name": "0050", "ticker": "0050.TW", "amount": 250000, "currency": "TWD"},
+        {"name": "台積電", "ticker": "2330.TW", "amount": 250000, "currency": "TWD"},
+        {"name": "鴻海", "ticker": "2317.TW", "amount": 250000, "currency": "TWD"},
+        {"name": "聯發科", "ticker": "2454.TW", "amount": 250000, "currency": "TWD"},
     ]
 )
 
