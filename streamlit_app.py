@@ -1325,6 +1325,7 @@ with st.expander("估值與研究", expanded=False):
     st.caption("Yahoo 目標價是摘要資料，不一定含券商明細；若要有可追溯性，請在多筆法人目標價表填入來源連結。")
 
 with st.expander("本益比河流圖", expanded=False):
+    st.caption("上市台股 .TW 優先使用 TWSE 官方每日本益比反推 EPS；美股不使用 TWSE，改用 yfinance 歷史 EPS；資料不足時才使用手動 EPS TTM。")
     pe_col1, pe_col2, pe_col3 = st.columns(3)
     river_start = pe_col1.date_input("河流圖開始日", date(2021, 1, 1))
     river_end = pe_col2.date_input("河流圖結束日", date.today())
@@ -1463,6 +1464,8 @@ with st.expander("本益比河流圖", expanded=False):
                     selected_eps = eps_series_for_prices(
                         selected_ticker,
                         company_price.index,
+                        company_price,
+                        official_pe,
                         historical_eps,
                         manual_eps_map.get(selected_ticker, 0.0),
                         int(report_lag_days),
