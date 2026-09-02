@@ -5,7 +5,7 @@ import math
 import re
 import xml.etree.ElementTree as ET
 from datetime import date
-from urllib.parse import quote, quote_plus
+from urllib.parse import quote, quote_plus, urljoin
 
 import numpy as np
 import pandas as pd
@@ -503,14 +503,39 @@ st.markdown(
         border-right: 1px solid #1f2937;
     }
 
-    [data-testid="stSidebar"] * {
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] small {
+        color: #f9fafb;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
         color: #f9fafb;
     }
 
     [data-testid="stSidebar"] input,
     [data-testid="stSidebar"] textarea,
-    [data-testid="stSidebar"] select {
-        color: #111827;
+    [data-testid="stSidebar"] select,
+    [data-testid="stSidebar"] [data-testid="stDateInput"] *,
+    [data-testid="stSidebar"] [data-baseweb="datepicker"] *,
+    [data-testid="stSidebar"] [data-baseweb="input"] *,
+    [data-testid="stSidebar"] [data-baseweb="select"] *,
+    [data-testid="stSidebar"] [data-baseweb="base-input"] *,
+    [data-testid="stSidebar"] [data-baseweb="input"] input,
+    [data-testid="stSidebar"] [data-baseweb="base-input"] input {
+        color: #111827 !important;
+    }
+
+    [data-testid="stSidebar"] [data-baseweb="input"],
+    [data-testid="stSidebar"] [data-baseweb="select"],
+    [data-testid="stSidebar"] [data-baseweb="datepicker"],
+    [data-testid="stSidebar"] [data-baseweb="base-input"] {
+        background: #ffffff;
+        border-radius: 8px;
     }
 
     [data-testid="stAppViewContainer"] .main .block-container {
@@ -757,6 +782,50 @@ def clean_html(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def extract_first_image_from_html(text: str, base_url: str = "") -> str:
+    match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', str(text or ""), flags=re.IGNORECASE)
+    if not match:
+        return ""
+    return urljoin(base_url, match.group(1))
+
+
+def find_meta_content(html_text: str, names: tuple[str, ...], base_url: str, is_url: bool = True) -> str:
+    for name in names:
+        patterns = [
+            rf'<meta[^>]+(?:property|name)=["\']{re.escape(name)}["\'][^>]+content=["\']([^"\']+)["\']',
+            rf'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']{re.escape(name)}["\']',
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, html_text, flags=re.IGNORECASE)
+            if match:
+                value = match.group(1).strip()
+                return urljoin(base_url, value) if is_url else clean_html(value)
+    return ""
+
+
+@st.cache_data(ttl=60 * 30, show_spinner=False)
+def fetch_url_media_preview(url: str, refresh_id: str = "") -> dict[str, str]:
+    if not url:
+        return {"image": "", "video": "", "description": ""}
+    try:
+        response = requests.get(url, timeout=12, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+    except Exception:
+        return {"image": "", "video": "", "description": ""}
+    html_text = response.text[:250000]
+    image = find_meta_content(html_text, ("og:image", "twitter:image", "twitter:image:src"), response.url)
+    video = find_meta_content(html_text, ("og:video", "og:video:url", "twitter:player"), response.url)
+    description = find_meta_content(
+        html_text,
+        ("og:description", "twitter:description", "description"),
+        response.url,
+        is_url=False,
+    )
+    if not image:
+        image = extract_first_image_from_html(html_text, response.url)
+    return {"image": image, "video": video, "description": clean_html(description)}
+
+
 @st.cache_data(ttl=60 * 30, show_spinner=False)
 def fetch_google_news(query: str, limit: int, language: str = "zh-TW", refresh_id: str = "") -> list[dict]:
     hl = "zh-TW" if language == "zh-TW" else "en-US"
@@ -769,13 +838,17 @@ def fetch_google_news(query: str, limit: int, language: str = "zh-TW", refresh_i
     rows = []
     for item in root.findall(".//item")[:limit]:
         source = item.find("source")
+        link = clean_html(item.findtext("link"))
+        description = item.findtext("description")
         rows.append(
             {
                 "標題": clean_html(item.findtext("title")),
                 "來源": clean_html(source.text if source is not None else ""),
                 "時間": clean_html(item.findtext("pubDate")),
-                "摘要": clean_html(item.findtext("description")),
-                "連結": clean_html(item.findtext("link")),
+                "摘要": clean_html(description),
+                "連結": link,
+                "圖片": extract_first_image_from_html(description, link),
+                "影片": "",
                 "查詢": query,
             }
         )
@@ -803,10 +876,11 @@ def fetch_portfolio_news(
     per_query_limit: int,
     include_macro: bool,
     language: str,
+    refresh_id: str = "",
 ) -> pd.DataFrame:
     all_rows = []
     for label, query in holdings_records:
-        for row in fetch_google_news(query, per_query_limit, language):
+        for row in fetch_google_news(query, per_query_limit, language, refresh_id):
             row["分類"] = "持股新聞"
             row["標的"] = label
             all_rows.append(row)
@@ -818,16 +892,107 @@ def fetch_portfolio_news(
             "台灣經濟 匯率 半導體 景氣",
         ]
         for query in macro_queries:
-            for row in fetch_google_news(query, per_query_limit, language):
+            for row in fetch_google_news(query, per_query_limit, language, refresh_id):
                 row["分類"] = "世界經濟"
                 row["標的"] = "Macro"
                 all_rows.append(row)
 
     if not all_rows:
-        return pd.DataFrame(columns=["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "查詢"])
+        return pd.DataFrame(columns=["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "圖片", "影片", "查詢"])
     news = pd.DataFrame(all_rows)
+    for col in ["圖片", "影片"]:
+        if col not in news.columns:
+            news[col] = ""
     news = news.drop_duplicates(subset=["標題", "來源"], keep="first")
-    return news[["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "查詢"]]
+    return news[["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "圖片", "影片", "查詢"]]
+
+
+@st.cache_data(ttl=60 * 30, show_spinner=False)
+def enrich_media_rows(records: tuple[tuple[str, str, str, str, str, str, str, str, str, str], ...], refresh_id: str) -> pd.DataFrame:
+    columns = ["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "圖片", "影片", "查詢"]
+    media = pd.DataFrame(list(records), columns=columns)
+    if media.empty:
+        return media
+    for idx, row in media.iterrows():
+        if row.get("圖片") and row.get("影片"):
+            continue
+        preview = fetch_url_media_preview(str(row.get("連結", "")), refresh_id)
+        if not row.get("圖片"):
+            media.at[idx, "圖片"] = preview.get("image", "")
+        if not row.get("影片"):
+            media.at[idx, "影片"] = preview.get("video", "")
+        if not row.get("摘要") and preview.get("description"):
+            media.at[idx, "摘要"] = preview["description"]
+    return media
+
+
+@st.cache_data(ttl=60 * 30, show_spinner=False)
+def fetch_industry_media_news(
+    source_queries: tuple[tuple[str, str], ...],
+    keyword: str,
+    per_source_limit: int,
+    language: str,
+    refresh_id: str,
+) -> pd.DataFrame:
+    rows = []
+    for label, source_query in source_queries:
+        query = f"{source_query} {keyword}".strip()
+        try:
+            for row in fetch_google_news(query, per_source_limit, language, refresh_id):
+                row["分類"] = "產業媒體"
+                row["標的"] = label
+                rows.append(row)
+        except Exception as exc:
+            rows.append(
+                {
+                    "分類": "產業媒體",
+                    "標的": label,
+                    "時間": "",
+                    "來源": "抓取失敗",
+                    "標題": f"{label} 搜尋失敗",
+                    "摘要": str(exc),
+                    "連結": "",
+                    "圖片": "",
+                    "影片": "",
+                    "查詢": query,
+                }
+            )
+    if not rows:
+        return pd.DataFrame(columns=["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "圖片", "影片", "查詢"])
+    news = pd.DataFrame(rows).drop_duplicates(subset=["標題", "來源"], keep="first")
+    records = tuple(news[["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "圖片", "影片", "查詢"]].itertuples(index=False, name=None))
+    return enrich_media_rows(records, refresh_id)
+
+
+def render_media_cards(media: pd.DataFrame, max_items: int = 12) -> None:
+    if media.empty:
+        st.info("目前沒有可顯示的媒體新聞。")
+        return
+    for start_idx in range(0, min(len(media), max_items), 2):
+        cols = st.columns(2)
+        for offset, col in enumerate(cols):
+            row_idx = start_idx + offset
+            if row_idx >= len(media) or row_idx >= max_items:
+                continue
+            row = media.iloc[row_idx]
+            with col:
+                if row.get("圖片"):
+                    try:
+                        st.image(row["圖片"], use_container_width=True)
+                    except Exception:
+                        pass
+                title = clean_html(row.get("標題", ""))
+                link = str(row.get("連結", ""))
+                if link:
+                    st.markdown(f"**[{title}]({link})**")
+                else:
+                    st.markdown(f"**{title}**")
+                st.caption(f"{row.get('標的', '')} · {row.get('來源', '')} · {row.get('時間', '')}")
+                summary = clean_html(row.get("摘要", ""))
+                if summary:
+                    st.write(summary[:260] + ("..." if len(summary) > 260 else ""))
+                if row.get("影片"):
+                    st.link_button("開啟影片/嵌入頁", row["影片"])
 
 
 @st.cache_data(ttl=60 * 30, show_spinner=False)
@@ -2677,31 +2842,69 @@ with st.expander("估值與研究", expanded=False):
     st.caption("Yahoo 目標價是摘要資料，不一定含券商明細；若要有可追溯性，請在多筆法人目標價表填入來源連結。")
 
 with st.expander("Latest News", expanded=False):
-    st.caption("使用 Google News RSS 搜尋持股相關新聞與世界經濟新聞；按鈕觸發抓取，避免首頁載入過慢。")
-    news_col1, news_col2, news_col3 = st.columns(3)
+    st.caption("使用 Google News RSS 與公開文章 metadata 搜尋持股、世界經濟與產業媒體；按鈕觸發抓取，避免首頁載入過慢。")
+    news_col1, news_col2, news_col3, news_col4 = st.columns(4)
     per_query_limit = news_col1.number_input("每個查詢最多篇數", min_value=3, max_value=30, value=8, step=1)
     news_language = news_col2.selectbox("新聞語言", ["zh-TW", "en-US"])
     include_macro_news = news_col3.checkbox("包含世界經濟新聞", value=True)
+    include_industry_media = news_col4.checkbox("包含產業媒體/X", value=True)
+    industry_media_sources = {
+        "TrendForce News": "site:trendforce.com/news OR site:trendforce.com/presscenter",
+        "TrendForce 中文": "site:trendforce.com.tw/presscenter OR site:trendforce.cn/presscenter",
+        "TrendForce X": "site:x.com TrendForce",
+        "NEWS / X": "site:x.com NEWS semiconductor AI server NVIDIA TSMC",
+        "@NEWS2082680": "site:x.com/NEWS2082680 OR @NEWS2082680",
+        "SemiAnalysis": "site:semianalysis.com",
+        "DIGITIMES": "site:digitimes.com",
+    }
+    media_col1, media_col2 = st.columns([2, 3])
+    selected_media_sources = media_col1.multiselect(
+        "產業媒體來源",
+        list(industry_media_sources.keys()),
+        default=["TrendForce News", "TrendForce 中文", "TrendForce X", "NEWS / X", "@NEWS2082680"],
+    )
+    media_keyword = media_col2.text_input(
+        "產業媒體關鍵字",
+        "NVIDIA Rubin CoWoS CPO TSMC glass substrate AI server HBM",
+    )
     news_queries = holding_news_queries(st.session_state.editor_data)
 
     if st.button("更新 Latest News"):
-        if not news_queries and not include_macro_news:
+        if not news_queries and not include_macro_news and not include_industry_media:
             st.warning("沒有持股可以搜尋。")
         else:
             try:
+                latest_news_refresh_id = pd.Timestamp.now(tz="Asia/Taipei").strftime("%Y-%m-%d %H:%M:%S")
                 news = fetch_portfolio_news(
                     tuple(news_queries),
                     int(per_query_limit),
                     bool(include_macro_news),
                     news_language,
+                    latest_news_refresh_id,
                 )
+                if include_industry_media and selected_media_sources:
+                    source_queries = tuple((name, industry_media_sources[name]) for name in selected_media_sources)
+                    media_news = fetch_industry_media_news(
+                        source_queries,
+                        media_keyword,
+                        int(per_query_limit),
+                        news_language,
+                        latest_news_refresh_id,
+                    )
+                    news = pd.concat([news, media_news], ignore_index=True).drop_duplicates(
+                        subset=["標題", "來源"],
+                        keep="first",
+                    )
                 st.session_state.latest_news = news
+                st.session_state.latest_news_updated_at = latest_news_refresh_id
                 st.success(f"已更新新聞，共 {len(news):,} 則。")
             except Exception as exc:
                 st.error(f"新聞抓取失敗：{exc}")
 
     latest_news = st.session_state.get("latest_news", pd.DataFrame())
     if not latest_news.empty:
+        if "latest_news_updated_at" in st.session_state:
+            st.caption(f"最近更新：{st.session_state.latest_news_updated_at}")
         selected_categories = st.multiselect(
             "分類",
             sorted(latest_news["分類"].dropna().unique().tolist()),
@@ -2715,12 +2918,27 @@ with st.expander("Latest News", expanded=False):
         filtered_news = latest_news[
             latest_news["分類"].isin(selected_categories) & latest_news["標的"].isin(selected_labels)
         ].copy()
-        st.dataframe(
-            filtered_news,
-            use_container_width=True,
-            column_config={"連結": st.column_config.LinkColumn("連結")},
-            hide_index=True,
-        )
+        news_tab_table, news_tab_media = st.tabs(["新聞表格", "圖文卡片"])
+        with news_tab_table:
+            st.dataframe(
+                filtered_news,
+                use_container_width=True,
+                column_config={
+                    "連結": st.column_config.LinkColumn("連結"),
+                    "圖片": st.column_config.LinkColumn("圖片"),
+                    "影片": st.column_config.LinkColumn("影片"),
+                },
+                hide_index=True,
+            )
+        with news_tab_media:
+            media_items = filtered_news[
+                filtered_news["圖片"].fillna("").astype(str).str.len().gt(0)
+                | filtered_news["影片"].fillna("").astype(str).str.len().gt(0)
+            ].copy()
+            if media_items.empty:
+                st.info("這批新聞沒有抓到可用圖片或影片 metadata，請看新聞表格。")
+            else:
+                render_media_cards(media_items, max_items=12)
         st.download_button(
             "下載 Latest News CSV",
             filtered_news.to_csv(index=False).encode("utf-8-sig"),
