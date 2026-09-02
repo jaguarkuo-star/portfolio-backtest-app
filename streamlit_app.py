@@ -16,10 +16,10 @@ TRADING_DAYS = 252
 
 DEFAULT_HOLDINGS = pd.DataFrame(
     [
-        {"name": "0050", "ticker": "0050.TW", "amount": 250000, "currency": "TWD"},
-        {"name": "台積電", "ticker": "2330.TW", "amount": 250000, "currency": "TWD"},
-        {"name": "鴻海", "ticker": "2317.TW", "amount": 250000, "currency": "TWD"},
-        {"name": "聯發科", "ticker": "2454.TW", "amount": 250000, "currency": "TWD"},
+        {"name": "0050", "ticker": "0050.TW", "shares": 0, "amount": 250000, "currency": "TWD"},
+        {"name": "台積電", "ticker": "2330.TW", "shares": 0, "amount": 250000, "currency": "TWD"},
+        {"name": "鴻海", "ticker": "2317.TW", "shares": 0, "amount": 250000, "currency": "TWD"},
+        {"name": "聯發科", "ticker": "2454.TW", "shares": 0, "amount": 250000, "currency": "TWD"},
     ]
 )
 
@@ -74,19 +74,56 @@ def latest_usd_twd() -> tuple[float, str]:
     return float(close.iloc[-1]), pd.Timestamp(close.index[-1]).strftime("%Y-%m-%d")
 
 
-def add_twd_values(holdings: pd.DataFrame, usd_twd: float) -> pd.DataFrame:
+def ensure_holdings_schema(holdings: pd.DataFrame) -> pd.DataFrame:
     df = holdings.copy()
+    for col, default in {
+        "name": "",
+        "ticker": "",
+        "shares": 0.0,
+        "amount": 0.0,
+        "currency": "TWD",
+    }.items():
+        if col not in df.columns:
+            df[col] = default
+    return df[["name", "ticker", "shares", "amount", "currency"]]
+
+
+def add_twd_values(
+    holdings: pd.DataFrame,
+    usd_twd: float,
+    latest_prices: dict[str, float] | None = None,
+) -> pd.DataFrame:
+    df = holdings.copy()
+    latest_prices = latest_prices or {}
+    df = ensure_holdings_schema(df)
+    df["shares"] = pd.to_numeric(df["shares"], errors="coerce").fillna(0.0)
     df["amount"] = pd.to_numeric(df["amount"], errors="coerce").fillna(0.0)
     df["currency"] = df["currency"].fillna("TWD")
-    df["twd_value"] = np.where(df["currency"] == "USD", df["amount"] * usd_twd, df["amount"])
+    price_amount = df.apply(
+        lambda r: r["shares"] * latest_prices.get(r["ticker"], np.nan),
+        axis=1,
+    )
+    df["amount_used"] = np.where(
+        (df["shares"] > 0) & price_amount.notna(),
+        price_amount,
+        df["amount"],
+    )
+    df["amount_source"] = np.where(
+        (df["shares"] > 0) & price_amount.notna(),
+        "股數x最新價",
+        "手動金額",
+    )
+    df["twd_value"] = np.where(df["currency"] == "USD", df["amount_used"] * usd_twd, df["amount_used"])
     total = df["twd_value"].sum()
     df["weight"] = df["twd_value"] / total if total > 0 else 0.0
     return df
 
 
 def portfolio_settings_payload(holdings: pd.DataFrame) -> list[dict]:
-    cols = ["name", "ticker", "amount", "currency"]
+    cols = ["name", "ticker", "shares", "amount", "currency"]
+    holdings = ensure_holdings_schema(holdings)
     payload = holdings[cols].copy()
+    payload["shares"] = pd.to_numeric(payload["shares"], errors="coerce").fillna(0.0)
     payload["amount"] = pd.to_numeric(payload["amount"], errors="coerce").fillna(0.0)
     return payload.to_dict("records")
 
@@ -147,7 +184,7 @@ def load_settings_from_db(user_key: str) -> pd.DataFrame | None:
     if not rows:
         return None
     settings = rows[0]["settings"]
-    return pd.DataFrame(settings)[["name", "ticker", "amount", "currency"]]
+    return ensure_holdings_schema(pd.DataFrame(settings))
 
 
 def save_settings_to_db(user_key: str, holdings: pd.DataFrame) -> None:
@@ -276,11 +313,13 @@ def bootstrap(returns: pd.Series, samples: int, draws: int, seed: int = 42) -> p
 st.title("資產配置回測工作台")
 
 if "holdings_default" not in st.session_state:
-    st.session_state.holdings_default = DEFAULT_HOLDINGS.copy()
+    st.session_state.holdings_default = ensure_holdings_schema(DEFAULT_HOLDINGS)
 if "editor_data" not in st.session_state:
-    st.session_state.editor_data = st.session_state.holdings_default.copy()
+    st.session_state.editor_data = ensure_holdings_schema(st.session_state.holdings_default)
 if "editor_key" not in st.session_state:
     st.session_state.editor_key = 0
+st.session_state.holdings_default = ensure_holdings_schema(st.session_state.holdings_default)
+st.session_state.editor_data = ensure_holdings_schema(st.session_state.editor_data)
 if "usd_twd" not in st.session_state:
     st.session_state.usd_twd = 31.673
 if "usd_twd_date" not in st.session_state:
@@ -350,8 +389,8 @@ with st.expander("每個人自己的預設設定", expanded=False):
                     if loaded is None:
                         st.warning("找不到這個保存代號的設定。")
                     else:
-                        st.session_state.holdings_default = loaded
-                        st.session_state.editor_data = loaded.copy()
+                        st.session_state.holdings_default = ensure_holdings_schema(loaded)
+                        st.session_state.editor_data = ensure_holdings_schema(loaded)
                         st.session_state.editor_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
@@ -378,8 +417,9 @@ with st.expander("每個人自己的預設設定", expanded=False):
             if not set(required).issubset(loaded.columns):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
             else:
-                st.session_state.holdings_default = loaded[required].copy()
-                st.session_state.editor_data = loaded[required].copy()
+                loaded = ensure_holdings_schema(loaded)
+                st.session_state.holdings_default = loaded.copy()
+                st.session_state.editor_data = loaded.copy()
                 st.session_state.editor_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
                 st.rerun()
@@ -402,6 +442,7 @@ with st.form("holdings_form"):
         column_config={
             "name": "名稱",
             "ticker": "Ticker",
+            "shares": st.column_config.NumberColumn("股數", min_value=0, step=1),
             "amount": st.column_config.NumberColumn("原幣金額", min_value=0, step=100),
             "currency": st.column_config.SelectboxColumn("幣別", options=["TWD", "USD"]),
         },
@@ -411,7 +452,7 @@ with st.form("holdings_form"):
 if apply_holdings:
     edited_raw = edited_raw.dropna(subset=["ticker"]).copy()
     edited_raw["ticker"] = edited_raw["ticker"].astype(str).str.strip()
-    st.session_state.editor_data = edited_raw[["name", "ticker", "amount", "currency"]].copy()
+    st.session_state.editor_data = ensure_holdings_schema(edited_raw)
 
 edited = add_twd_values(st.session_state.editor_data, usd_twd)
 st.caption("輸入表格後請先按「套用持股變更」，再儲存或執行回測。")
@@ -421,9 +462,14 @@ col1.metric("總資產台幣等值", f"{edited['twd_value'].sum():,.0f}")
 col2.metric("台股台幣金額", f"{edited.loc[edited['currency'] == 'TWD', 'amount'].sum():,.0f}")
 col3.metric("美股美元金額", f"US$ {edited.loc[edited['currency'] == 'USD', 'amount'].sum():,.0f}")
 
-display_cols = edited[["name", "ticker", "currency", "amount", "twd_value", "weight"]].copy()
+display_cols = edited[["name", "ticker", "currency", "shares", "amount", "amount_used", "amount_source", "twd_value", "weight"]].copy()
+display_cols["shares"] = display_cols["shares"].map(lambda x: f"{x:,.2f}".rstrip("0").rstrip("."))
 display_cols["amount"] = display_cols.apply(
     lambda r: f"US$ {r['amount']:,.0f}" if r["currency"] == "USD" else f"NT$ {r['amount']:,.0f}",
+    axis=1,
+)
+display_cols["amount_used"] = display_cols.apply(
+    lambda r: f"US$ {r['amount_used']:,.0f}" if r["currency"] == "USD" else f"NT$ {r['amount_used']:,.0f}",
     axis=1,
 )
 display_cols["twd_value"] = display_cols["twd_value"].map(lambda x: f"NT$ {x:,.0f}")
@@ -434,7 +480,10 @@ st.dataframe(
             "name": "名稱",
             "ticker": "Ticker",
             "currency": "幣別",
+            "shares": "股數",
             "amount": "原幣金額",
+            "amount_used": "計算用金額",
+            "amount_source": "金額來源",
             "twd_value": "台幣等值",
             "weight": "權重",
         }
@@ -449,7 +498,7 @@ st.plotly_chart(
 
 if st.button("執行回測", type="primary"):
     with st.spinner("正在連接 yfinance 並計算..."):
-        holdings = edited.to_dict("records")
+        holdings = ensure_holdings_schema(st.session_state.editor_data).to_dict("records")
         tickers = [h["ticker"] for h in holdings] + [benchmark]
         if any(h.get("currency") == "USD" for h in holdings):
             tickers.append("TWD=X")
@@ -459,13 +508,20 @@ if st.button("執行回測", type="primary"):
         if "TWD=X" in close.columns:
             fx = clean_fx(close["TWD=X"])
             if not fx.dropna().empty:
-                st.session_state.usd_twd = float(fx.dropna().iloc[-1])
+                usd_twd = float(fx.dropna().iloc[-1])
+                st.session_state.usd_twd = usd_twd
                 st.session_state.usd_twd_date = pd.Timestamp(fx.dropna().index[-1]).strftime("%Y-%m-%d")
             for h in holdings:
                 if h.get("currency") == "USD":
                     prices[h["ticker"]] = prices[h["ticker"]] * fx
 
-        weights = pd.Series({h["ticker"]: float(h["weight"]) for h in holdings})
+        latest_prices = {
+            h["ticker"]: float(close[h["ticker"]].dropna().iloc[-1])
+            for h in holdings
+            if h["ticker"] in close.columns and not close[h["ticker"]].dropna().empty
+        }
+        edited_for_backtest = add_twd_values(pd.DataFrame(holdings), usd_twd, latest_prices)
+        weights = pd.Series({h["ticker"]: float(h["weight"]) for h in edited_for_backtest.to_dict("records")})
         port = portfolio_returns(prices, weights, frequency, commission, stock_tax, etf_tax)
         bench = close[benchmark].pct_change(fill_method=None).dropna()
         idx = port.index.intersection(bench.index)
