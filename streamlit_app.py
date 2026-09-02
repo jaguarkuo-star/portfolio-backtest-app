@@ -804,6 +804,18 @@ def extract_first_image_from_html(text: str, base_url: str = "") -> str:
     return urljoin(base_url, match.group(1))
 
 
+def rss_item_attr(item: ET.Element, tag_suffixes: tuple[str, ...], attr_names: tuple[str, ...]) -> str:
+    for child in item.iter():
+        tag = str(child.tag).lower()
+        if not any(tag.endswith(suffix.lower()) for suffix in tag_suffixes):
+            continue
+        for attr_name in attr_names:
+            value = child.attrib.get(attr_name)
+            if value:
+                return value.strip()
+    return ""
+
+
 def find_meta_content(html_text: str, names: tuple[str, ...], base_url: str, is_url: bool = True) -> str:
     for name in names:
         patterns = [
@@ -867,6 +879,11 @@ def fetch_google_news(query: str, limit: int, language: str = "zh-TW", refresh_i
         source = item.find("source")
         link = clean_html(item.findtext("link"))
         description = item.findtext("description")
+        rss_image = rss_item_attr(
+            item,
+            ("thumbnail", "content", "enclosure"),
+            ("url", "href"),
+        )
         rows.append(
             {
                 "標題": clean_html(item.findtext("title")),
@@ -874,7 +891,7 @@ def fetch_google_news(query: str, limit: int, language: str = "zh-TW", refresh_i
                 "時間": clean_html(item.findtext("pubDate")),
                 "摘要": clean_html(description),
                 "連結": link,
-                "圖片": extract_first_image_from_html(description, link),
+                "圖片": rss_image or extract_first_image_from_html(description, link),
                 "影片": "",
                 "查詢": query,
             }
@@ -1007,9 +1024,9 @@ def render_media_cards(media: pd.DataFrame, max_items: int = 12) -> None:
                     try:
                         st.image(row["圖片"], use_container_width=True)
                     except Exception:
-                        st.markdown('<div class="media-placeholder">News Preview</div>', unsafe_allow_html=True)
+                        st.markdown('<div class="media-placeholder">來源未提供圖片</div>', unsafe_allow_html=True)
                 else:
-                    st.markdown('<div class="media-placeholder">News Preview</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="media-placeholder">來源未提供圖片</div>', unsafe_allow_html=True)
                 title = clean_html(row.get("標題", ""))
                 link = str(row.get("連結", ""))
                 if link:
@@ -2971,6 +2988,7 @@ with st.expander("Latest News", expanded=False):
                 hide_index=True,
             )
         with news_tab_media:
+            st.caption("圖片來自 RSS media/enclosure 或文章公開 og:image；若來源沒有開放預覽圖，會顯示佔位卡。")
             render_media_cards(filtered_news, max_items=12)
         st.download_button(
             "下載 Latest News CSV",
