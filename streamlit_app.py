@@ -74,6 +74,29 @@ def latest_usd_twd() -> tuple[float, str]:
     return float(close.iloc[-1]), pd.Timestamp(close.index[-1]).strftime("%Y-%m-%d")
 
 
+@st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
+def download_latest_prices(tickers: tuple[str, ...]) -> dict[str, float]:
+    data = yf.download(
+        list(tickers),
+        period="10d",
+        auto_adjust=True,
+        actions=False,
+        progress=False,
+        group_by="column",
+        threads=True,
+    )
+    if data.empty:
+        raise RuntimeError("yfinance 沒有回傳最新股價，請檢查 ticker。")
+    close = data["Close"].copy() if isinstance(data.columns, pd.MultiIndex) else data["Close"].copy()
+    if isinstance(close, pd.Series):
+        close = close.to_frame(name=tickers[0])
+    prices = {}
+    for ticker in tickers:
+        if ticker in close.columns and not close[ticker].dropna().empty:
+            prices[ticker] = float(close[ticker].dropna().iloc[-1])
+    return prices
+
+
 def ensure_holdings_schema(holdings: pd.DataFrame) -> pd.DataFrame:
     df = holdings.copy()
     for col, default in {
@@ -447,15 +470,49 @@ with st.form("holdings_form"):
             "currency": st.column_config.SelectboxColumn("幣別", options=["TWD", "USD"]),
         },
     )
-    apply_holdings = st.form_submit_button("套用持股變更")
+    form_col1, form_col2 = st.columns(2)
+    with form_col1:
+        apply_holdings = st.form_submit_button("套用持股變更")
+    with form_col2:
+        auto_amount = st.form_submit_button("股數換算金額")
 
-if apply_holdings:
+if apply_holdings or auto_amount:
     edited_raw = edited_raw.dropna(subset=["ticker"]).copy()
     edited_raw["ticker"] = edited_raw["ticker"].astype(str).str.strip()
-    st.session_state.editor_data = ensure_holdings_schema(edited_raw)
+    edited_raw = ensure_holdings_schema(edited_raw)
+    if auto_amount:
+        priced_rows = edited_raw[pd.to_numeric(edited_raw["shares"], errors="coerce").fillna(0) > 0]
+        tickers_to_price = tuple(dict.fromkeys(priced_rows["ticker"].dropna().astype(str).str.strip()))
+        if tickers_to_price:
+            try:
+                latest_prices = download_latest_prices(tickers_to_price)
+                if not latest_prices:
+                    raise RuntimeError("沒有抓到可用的最新價格。")
+                shares = pd.to_numeric(edited_raw["shares"], errors="coerce").fillna(0.0)
+                edited_raw["amount"] = edited_raw.apply(
+                    lambda r: shares.loc[r.name] * latest_prices[r["ticker"]]
+                    if shares.loc[r.name] > 0 and r["ticker"] in latest_prices
+                    else r["amount"],
+                    axis=1,
+                )
+                st.session_state.auto_amount_message = "已用最新 yfinance 股價更新有填股數的原幣金額。"
+            except Exception as exc:
+                st.session_state.auto_amount_message = f"股數換算失敗：{exc}"
+        else:
+            st.session_state.auto_amount_message = "沒有填股數大於 0 的持股，所以沒有更新金額。"
+    st.session_state.editor_data = edited_raw
+    if auto_amount:
+        st.session_state.editor_key += 1
+        st.rerun()
 
 edited = add_twd_values(st.session_state.editor_data, usd_twd)
 st.caption("輸入表格後請先按「套用持股變更」，再儲存或執行回測。")
+if "auto_amount_message" in st.session_state:
+    message = st.session_state.pop("auto_amount_message")
+    if message.startswith("股數換算失敗"):
+        st.warning(message)
+    else:
+        st.success(message)
 
 col1, col2, col3 = st.columns(3)
 col1.metric("總資產台幣等值", f"{edited['twd_value'].sum():,.0f}")
