@@ -43,14 +43,14 @@ MACRO_INDICATORS = {
     "英國 FTSE 100": "^FTSE",
     "新加坡 STI": "^STI",
     "中國上證指數": "000001.SS",
-    "中國滬深300": "000300.SS",
+    "中國A股 ASHR ETF": "ASHR",
     "香港恆生指數": "^HSI",
     "韓國 KOSPI": "^KS11",
     "費城半導體": "^SOX",
     "EUR/USD": "EURUSD=X",
     "GBP/USD": "GBPUSD=X",
     "USD/JPY": "JPY=X",
-    "USD/CNH": "CNH=X",
+    "USD/CNY": "CNY=X",
     "USD/HKD": "HKD=X",
     "USD/SGD": "SGD=X",
     "USD/KRW": "KRW=X",
@@ -240,29 +240,35 @@ def fetch_portfolio_news(
 
 @st.cache_data(ttl=60 * 60, show_spinner=False)
 def download_macro_series(start: str, end: str) -> pd.DataFrame:
-    tickers = tuple(dict.fromkeys(MACRO_INDICATORS.values()))
-    data = yf.download(
-        list(tickers),
-        start=start,
-        end=(pd.Timestamp(end) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
-        auto_adjust=False,
-        actions=False,
-        progress=False,
-        group_by="column",
-        threads=True,
-    )
-    if data.empty:
-        raise RuntimeError("yfinance 沒有回傳總經資料。")
-    close = data["Close"].copy() if isinstance(data.columns, pd.MultiIndex) else data[["Close"]].copy()
-    if not isinstance(close, pd.DataFrame):
-        close = close.to_frame()
-    close.index = pd.to_datetime(close.index).tz_localize(None)
-    close = close.sort_index().ffill().dropna(how="all")
-    renamed = {}
+    pieces = []
     for label, ticker in MACRO_INDICATORS.items():
-        if ticker in close.columns:
-            renamed[ticker] = label
-    return close.rename(columns=renamed)
+        try:
+            data = yf.download(
+                ticker,
+                start=start,
+                end=(pd.Timestamp(end) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
+                auto_adjust=False,
+                actions=False,
+                progress=False,
+                group_by="column",
+                threads=False,
+            )
+            if data.empty:
+                continue
+            close = data["Close"]
+            if isinstance(close, pd.DataFrame):
+                close = close.iloc[:, 0]
+            close = pd.to_numeric(close, errors="coerce").dropna()
+            if close.empty:
+                continue
+            close.index = pd.to_datetime(close.index).tz_localize(None)
+            pieces.append(close.sort_index().rename(label))
+        except Exception:
+            continue
+
+    if not pieces:
+        raise RuntimeError("yfinance 沒有回傳總經資料。")
+    return pd.concat(pieces, axis=1).sort_index().ffill().dropna(how="all")
 
 
 def macro_summary(series: pd.DataFrame) -> pd.DataFrame:
@@ -1586,6 +1592,13 @@ with st.expander("總經儀表板", expanded=False):
     if not macro_data.empty:
         summary = macro_summary(macro_data)
         st.dataframe(format_macro_table(summary), use_container_width=True, hide_index=True)
+        available = pd.DataFrame(
+            {
+                "已抓到指標": list(macro_data.columns),
+                "資料筆數": [int(macro_data[col].dropna().shape[0]) for col in macro_data.columns],
+            }
+        )
+        st.dataframe(available, use_container_width=True, hide_index=True)
 
         preferred_macro = [
             "VIX 恐慌指數",
@@ -1604,7 +1617,7 @@ with st.expander("總經儀表板", expanded=False):
             "費城半導體",
             "EUR/USD",
             "USD/JPY",
-            "USD/CNH",
+            "USD/CNY",
             "Fed Funds 隱含利率",
         ]
         selected_macro = st.multiselect(
@@ -1631,7 +1644,7 @@ with st.expander("總經儀表板", expanded=False):
                 "英國 FTSE 100",
                 "新加坡 STI",
                 "中國上證指數",
-                "中國滬深300",
+                "中國A股 ASHR ETF",
                 "香港恆生指數",
                 "韓國 KOSPI",
                 "費城半導體",
@@ -1654,7 +1667,7 @@ with st.expander("總經儀表板", expanded=False):
                 "EUR/USD",
                 "GBP/USD",
                 "USD/JPY",
-                "USD/CNH",
+                "USD/CNY",
                 "USD/HKD",
                 "USD/SGD",
                 "USD/KRW",
