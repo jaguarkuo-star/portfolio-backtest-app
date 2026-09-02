@@ -166,7 +166,7 @@ def download_historical_eps_ttm(tickers: tuple[str, ...]) -> dict[str, pd.Series
                 continue
             eps.index = pd.to_datetime(eps.index).tz_localize(None)
             eps = eps.sort_index()
-            ttm = eps.rolling(4, min_periods=4).sum().dropna()
+            ttm = eps.rolling("365D", min_periods=4).sum().dropna()
             if not ttm.empty:
                 out[ticker] = ttm
         except Exception:
@@ -1240,7 +1240,7 @@ with st.expander("本益比河流圖", expanded=False):
                     eps_source_rows.append(
                         {
                             "Ticker": ticker,
-                            "EPS來源": "歷史季度EPS TTM" if ticker in historical_eps else "手動EPS TTM" if ticker in manual_eps_map else "缺資料",
+                            "EPS來源": "歷史12個月滾動TTM" if ticker in historical_eps else "手動EPS TTM" if ticker in manual_eps_map else "缺資料",
                             "有效天數": valid_eps_count,
                             "最新TTM EPS": eps_series.dropna().iloc[-1] if valid_eps_count else np.nan,
                         }
