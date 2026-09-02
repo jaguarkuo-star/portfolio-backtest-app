@@ -641,6 +641,38 @@ def fetch_portfolio_news(
     return news[["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "查詢"]]
 
 
+@st.cache_data(ttl=60 * 30, show_spinner=False)
+def fetch_research_article_links(
+    source_queries: tuple[tuple[str, str], ...],
+    keyword: str,
+    per_source_limit: int,
+    language: str,
+) -> pd.DataFrame:
+    rows = []
+    for source_name, source_query in source_queries:
+        query = f"{source_query} {keyword}".strip()
+        try:
+            for row in fetch_google_news(query, per_source_limit, language):
+                row["研究來源"] = source_name
+                rows.append(row)
+        except Exception as exc:
+            rows.append(
+                {
+                    "研究來源": source_name,
+                    "時間": "",
+                    "來源": "抓取失敗",
+                    "標題": f"{source_name} 搜尋失敗",
+                    "摘要": str(exc),
+                    "連結": "",
+                    "查詢": query,
+                }
+            )
+    if not rows:
+        return pd.DataFrame(columns=["研究來源", "時間", "來源", "標題", "摘要", "連結", "查詢"])
+    articles = pd.DataFrame(rows).drop_duplicates(subset=["標題", "來源"], keep="first")
+    return articles[["研究來源", "時間", "來源", "標題", "摘要", "連結", "查詢"]]
+
+
 @st.cache_data(ttl=60 * 60, show_spinner=False)
 def download_macro_series(start: str, end: str, cache_version: str) -> pd.DataFrame:
     pieces = []
@@ -964,6 +996,181 @@ def industry_research_map() -> pd.DataFrame:
     ]
     data = pd.concat(frames, ignore_index=True)
     return data.drop_duplicates(subset=["map", "theme", "category", "company", "ticker"], keep="last")
+
+
+def industry_researcher_insights() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "researcher": "郭明錤 Ming-Chi Kuo",
+                "channel": "Medium / X",
+                "topic": "TSMC COUPE / NVIDIA Rubin CPO / WLO",
+                "claim": "Himax has potential WLO exposure through FOCI; FOCI may benefit from FAU and optical fiber-jump-in-system demand tied to TSMC COUPE and NVIDIA Rubin/Rubin Ultra CPO.",
+                "products": "WLO, FAU, ReLFACon, COUPE, CPO, CoWoS",
+                "related_companies": "Himax, FOCI, TSMC, NVIDIA",
+                "tickers": "HIMX / 3363.TWO / 2330.TW / NVDA",
+                "watch_points": "FOCI FAU capacity, Himax WLO revenue timing, Rubin Ultra CPO adoption, COUPE qualification progress.",
+                "evidence_level": "中：研究者觀點",
+                "source_url": "https://medium.com/@mingchikuo/himax-be-a-potential-wlo-supplier-for-tsmc-and-nvidia-poising-to-benefit-from-ai-chips-and-5b957f5182ef",
+            },
+            {
+                "researcher": "郭明錤 Ming-Chi Kuo",
+                "channel": "Medium / X",
+                "topic": "TSMC glass core substrate / CoPoS",
+                "claim": "Glass core substrate is framed as the must-have 'oS' layer inside CoPoS, while CoP is more of a cost/production-efficiency optimization. Kuo points to TSMC, Ibiden and Innolux collaboration and highlights TGV as the key know-how.",
+                "products": "glass core substrate, CoPoS, oS, CoP, TGV, ABF-GCP, GL107, 250x250mm / 510x515mm glass panel",
+                "related_companies": "TSMC, Ibiden, Innolux, Ajinomoto, NVIDIA",
+                "tickers": "2330.TW / 4062.T / 3481.TW / 2802.T / NVDA",
+                "watch_points": "TGV yield, glass cutting responsibility, Innolux glass processing role, Ibiden roadmap, 2H27 pre-mass-production simulation and 4Q28-1Q29 mass-production target.",
+                "evidence_level": "中：研究者觀點",
+                "source_url": "https://medium.com/@mingchikuo/breaking-down-tsmcs-glass-core-substrate-slide-44bd92b9af5a",
+            },
+            {
+                "researcher": "郭明錤 Ming-Chi Kuo",
+                "channel": "Medium / X",
+                "topic": "TSMC CoPoS next-generation packaging",
+                "claim": "CoPoS is described as a next-generation packaging route for ultra-large packages above roughly the 9.5x reticle-size class, potentially tied to NVIDIA Feynman timing. Kuo emphasizes that glass does not replace ABF; glass and ABF coexist in the substrate stack.",
+                "products": "CoPoS, temporary glass carrier, glass core substrate, ABF-GCP, TGV, copper filling / metallization",
+                "related_companies": "TSMC, NVIDIA, Innolux, Ibiden, Ajinomoto",
+                "tickers": "2330.TW / NVDA / 3481.TW / 4062.T / 2802.T",
+                "watch_points": "2H28 CoPoS schedule, Feynman adoption, substrate stack definition, customer willingness to pay for PI improvement.",
+                "evidence_level": "中：研究者觀點",
+                "source_url": "https://medium.com/@mingchikuo/key-takeaways-on-tsmcs-next-generation-advanced-packaging-copos-16120c976fbc",
+            },
+            {
+                "researcher": "駿HaYaO",
+                "channel": "X",
+                "topic": "CPO / NPO / CoWoS / EMIB",
+                "claim": "CPO bottlenecks may sit less in optical components alone and more in packaging, thermal management, serviceability and yield when PIC is co-packaged with high-power ASIC/XPU.",
+                "products": "CPO, NPO, CoWoS-S/R/L, EMIB, silicon photonics, optical I/O",
+                "related_companies": "TSMC, NVIDIA, Intel, Broadcom, Cisco, Ayar Labs",
+                "tickers": "2330.TW / NVDA / INTC / AVGO / CSCO",
+                "watch_points": "Whether Rubin/Rubin Ultra uses full CPO or NPO-like architecture, CoWoS-L yield, heat/reliability data, Intel EMIB optical I/O traction.",
+                "evidence_level": "觀察：社群研究者",
+                "source_url": "https://x.com/QQ_Timmy/status/2063934813686386739",
+            },
+            {
+                "researcher": "Etherealm Research",
+                "channel": "Independent research",
+                "topic": "NVDA/TSMC CPO-NPO route split",
+                "claim": "Separate three lines: Spectrum-X switch CPO already public, Rubin compute/CoWoS value remains, and future Rubin Ultra/Kyber optical I/O route may branch between COUPE CPO and Tower-like SiPho NPO scenarios.",
+                "products": "Spectrum-X Photonics, Quantum-X Photonics, COUPE, NPO, CPO, SerDes, DWDM",
+                "related_companies": "NVIDIA, TSMC, Broadcom, Marvell, Lumentum, Coherent, Credo",
+                "tickers": "NVDA / 2330.TW / AVGO / MRVL / LITE / COHR / CRDO",
+                "watch_points": "Design freeze, BOM split, supplier allocation, whether optical I/O remains rack/scale-out only or moves closer to XPU package.",
+                "evidence_level": "中：研究/供應鏈媒體",
+                "source_url": "https://etherealm.one/reports/equities/2026-07-12-nvda-tsmc-cpo-npo-supply-chain",
+            },
+            {
+                "researcher": "天下雜誌 CommonWealth",
+                "channel": "Industry media",
+                "topic": "COUPE / CPO / silicon photonics explainer",
+                "claim": "Frames silicon photonics as the base technology, CPO as the architecture, and COUPE as TSMC's specific platform that stacks EIC and PIC. Also highlights early production symbolism versus larger-volume visibility later.",
+                "products": "COUPE, CPO, silicon photonics, Spectrum-X Photonics, optical engine",
+                "related_companies": "TSMC, NVIDIA, Innolux, optical component suppliers",
+                "tickers": "2330.TW / NVDA / 3481.TW",
+                "watch_points": "Whether COUPE volume moves beyond switch tray level, timing of real contribution, named Taiwan suppliers versus market speculation.",
+                "evidence_level": "中：研究/供應鏈媒體",
+                "source_url": "https://www.cw.com.tw/index.php/article/5142632",
+            },
+            {
+                "researcher": "CommonWealth English",
+                "channel": "Industry media",
+                "topic": "TSMC CoPoS may be glass-free in first generation",
+                "claim": "Raises the scenario that early CoPoS volume production may not immediately use full glass-core substrate, separating the panel-level manufacturing transition from the longer-term glass-core material transition.",
+                "products": "CoPoS, glass carrier, glass-core substrate, ABF, panel-level packaging",
+                "related_companies": "TSMC, Innolux, AUO, GIS, substrate suppliers",
+                "tickers": "2330.TW / 3481.TW / 2409.TW / 6456.TW",
+                "watch_points": "Which generation actually adopts glass core, whether early CoPoS uses glass carrier only, and how quickly TGV glass processing becomes production-ready.",
+                "evidence_level": "中：研究/供應鏈媒體",
+                "source_url": "https://english.cw.com.tw/article/article.action?id=4871",
+            },
+            {
+                "researcher": "Damnang Research",
+                "channel": "Independent research",
+                "topic": "Glass substrate terminology and money-flow order",
+                "claim": "Separates glass carrier, glass core substrate, glass interposer and T-glass. The article warns that many market narratives mix these layers, and that early CoPoS glass-core adoption remains closer to industry-check status than full official confirmation.",
+                "products": "glass carrier, glass core substrate, glass interposer, T-glass, TGV, ABF substrate",
+                "related_companies": "TSMC, Innolux, Ibiden, Nittobo, Absolics, Samsung Electro-Mechanics",
+                "tickers": "2330.TW / 3481.TW / 4062.T / 3110.T / 009150.KS",
+                "watch_points": "Terminology precision, which layer each supplier touches, T-glass shortage versus glass-core substrate adoption.",
+                "evidence_level": "中：研究者觀點",
+                "source_url": "https://www.damnang.com/p/glass-substrate-the-order-the-money",
+            },
+            {
+                "researcher": "Handou-Tai",
+                "channel": "Independent semiconductor note",
+                "topic": "Glass substrate competitive map",
+                "claim": "Argues that TSMC is strongest in high-volume advanced packaging for AI/HBM, but glass substrates themselves still have no crowned leader. Different companies attack from materials, substrate, equipment, packaging and national-strategy angles.",
+                "products": "glass substrate, CoWoS, HBM, FC-BGA, ABF, TGV, RDL interposer",
+                "related_companies": "TSMC, Absolics, Samsung Electro-Mechanics, Intel, ASE, TPK, TOPPAN, JNTC",
+                "tickers": "2330.TW / 009150.KS / INTC / 3711.TW / 3673.TW / 7911.T / 036930.KQ",
+                "watch_points": "Whether glass substrate value accrues to material makers, substrate makers, packaging houses or equipment vendors.",
+                "evidence_level": "觀察：研究者觀點",
+                "source_url": "https://tai-semicon.medium.com/jntc-and-toppan-team-up-on-glass-substrates-for-ai-chips-semiconductor-news-july-19-2026-dd585ed59e86",
+            },
+            {
+                "researcher": "TrendForce",
+                "channel": "Research release",
+                "topic": "CPO switch ramp / optical engine bottleneck",
+                "claim": "NVIDIA Spectrum-X CPO and Broadcom CPO switch ramps imply optical engines, silicon photonics chips and advanced packaging are becoming expansion bottlenecks.",
+                "products": "Spectrum-X CPO, Broadcom CPO switch, optical engine, silicon photonics, advanced packaging",
+                "related_companies": "NVIDIA, Broadcom, TSMC, optical engine suppliers, packaging/test suppliers",
+                "tickers": "NVDA / AVGO / 2330.TW",
+                "watch_points": "CPO shipment pace, optical engine yield, advanced packaging capacity, second-half 2026 capacity expansion.",
+                "evidence_level": "中：研究/供應鏈媒體",
+                "source_url": "https://www.trendforce.com/presscenter/news/20260727-13151.html",
+            },
+            {
+                "researcher": "NVIDIA",
+                "channel": "Official",
+                "topic": "Spectrum-X Photonics / Rubin",
+                "claim": "NVIDIA positions CPO-based Spectrum-X Ethernet Photonics as a key Vera Rubin networking layer for million-GPU AI factories, with claimed power-efficiency and resiliency gains over pluggable optics.",
+                "products": "Spectrum-X Ethernet Photonics, 200Gb/s SerDes, CPO switch, silicon photonics",
+                "related_companies": "NVIDIA, TSMC, CoreWeave, Lambda, Meta, Microsoft, OCI",
+                "tickers": "NVDA / 2330.TW / META / MSFT / ORCL",
+                "watch_points": "First adopter deployments, rack-level attach rate, whether CPO shifts from switch layer toward compute package over later generations.",
+                "evidence_level": "高：官方揭露",
+                "source_url": "https://www.nvidia.com/en-us/networking/products/silicon-photonics/",
+            },
+            {
+                "researcher": "TSMC",
+                "channel": "Official",
+                "topic": "3DFabric / CoWoS / SoIC",
+                "claim": "TSMC defines 3DFabric as its 3D silicon stacking and advanced packaging family, including TSMC-SoIC, CoWoS and InFO for heterogeneous integration.",
+                "products": "3DFabric, CoWoS-S, CoWoS-L, CoWoS-R, SoIC, InFO",
+                "related_companies": "TSMC, ASE/SPIL, substrate suppliers, inspection/test suppliers",
+                "tickers": "2330.TW / 3711.TW",
+                "watch_points": "CoWoS reticle-size scaling, SoIC adoption, advanced packaging capex, customer allocation and yield disclosures.",
+                "evidence_level": "高：官方揭露",
+                "source_url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/3DFabric.htm",
+            },
+            {
+                "researcher": "SemiAnalysis",
+                "channel": "Paid research / search entry",
+                "topic": "AI accelerator and supply-chain deep dives",
+                "claim": "Use as a high-depth source for BOM, rack architecture, accelerator roadmaps and AI datacenter bottlenecks; do not treat snippets as final without reading the full article.",
+                "products": "GPU rack, networking, CoWoS, HBM, CPO/NPO, power, datacenter capex",
+                "related_companies": "NVIDIA, AMD, Broadcom, Marvell, CSPs, ODMs",
+                "tickers": "NVDA / AMD / AVGO / MRVL / MSFT / AMZN / GOOGL / META",
+                "watch_points": "Read-through from architecture changes to supplier value share, rack BOM, capex realism, utilization and gross-margin risk.",
+                "evidence_level": "待確認：付費研究入口",
+                "source_url": "https://semianalysis.com/?s=NVIDIA+Rubin+CoWoS+CPO",
+            },
+            {
+                "researcher": "DIGITIMES",
+                "channel": "Supply-chain media / search entry",
+                "topic": "Taiwan ODM and component supply-chain checks",
+                "claim": "Use as a channel-check source for Taiwan ODM allocation, component shortages, advanced packaging equipment and PCB/substrate suppliers.",
+                "products": "AI server, ODM, CoWoS equipment, PCB, CCL, optics, power, cooling",
+                "related_companies": "Quanta, Foxconn, Wistron, Wiwynn, Inventec, Taiwan component suppliers",
+                "tickers": "2382.TW / 2317.TW / 3231.TW / 6669.TW / 2356.TW",
+                "watch_points": "Customer concentration, order timing, capacity booking, margin pass-through and supply-chain bottleneck confirmation.",
+                "evidence_level": "待確認：供應鏈媒體入口",
+                "source_url": "https://www.digitimes.com/search?query=NVIDIA%20Rubin%20CoWoS%20CPO",
+            },
+        ]
+    )
 
 
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
@@ -2371,8 +2578,8 @@ with st.expander("產業研究工作台", expanded=True):
         ).str.lower()
         filtered_research = filtered_research[haystack.str.contains(re.escape(keyword), na=False)].copy()
 
-    tab_map, tab_matrix, tab_products, tab_sources, tab_images = st.tabs(
-        ["產業地圖", "公司矩陣", "產品/型號", "來源閱讀", "圖片入口"]
+    tab_map, tab_matrix, tab_products, tab_insights, tab_sources, tab_images = st.tabs(
+        ["產業地圖", "公司矩陣", "產品/型號", "研究者觀點", "來源閱讀", "圖片入口"]
     )
     with tab_map:
         if filtered_research.empty:
@@ -2449,8 +2656,119 @@ with st.expander("產業研究工作台", expanded=True):
             )
             st.dataframe(product_matrix, use_container_width=True, hide_index=True)
 
+    with tab_insights:
+        insights = industry_researcher_insights()
+        insight_col1, insight_col2 = st.columns(2)
+        selected_researchers = insight_col1.multiselect(
+            "研究者/來源",
+            sorted(insights["researcher"].dropna().unique().tolist()),
+            default=sorted(insights["researcher"].dropna().unique().tolist()),
+        )
+        selected_insight_levels = insight_col2.multiselect(
+            "證據等級",
+            sorted(insights["evidence_level"].dropna().unique().tolist()),
+            default=sorted(insights["evidence_level"].dropna().unique().tolist()),
+        )
+        insight_keyword = st.text_input("搜尋研究觀點", "")
+        filtered_insights = insights[
+            insights["researcher"].isin(selected_researchers)
+            & insights["evidence_level"].isin(selected_insight_levels)
+        ].copy()
+        if insight_keyword.strip():
+            keyword = insight_keyword.strip().lower()
+            insight_haystack = (
+                filtered_insights["topic"]
+                + " "
+                + filtered_insights["claim"]
+                + " "
+                + filtered_insights["products"]
+                + " "
+                + filtered_insights["related_companies"]
+                + " "
+                + filtered_insights["watch_points"]
+            ).str.lower()
+            filtered_insights = filtered_insights[insight_haystack.str.contains(re.escape(keyword), na=False)].copy()
+        st.dataframe(
+            filtered_insights.rename(
+                columns={
+                    "researcher": "研究者/來源",
+                    "channel": "通道",
+                    "topic": "主題",
+                    "claim": "核心論點",
+                    "products": "產品/型號",
+                    "related_companies": "相關公司",
+                    "tickers": "Ticker",
+                    "watch_points": "追蹤驗證點",
+                    "evidence_level": "證據等級",
+                    "source_url": "來源連結",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+            column_config={"來源連結": st.column_config.LinkColumn("來源連結")},
+        )
+        st.download_button(
+            "下載研究者觀點 CSV",
+            filtered_insights.to_csv(index=False).encode("utf-8-sig"),
+            "industry_researcher_insights.csv",
+            "text/csv",
+        )
+        st.divider()
+        st.subheader("研究文章搜尋")
+        research_source_options = {
+            "郭明錤 Ming-Chi Kuo": "site:medium.com/@mingchikuo OR site:x.com/mingchikuo",
+            "SemiAnalysis": "site:semianalysis.com",
+            "DIGITIMES": "site:digitimes.com",
+            "TrendForce": "site:trendforce.com",
+            "駿HaYaO X": "site:x.com/QQ_Timmy OR site:threadreaderapp.com QQ_Timmy",
+            "天下 / CommonWealth": "site:cw.com.tw OR site:english.cw.com.tw",
+            "TSMC 官方": "site:tsmc.com OR site:3dfabric.tsmc.com",
+            "NVIDIA 官方": "site:nvidia.com",
+            "Independent research": "site:damnang.com OR site:tai-semicon.medium.com",
+        }
+        search_col1, search_col2, search_col3 = st.columns([2, 2, 1])
+        selected_article_sources = search_col1.multiselect(
+            "文章來源",
+            list(research_source_options.keys()),
+            default=["郭明錤 Ming-Chi Kuo", "SemiAnalysis", "DIGITIMES", "TrendForce", "天下 / CommonWealth"],
+            key="research_article_sources",
+        )
+        article_keyword = search_col2.text_input(
+            "研究文章關鍵字",
+            "NVIDIA Rubin CoWoS CPO glass substrate TSMC COUPE",
+            key="research_article_keyword",
+        )
+        article_limit = search_col3.number_input(
+            "每來源篇數",
+            min_value=3,
+            max_value=20,
+            value=5,
+            step=1,
+            key="research_article_limit",
+        )
+        if st.button("更新研究文章搜尋", key="refresh_research_articles"):
+            selected_queries = tuple((name, research_source_options[name]) for name in selected_article_sources)
+            st.session_state.research_article_links = fetch_research_article_links(
+                selected_queries,
+                article_keyword,
+                int(article_limit),
+                "zh-TW",
+            )
+        if "research_article_links" in st.session_state:
+            article_links = st.session_state.research_article_links
+            st.dataframe(
+                article_links,
+                use_container_width=True,
+                hide_index=True,
+                column_config={"連結": st.column_config.LinkColumn("連結")},
+            )
+
     with tab_sources:
         reading_rows = filtered_research[["source", "evidence_level", "source_url"]].drop_duplicates().copy()
+        insight_sources = industry_researcher_insights()[["researcher", "evidence_level", "source_url"]].rename(
+            columns={"researcher": "source"}
+        )
+        reading_rows = pd.concat([reading_rows, insight_sources], ignore_index=True).drop_duplicates()
         reading_rows = reading_rows.sort_values(["evidence_level", "source"])
         st.dataframe(
             reading_rows.rename(columns={"source": "來源類型", "evidence_level": "證據等級", "source_url": "閱讀連結"}),
