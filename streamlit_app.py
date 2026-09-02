@@ -75,6 +75,15 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "載板/PCB", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "key wafer and chip partner / substrate exposure", "source": "NVIDIA official"},
     {"category": "載板/PCB", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "PCB/substrate exposure", "source": "industry map"},
     {"category": "載板/PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB exposure", "source": "industry map"},
+    {"category": "主板/配卡/I/O board", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
+    {"category": "主板/配卡/I/O board", "company": "Catcher 可成", "ticker": "2474.TW", "role": "MGX mechanical / structural component supply-chain watchlist", "source": "user watchlist"},
+    {"category": "背板/PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server backplane / PCB exposure", "source": "industry map"},
+    {"category": "背板/PCB", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "AI server backplane / board exposure", "source": "user watchlist"},
+    {"category": "背板/PCB", "company": "HannStar Board 瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"category": "背板/PCB", "company": "Tripod 健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"category": "背板/PCB", "company": "Compeq 華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
+    {"category": "CCL/材料", "company": "Elite Material 台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"category": "CCL/材料", "company": "ITEQ 聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
     {"category": "HBM 記憶體", "company": "SK hynix", "ticker": "000660.KS", "role": "HBM supplier", "source": "industry reports"},
     {"category": "HBM 記憶體", "company": "Samsung Electronics", "ticker": "005930.KS", "role": "HBM supplier", "source": "industry reports"},
     {"category": "HBM 記憶體", "company": "Micron", "ticker": "MU", "role": "HBM supplier", "source": "industry reports"},
@@ -88,13 +97,18 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "系統/機櫃組裝", "company": "ASUS 華碩", "ticker": "2357.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "Compal 仁寶", "ticker": "2324.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "MSI 微星", "ticker": "2377.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "機櫃/機構件", "company": "Chenbro 勤誠", "ticker": "8210.TW", "role": "AI server chassis / rack mechanical exposure", "source": "industry watchlist"},
+    {"category": "機櫃/機構件", "company": "AIC 營邦", "ticker": "3693.TWO", "role": "Vera Rubin system manufacturing partner / chassis and server platform exposure", "source": "NVIDIA official"},
     {"category": "散熱/液冷", "company": "Auras 雙鴻", "ticker": "3324.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
     {"category": "散熱/液冷", "company": "AVC 奇鋐", "ticker": "3017.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
     {"category": "散熱/液冷", "company": "Jentech 健策", "ticker": "3653.TW", "role": "thermal module / cooling exposure", "source": "industry map"},
     {"category": "電源", "company": "Delta 台達電", "ticker": "2308.TW", "role": "AI server power exposure", "source": "industry map"},
     {"category": "電源", "company": "Lite-On 光寶科", "ticker": "2301.TW", "role": "power supply exposure", "source": "industry map"},
     {"category": "網通/交換器", "company": "Accton 智邦", "ticker": "2345.TW", "role": "data center switch / networking exposure", "source": "industry map"},
+    {"category": "網通/交換器晶片", "company": "Marvell", "ticker": "MRVL", "role": "AI networking, custom silicon and optical interconnect exposure", "source": "industry watchlist"},
+    {"category": "網通/ASIC", "company": "MediaTek 聯發科", "ticker": "2454.TW", "role": "ASIC / high-speed networking and AI infrastructure watchlist", "source": "user watchlist"},
     {"category": "連接器/線材", "company": "BizLink 貿聯-KY", "ticker": "3665.TW", "role": "cabling / connector exposure", "source": "industry map"},
+    {"category": "連接器/線材", "company": "Lotes 嘉澤", "ticker": "3533.TW", "role": "server connector exposure", "source": "industry watchlist"},
     {"category": "滑軌/機構件", "company": "King Slide 川湖", "ticker": "2059.TW", "role": "server rails exposure", "source": "industry map"},
 ]
 
@@ -349,6 +363,22 @@ def format_macro_table(df: pd.DataFrame) -> pd.DataFrame:
 
 def vera_rubin_supply_chain_df() -> pd.DataFrame:
     return pd.DataFrame(VERA_RUBIN_SUPPLY_CHAIN)
+
+
+def ensure_vera_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
+    df = rows.copy() if rows is not None and not rows.empty else pd.DataFrame()
+    defaults = {
+        "category": "",
+        "company": "",
+        "ticker": "",
+        "role": "",
+        "source": "custom",
+    }
+    for col, default in defaults.items():
+        if col not in df.columns:
+            df[col] = default
+    df["ticker"] = df["ticker"].astype(str).str.strip()
+    return df[["category", "company", "ticker", "role", "source"]]
 
 
 def price_performance_summary(prices: pd.DataFrame) -> pd.DataFrame:
@@ -909,7 +939,16 @@ def target_reports_payload(reports: pd.DataFrame, holdings: pd.DataFrame) -> lis
     return reports.to_dict("records")
 
 
-def app_settings_payload(holdings: pd.DataFrame, valuation: pd.DataFrame, reports: pd.DataFrame | None = None) -> dict:
+def vera_custom_chain_payload(custom_chain: pd.DataFrame | None = None) -> list[dict]:
+    return ensure_vera_custom_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
+
+
+def app_settings_payload(
+    holdings: pd.DataFrame,
+    valuation: pd.DataFrame,
+    reports: pd.DataFrame | None = None,
+    custom_chain: pd.DataFrame | None = None,
+) -> dict:
     holdings = ensure_holdings_schema(holdings)
     valuation = ensure_valuation_schema(valuation, holdings)
     reports = ensure_target_reports_schema(reports if reports is not None else pd.DataFrame(), holdings)
@@ -917,17 +956,24 @@ def app_settings_payload(holdings: pd.DataFrame, valuation: pd.DataFrame, report
         "holdings": portfolio_settings_payload(holdings),
         "valuation": valuation_settings_payload(valuation),
         "target_reports": target_reports_payload(reports, holdings),
+        "vera_custom_chain": vera_custom_chain_payload(custom_chain),
     }
 
 
-def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if isinstance(settings, dict):
         holdings = ensure_holdings_schema(pd.DataFrame(settings.get("holdings", [])))
         valuation = ensure_valuation_schema(pd.DataFrame(settings.get("valuation", [])), holdings)
         reports = ensure_target_reports_schema(pd.DataFrame(settings.get("target_reports", [])), holdings)
-        return holdings, valuation, reports
+        custom_chain = ensure_vera_custom_schema(pd.DataFrame(settings.get("vera_custom_chain", [])))
+        return holdings, valuation, reports, custom_chain
     holdings = ensure_holdings_schema(pd.DataFrame(settings))
-    return holdings, ensure_valuation_schema(pd.DataFrame(), holdings), ensure_target_reports_schema(pd.DataFrame(), holdings)
+    return (
+        holdings,
+        ensure_valuation_schema(pd.DataFrame(), holdings),
+        ensure_target_reports_schema(pd.DataFrame(), holdings),
+        ensure_vera_custom_schema(pd.DataFrame()),
+    )
 
 
 def supabase_configured() -> bool:
@@ -977,7 +1023,7 @@ def test_supabase_connection() -> tuple[bool, str]:
     return False, f"HTTP {response.status_code}: {response.text[:300]}"
 
 
-def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
+def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
@@ -988,12 +1034,18 @@ def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd
     return parse_settings_payload(rows[0]["settings"])
 
 
-def save_settings_to_db(user_key: str, holdings: pd.DataFrame, valuation: pd.DataFrame, reports: pd.DataFrame) -> None:
+def save_settings_to_db(
+    user_key: str,
+    holdings: pd.DataFrame,
+    valuation: pd.DataFrame,
+    reports: pd.DataFrame,
+    custom_chain: pd.DataFrame,
+) -> None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
     body = {
         "user_key": user_key,
-        "settings": app_settings_payload(holdings, valuation, reports),
+        "settings": app_settings_payload(holdings, valuation, reports, custom_chain),
     }
     response = requests.post(url, headers=headers, json=body, timeout=15)
     raise_supabase_error(response)
@@ -1129,6 +1181,10 @@ if "target_reports" not in st.session_state:
     st.session_state.target_reports = ensure_target_reports_schema(pd.DataFrame(), st.session_state.editor_data)
 if "target_reports_key" not in st.session_state:
     st.session_state.target_reports_key = 0
+if "vera_custom_chain" not in st.session_state:
+    st.session_state.vera_custom_chain = ensure_vera_custom_schema(pd.DataFrame())
+if "vera_custom_chain_key" not in st.session_state:
+    st.session_state.vera_custom_chain_key = 0
 if "latest_prices" not in st.session_state:
     st.session_state.latest_prices = {}
 st.session_state.valuation_data = ensure_valuation_schema(
@@ -1139,6 +1195,7 @@ st.session_state.target_reports = ensure_target_reports_schema(
     st.session_state.target_reports,
     st.session_state.editor_data,
 )
+st.session_state.vera_custom_chain = ensure_vera_custom_schema(st.session_state.vera_custom_chain)
 if "usd_twd" not in st.session_state:
     st.session_state.usd_twd = 31.673
 if "usd_twd_date" not in st.session_state:
@@ -1208,14 +1265,16 @@ with st.expander("每個人自己的預設設定", expanded=False):
                     if loaded is None:
                         st.warning("找不到這個保存代號的設定。")
                     else:
-                        loaded_holdings, loaded_valuation, loaded_reports = loaded
+                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain = loaded
                         st.session_state.holdings_default = ensure_holdings_schema(loaded_holdings)
                         st.session_state.editor_data = ensure_holdings_schema(loaded_holdings)
                         st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
                         st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
+                        st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
                         st.session_state.editor_key += 1
                         st.session_state.valuation_key += 1
                         st.session_state.target_reports_key += 1
+                        st.session_state.vera_custom_chain_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
                 except Exception as exc:
@@ -1230,6 +1289,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.session_state.editor_data,
                         st.session_state.valuation_data,
                         st.session_state.target_reports,
+                        st.session_state.vera_custom_chain,
                     )
                     st.success("已儲存。之後用同一個保存代號即可載入。")
                 except Exception as exc:
@@ -1241,7 +1301,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
     if uploaded is not None:
         try:
             rows = json.loads(uploaded.getvalue().decode("utf-8"))
-            loaded_holdings, loaded_valuation, loaded_reports = parse_settings_payload(rows)
+            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain = parse_settings_payload(rows)
             required = ["name", "ticker", "amount", "currency"]
             if not set(required).issubset(loaded_holdings.columns):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
@@ -1250,9 +1310,11 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.editor_data = loaded_holdings.copy()
                 st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
                 st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
+                st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
                 st.session_state.editor_key += 1
                 st.session_state.valuation_key += 1
                 st.session_state.target_reports_key += 1
+                st.session_state.vera_custom_chain_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
                 st.rerun()
         except Exception as exc:
@@ -1265,6 +1327,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.editor_data,
                 st.session_state.valuation_data,
                 st.session_state.target_reports,
+                st.session_state.vera_custom_chain,
             ),
             ensure_ascii=False,
             indent=2,
@@ -1645,8 +1708,32 @@ with st.expander("Latest News", expanded=False):
         st.info("按「更新 Latest News」後會顯示新聞列表。")
 
 with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
-    st.caption("追蹤 NVIDIA Vera Rubin / AI factory 生態系與相關零組件族群；分類是研究用，不代表 NVIDIA 已揭露實際訂單或分配比例。")
-    chain = vera_rubin_supply_chain_df()
+    st.caption("追蹤 NVIDIA Vera Rubin / AI factory 生態系與相關零組件族群；official 是 NVIDIA 點名，watchlist 是產業追蹤，不代表 NVIDIA 已揭露實際訂單或分配比例。")
+    with st.form("vera_custom_chain_form"):
+        custom_chain_raw = st.data_editor(
+            st.session_state.vera_custom_chain,
+            num_rows="dynamic",
+            use_container_width=True,
+            key=f"vera_custom_chain_editor_{st.session_state.vera_custom_chain_key}",
+            column_config={
+                "category": st.column_config.TextColumn("分類"),
+                "company": st.column_config.TextColumn("公司"),
+                "ticker": st.column_config.TextColumn("Ticker"),
+                "role": st.column_config.TextColumn("供應鏈角色"),
+                "source": st.column_config.TextColumn("來源類型"),
+            },
+        )
+        apply_custom_chain = st.form_submit_button("套用自訂供應鏈名單")
+
+    if apply_custom_chain:
+        st.session_state.vera_custom_chain = ensure_vera_custom_schema(custom_chain_raw)
+        st.success("已套用自訂供應鏈名單。")
+
+    chain = pd.concat(
+        [vera_rubin_supply_chain_df(), ensure_vera_custom_schema(st.session_state.vera_custom_chain)],
+        ignore_index=True,
+    )
+    chain = chain.drop_duplicates(subset=["ticker", "company", "category"], keep="last")
     chain_categories = sorted(chain["category"].unique().tolist())
     chain_col1, chain_col2 = st.columns(2)
     selected_chain_categories = chain_col1.multiselect("供應鏈分類", chain_categories, default=chain_categories)
@@ -1702,14 +1789,21 @@ with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
             normalized_chain = normalized_chain / normalized_chain.ffill().bfill().iloc[0]
             chain_fig = go.Figure()
             for ticker in normalized_chain.columns:
-                name = chain.loc[chain["ticker"] == ticker, "company"]
+                name = chain.loc[chain["ticker"] == ticker, "company"].dropna()
                 label = f"{ticker} {name.iloc[0]}" if not name.empty else ticker
                 chain_fig.add_trace(go.Scatter(x=normalized_chain.index, y=normalized_chain[ticker], mode="lines", name=label))
             chain_fig.update_layout(title="Vera Rubin 供應鏈股價走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
             st.plotly_chart(chain_fig, use_container_width=True)
 
             summary = price_performance_summary(chain_prices[visible_chain_tickers])
-            summary = summary.merge(chain[["ticker", "company", "category"]], left_on="Ticker", right_on="ticker", how="left")
+            chain_meta = (
+                chain.groupby("ticker", as_index=False)
+                .agg(
+                    company=("company", "first"),
+                    category=("category", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                )
+            )
+            summary = summary.merge(chain_meta, left_on="Ticker", right_on="ticker", how="left")
             summary = summary.drop(columns=["ticker"]).rename(columns={"company": "公司", "category": "分類"})
             st.dataframe(format_price_summary(summary), use_container_width=True, hide_index=True)
             st.download_button(
