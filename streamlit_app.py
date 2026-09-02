@@ -412,6 +412,16 @@ TSMC_SUPPLY_CHAIN = [
 
 
 SMALL_SUBINDUSTRY_CHAIN = [
+    {"subindustry": "矽光子", "category": "光學鏡頭/精密光學", "company": "Largan 大立光", "ticker": "3008.TW", "role": "precision optics / optical alignment watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光學鏡頭/精密光學", "company": "GSEO 玉晶光", "ticker": "3406.TW", "role": "precision optics / optical component watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "LandMark Optoelectronics 聯亞", "ticker": "3081.TWO", "role": "InP laser / optical component watchlist", "source": "industry watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "Visual Photonics 華星光", "ticker": "4979.TWO", "role": "optical transceiver / laser component watchlist", "source": "industry watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "Browave 波若威", "ticker": "3163.TWO", "role": "fiber connection / optical interconnect watchlist", "source": "industry watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "PCL 上詮", "ticker": "3363.TWO", "role": "fiber array / optical passive component watchlist", "source": "industry watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "AOI-KY 光聖", "ticker": "6442.TW", "role": "optical communication module / silicon photonics watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光元件", "company": "U-Ming 聯鈞", "ticker": "3450.TW", "role": "optical communication component / laser packaging watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光元件", "company": "Genius 源傑科技", "ticker": "6690.TW", "role": "optical transceiver / silicon photonics component watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "磊晶/光元件", "company": "BEST 元澄半導體", "ticker": "7415.TWO", "role": "compound semiconductor / silicon photonics epitaxy watchlist", "source": "TPEX / user watchlist"},
     {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB / backplane exposure", "source": "industry watchlist"},
     {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
     {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "HannStar Board 瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
@@ -435,6 +445,11 @@ SMALL_SUBINDUSTRY_CHAIN = [
     {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Analog Devices", "ticker": "ADI", "role": "power / mixed-signal silicon exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Onsemi", "ticker": "ON", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Diodes", "ticker": "DIOD", "role": "discrete / analog power semiconductor watchlist", "source": "user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "PANJIT 強茂", "ticker": "2481.TW", "role": "rectifier diode / MOSFET / power discrete IDM exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Lite-On Semi 德微", "ticker": "3675.TWO", "role": "Schottky diode / rectifier / MOSFET exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Taiwan Semi 台半", "ticker": "5425.TWO", "role": "automotive diode / MOSFET / power discrete exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "A-Power 富鼎", "ticker": "8261.TW", "role": "MOSFET / power semiconductor exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "導線架/散熱材料", "company": "SDI 順德", "ticker": "2351.TW", "role": "lead frame / power module material exposure", "source": "industry reports / user watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Alpha and Omega Semi", "ticker": "AOSL", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Infineon", "ticker": "IFX.DE", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Renesas", "ticker": "6723.T", "role": "power and mixed-signal semiconductor exposure", "source": "industry watchlist"},
