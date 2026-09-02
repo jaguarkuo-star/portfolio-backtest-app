@@ -734,6 +734,13 @@ def normalize_company_display(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def normalize_text_columns(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
+    out = df.copy()
+    for col in columns:
+        out[col] = out[col].fillna("").astype(str).str.strip()
+    return out
+
+
 def vera_rubin_supply_chain_df() -> pd.DataFrame:
     return normalize_company_display(pd.DataFrame(VERA_RUBIN_SUPPLY_CHAIN))
 
@@ -750,7 +757,7 @@ def ensure_vera_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
     for col, default in defaults.items():
         if col not in df.columns:
             df[col] = default
-    df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_text_columns(df, list(defaults))
     df = normalize_company_display(df)
     return df[["category", "company", "ticker", "role", "source"]]
 
@@ -780,7 +787,7 @@ def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
     for col, default in defaults.items():
         if col not in df.columns:
             df[col] = default
-    df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_text_columns(df, list(defaults))
     df = normalize_company_display(df)
     return df[["csp", "category", "company", "ticker", "role", "source"]]
 
@@ -798,7 +805,7 @@ def ensure_tsmc_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
     for col, default in defaults.items():
         if col not in df.columns:
             df[col] = default
-    df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_text_columns(df, list(defaults))
     df = normalize_company_display(df)
     return df[["technology_node", "category", "company", "ticker", "role", "source"]]
 
@@ -816,7 +823,7 @@ def ensure_small_subindustry_schema(rows: pd.DataFrame) -> pd.DataFrame:
     for col, default in defaults.items():
         if col not in df.columns:
             df[col] = default
-    df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_text_columns(df, list(defaults))
     df = normalize_company_display(df)
     return df[["subindustry", "category", "company", "ticker", "role", "source"]]
 
