@@ -863,6 +863,109 @@ def format_price_summary(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def research_product_models(theme: str, category: str, role: str) -> str:
+    text = f"{theme} {category} {role}".lower()
+    if "cowos" in text:
+        return "CoWoS-S / CoWoS-L / CoWoS-R, silicon interposer, RDL interposer, HBM integration"
+    if "soic" in text or "hybrid bonding" in text or "混合鍵合" in text:
+        return "TSMC-SoIC, hybrid bonding, wafer-on-wafer / chip-on-wafer 3D stacking"
+    if "coupe" in text or "矽光子" in text or "cpo" in text:
+        return "COUPE, silicon photonics, CPO optical engine, external laser source, photonic I/O"
+    if "copos" in text or "panel" in text or "面板級" in text:
+        return "CoPoS, panel-level packaging, large-format carrier / substrate process"
+    if "glass" in text or "玻璃" in text or "tgv" in text:
+        return "glass-core substrate, TGV, large-size substrate, panel-level glass process"
+    if "800v" in text or "hvdc" in text or "power" in text or "功率" in text or "電源" in text:
+        return "800 VDC, power shelf, busbar, PSU, power module, MOSFET, diode, GaN / SiC"
+    if "probe" in text or "探針" in text or "socket" in text or "test interface" in text:
+        return "probe card, load board, test socket, burn-in socket, wafer sort interface"
+    if "pcb" in text or "載板" in text or "abf" in text or "ccl" in text:
+        return "AI server PCB, backplane, motherboard, ABF substrate, CCL, HDI, high-speed board"
+    if "封測" in text or "osat" in text or "packaging" in text:
+        return "OSAT, advanced packaging, final test, wafer sort, package validation"
+    if "switch" in text or "network" in text or "ocs" in text or "交換" in text:
+        return "Spectrum-X, Ethernet switch, OCS, switch ASIC, SerDes, retimer, AEC"
+    if "hbm" in text or "memory" in text:
+        return "HBM3E / HBM4, memory stack, advanced logic-memory package"
+    return ""
+
+
+def research_confidence(source: str) -> str:
+    text = str(source or "").lower()
+    if "official" in text:
+        return "高：官方揭露"
+    if "semianalysis" in text or "digitimes" in text or "trendforce" in text:
+        return "中：研究/供應鏈媒體"
+    if "user watchlist" in text or "industry watchlist" in text:
+        return "觀察：題材/同業對照"
+    return "待確認"
+
+
+def research_source_url(source: str, theme: str, company: str, category: str) -> str:
+    text = str(source or "").lower()
+    query = quote_plus(f"{company} {theme} {category} supply chain")
+    if "nvidia 800" in text:
+        return "https://www.nvidia.com/en-us/data-center/technologies/800-vdc-architecture/"
+    if "nvidia" in text:
+        return "https://nvidianews.nvidia.com/news/rubin-platform-ai-supercomputer"
+    if "tsmc" in text or "cowos" in text or "soic" in text:
+        return "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/3DFabric.htm"
+    if "trendforce" in text:
+        return f"https://www.trendforce.com/search?keyword={query}"
+    if "digitimes" in text:
+        return f"https://www.digitimes.com/search?query={query}"
+    if "semianalysis" in text:
+        return f"https://semianalysis.com/?s={query}"
+    return f"https://www.google.com/search?q={query}"
+
+
+def research_image_url(theme: str, company: str, category: str, products: str) -> str:
+    query = quote_plus(f"{company} {category} {products or theme} product photo")
+    return f"https://www.google.com/search?tbm=isch&q={query}"
+
+
+def add_research_fields(df: pd.DataFrame, map_name: str, group_col: str) -> pd.DataFrame:
+    rows = df.copy()
+    if rows.empty:
+        return rows
+    rows = normalize_company_display(rows)
+    rows["map"] = map_name
+    rows["theme"] = rows[group_col].fillna("").astype(str) if group_col in rows.columns else ""
+    for col in ["category", "company", "ticker", "role", "source"]:
+        if col not in rows.columns:
+            rows[col] = ""
+        rows[col] = rows[col].fillna("").astype(str)
+    rows["product_models"] = rows.apply(lambda row: research_product_models(row["theme"], row["category"], row["role"]), axis=1)
+    rows["evidence_level"] = rows["source"].map(research_confidence)
+    rows["source_url"] = rows.apply(lambda row: research_source_url(row["source"], row["theme"], row["company"], row["category"]), axis=1)
+    rows["image_search"] = rows.apply(lambda row: research_image_url(row["theme"], row["company"], row["category"], row["product_models"]), axis=1)
+    rows["research_note"] = rows.apply(lambda row: f"{row['company']}：{row['theme']} / {row['category']}。{row['role']}", axis=1)
+    return rows[[
+        "map",
+        "theme",
+        "category",
+        "company",
+        "ticker",
+        "product_models",
+        "evidence_level",
+        "source",
+        "source_url",
+        "image_search",
+        "research_note",
+    ]]
+
+
+def industry_research_map() -> pd.DataFrame:
+    frames = [
+        add_research_fields(vera_rubin_supply_chain_df(), "NVIDIA Vera Rubin", "category"),
+        add_research_fields(csp_supply_chain_df(), "CSP", "csp"),
+        add_research_fields(tsmc_supply_chain_df(), "台積電", "technology_node"),
+        add_research_fields(small_subindustry_chain_df(), "小型次產業", "subindustry"),
+    ]
+    data = pd.concat(frames, ignore_index=True)
+    return data.drop_duplicates(subset=["map", "theme", "category", "company", "ticker"], keep="last")
+
+
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
 def download_analyst_targets(tickers: tuple[str, ...]) -> dict[str, dict[str, float]]:
     targets = {}
@@ -2221,6 +2324,161 @@ with st.expander("Latest News", expanded=False):
         )
     else:
         st.info("按「更新 Latest News」後會顯示新聞列表。")
+
+with st.expander("產業研究工作台", expanded=True):
+    st.caption("把 NVIDIA、CSP、台積電與小型次產業整合成研究地圖；來源連結用於追溯，SemiAnalysis / Digitimes 等付費內容僅提供入口，不複製內文。")
+    research = industry_research_map()
+    research_col1, research_col2, research_col3 = st.columns(3)
+    research_col1.metric("研究地圖", f"{research['map'].nunique():,}")
+    research_col2.metric("主題/節點", f"{research['theme'].nunique():,}")
+    research_col3.metric("公司數", f"{research['ticker'].replace('', np.nan).dropna().nunique():,}")
+
+    control_col1, control_col2, control_col3, control_col4 = st.columns([1.1, 1.3, 1.3, 1.2])
+    selected_maps = control_col1.multiselect(
+        "地圖",
+        sorted(research["map"].dropna().unique().tolist()),
+        default=sorted(research["map"].dropna().unique().tolist()),
+    )
+    selected_themes = control_col2.multiselect(
+        "主題/節點",
+        sorted(research["theme"].dropna().unique().tolist()),
+        default=sorted(research["theme"].dropna().unique().tolist()),
+    )
+    selected_evidence = control_col3.multiselect(
+        "證據等級",
+        sorted(research["evidence_level"].dropna().unique().tolist()),
+        default=sorted(research["evidence_level"].dropna().unique().tolist()),
+    )
+    research_keyword = control_col4.text_input("搜尋公司/產品/角色", "")
+
+    filtered_research = research[
+        research["map"].isin(selected_maps)
+        & research["theme"].isin(selected_themes)
+        & research["evidence_level"].isin(selected_evidence)
+    ].copy()
+    if research_keyword.strip():
+        keyword = research_keyword.strip().lower()
+        haystack = (
+            filtered_research["company"]
+            + " "
+            + filtered_research["ticker"]
+            + " "
+            + filtered_research["category"]
+            + " "
+            + filtered_research["product_models"]
+            + " "
+            + filtered_research["research_note"]
+        ).str.lower()
+        filtered_research = filtered_research[haystack.str.contains(re.escape(keyword), na=False)].copy()
+
+    tab_map, tab_matrix, tab_products, tab_sources, tab_images = st.tabs(
+        ["產業地圖", "公司矩陣", "產品/型號", "來源閱讀", "圖片入口"]
+    )
+    with tab_map:
+        if filtered_research.empty:
+            st.info("目前篩選條件下沒有資料。")
+        else:
+            map_counts = (
+                filtered_research.groupby(["map", "theme", "category"], as_index=False)
+                .agg(count=("company", "nunique"))
+            )
+            fig = px.sunburst(
+                map_counts,
+                path=["map", "theme", "category"],
+                values="count",
+                title="產業研究地圖：地圖 / 主題 / 分類",
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            layer_counts = filtered_research.groupby(["map", "theme"], as_index=False).agg(公司數=("company", "nunique"))
+            st.dataframe(layer_counts, use_container_width=True, hide_index=True)
+
+    with tab_matrix:
+        display_cols = [
+            "map",
+            "theme",
+            "category",
+            "company",
+            "ticker",
+            "evidence_level",
+            "product_models",
+            "research_note",
+            "source_url",
+            "image_search",
+        ]
+        st.dataframe(
+            filtered_research[display_cols].rename(
+                columns={
+                    "map": "地圖",
+                    "theme": "主題/節點",
+                    "category": "分類",
+                    "company": "公司",
+                    "ticker": "Ticker",
+                    "evidence_level": "證據等級",
+                    "product_models": "產品/型號",
+                    "research_note": "研究備註",
+                    "source_url": "來源",
+                    "image_search": "圖片搜尋",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "來源": st.column_config.LinkColumn("來源"),
+                "圖片搜尋": st.column_config.LinkColumn("圖片搜尋"),
+            },
+        )
+        st.download_button(
+            "下載產業研究地圖 CSV",
+            filtered_research.to_csv(index=False).encode("utf-8-sig"),
+            "industry_research_map.csv",
+            "text/csv",
+        )
+
+    with tab_products:
+        product_rows = filtered_research[filtered_research["product_models"].str.len() > 0].copy()
+        if product_rows.empty:
+            st.info("目前篩選條件下沒有產品/型號資料。")
+        else:
+            product_matrix = (
+                product_rows.groupby(["theme", "category", "product_models"], as_index=False)
+                .agg(
+                    公司=("company", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                    Ticker=("ticker", lambda x: " / ".join(t for t in dict.fromkeys(x.dropna().astype(str)) if t)),
+                )
+                .rename(columns={"theme": "主題/節點", "category": "分類", "product_models": "產品/型號"})
+            )
+            st.dataframe(product_matrix, use_container_width=True, hide_index=True)
+
+    with tab_sources:
+        reading_rows = filtered_research[["source", "evidence_level", "source_url"]].drop_duplicates().copy()
+        reading_rows = reading_rows.sort_values(["evidence_level", "source"])
+        st.dataframe(
+            reading_rows.rename(columns={"source": "來源類型", "evidence_level": "證據等級", "source_url": "閱讀連結"}),
+            use_container_width=True,
+            hide_index=True,
+            column_config={"閱讀連結": st.column_config.LinkColumn("閱讀連結")},
+        )
+        source_col1, source_col2, source_col3 = st.columns(3)
+        source_col1.link_button("SemiAnalysis 搜尋", "https://semianalysis.com/?s=NVIDIA+Rubin+CoWoS+CPO")
+        source_col2.link_button("DIGITIMES 搜尋", "https://www.digitimes.com/search?query=NVIDIA%20Rubin%20CoWoS%20CPO")
+        source_col3.link_button("TSMC 3DFabric", "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/3DFabric.htm")
+
+    with tab_images:
+        image_rows = filtered_research[["theme", "category", "company", "product_models", "image_search"]].drop_duplicates()
+        st.dataframe(
+            image_rows.rename(
+                columns={
+                    "theme": "主題/節點",
+                    "category": "分類",
+                    "company": "公司",
+                    "product_models": "產品/型號",
+                    "image_search": "圖片搜尋",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+            column_config={"圖片搜尋": st.column_config.LinkColumn("圖片搜尋")},
+        )
 
 with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
     st.caption("追蹤 NVIDIA Vera Rubin / AI factory 生態系與相關零組件族群；official 是 NVIDIA 點名，watchlist 是產業追蹤，不代表 NVIDIA 已揭露實際訂單或分配比例。")
