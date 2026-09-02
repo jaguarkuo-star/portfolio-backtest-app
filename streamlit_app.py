@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import math
+import re
+import xml.etree.ElementTree as ET
 from datetime import date
-from urllib.parse import quote
+from urllib.parse import quote, quote_plus
 
 import numpy as np
 import pandas as pd
@@ -118,6 +120,84 @@ def download_latest_prices(tickers: tuple[str, ...]) -> dict[str, float]:
         if ticker in close.columns and not close[ticker].dropna().empty:
             prices[ticker] = float(close[ticker].dropna().iloc[-1])
     return prices
+
+
+def clean_html(text: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", str(text or ""))
+    return re.sub(r"\s+", " ", text).strip()
+
+
+@st.cache_data(ttl=60 * 30, show_spinner=False)
+def fetch_google_news(query: str, limit: int, language: str = "zh-TW") -> list[dict]:
+    hl = "zh-TW" if language == "zh-TW" else "en-US"
+    gl = "TW" if language == "zh-TW" else "US"
+    ceid = "TW:zh-Hant" if language == "zh-TW" else "US:en"
+    url = f"https://news.google.com/rss/search?q={quote_plus(query)}&hl={hl}&gl={gl}&ceid={ceid}"
+    response = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+    response.raise_for_status()
+    root = ET.fromstring(response.content)
+    rows = []
+    for item in root.findall(".//item")[:limit]:
+        source = item.find("source")
+        rows.append(
+            {
+                "標題": clean_html(item.findtext("title")),
+                "來源": clean_html(source.text if source is not None else ""),
+                "時間": clean_html(item.findtext("pubDate")),
+                "摘要": clean_html(item.findtext("description")),
+                "連結": clean_html(item.findtext("link")),
+                "查詢": query,
+            }
+        )
+    return rows
+
+
+def holding_news_queries(holdings: pd.DataFrame) -> list[tuple[str, str]]:
+    rows = []
+    for row in ensure_holdings_schema(holdings).to_dict("records"):
+        name = str(row["name"]).strip()
+        ticker = str(row["ticker"]).strip()
+        code = tw_stock_code(ticker)
+        label = name or ticker
+        if ticker.endswith((".TW", ".TWO")):
+            query = f'"{name}" OR "{code}" 股票'
+        else:
+            query = f'"{name}" OR "{ticker}" stock earnings'
+        rows.append((label, query))
+    return rows
+
+
+@st.cache_data(ttl=60 * 30, show_spinner=False)
+def fetch_portfolio_news(
+    holdings_records: tuple[tuple[str, str], ...],
+    per_query_limit: int,
+    include_macro: bool,
+    language: str,
+) -> pd.DataFrame:
+    all_rows = []
+    for label, query in holdings_records:
+        for row in fetch_google_news(query, per_query_limit, language):
+            row["分類"] = "持股新聞"
+            row["標的"] = label
+            all_rows.append(row)
+
+    if include_macro:
+        macro_queries = [
+            "世界經濟 利率 通膨 聯準會 美元",
+            "global economy interest rates inflation Federal Reserve markets",
+            "台灣經濟 匯率 半導體 景氣",
+        ]
+        for query in macro_queries:
+            for row in fetch_google_news(query, per_query_limit, language):
+                row["分類"] = "世界經濟"
+                row["標的"] = "Macro"
+                all_rows.append(row)
+
+    if not all_rows:
+        return pd.DataFrame(columns=["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "查詢"])
+    news = pd.DataFrame(all_rows)
+    news = news.drop_duplicates(subset=["標題", "來源"], keep="first")
+    return news[["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "查詢"]]
 
 
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
@@ -1323,6 +1403,60 @@ with st.expander("估值與研究", expanded=False):
             column_config={"來源連結": st.column_config.LinkColumn("來源連結")},
         )
     st.caption("Yahoo 目標價是摘要資料，不一定含券商明細；若要有可追溯性，請在多筆法人目標價表填入來源連結。")
+
+with st.expander("Latest News", expanded=False):
+    st.caption("使用 Google News RSS 搜尋持股相關新聞與世界經濟新聞；按鈕觸發抓取，避免首頁載入過慢。")
+    news_col1, news_col2, news_col3 = st.columns(3)
+    per_query_limit = news_col1.number_input("每個查詢最多篇數", min_value=3, max_value=30, value=8, step=1)
+    news_language = news_col2.selectbox("新聞語言", ["zh-TW", "en-US"])
+    include_macro_news = news_col3.checkbox("包含世界經濟新聞", value=True)
+    news_queries = holding_news_queries(st.session_state.editor_data)
+
+    if st.button("更新 Latest News"):
+        if not news_queries and not include_macro_news:
+            st.warning("沒有持股可以搜尋。")
+        else:
+            try:
+                news = fetch_portfolio_news(
+                    tuple(news_queries),
+                    int(per_query_limit),
+                    bool(include_macro_news),
+                    news_language,
+                )
+                st.session_state.latest_news = news
+                st.success(f"已更新新聞，共 {len(news):,} 則。")
+            except Exception as exc:
+                st.error(f"新聞抓取失敗：{exc}")
+
+    latest_news = st.session_state.get("latest_news", pd.DataFrame())
+    if not latest_news.empty:
+        selected_categories = st.multiselect(
+            "分類",
+            sorted(latest_news["分類"].dropna().unique().tolist()),
+            default=sorted(latest_news["分類"].dropna().unique().tolist()),
+        )
+        selected_labels = st.multiselect(
+            "標的",
+            sorted(latest_news["標的"].dropna().unique().tolist()),
+            default=sorted(latest_news["標的"].dropna().unique().tolist()),
+        )
+        filtered_news = latest_news[
+            latest_news["分類"].isin(selected_categories) & latest_news["標的"].isin(selected_labels)
+        ].copy()
+        st.dataframe(
+            filtered_news,
+            use_container_width=True,
+            column_config={"連結": st.column_config.LinkColumn("連結")},
+            hide_index=True,
+        )
+        st.download_button(
+            "下載 Latest News CSV",
+            filtered_news.to_csv(index=False).encode("utf-8-sig"),
+            "latest_news.csv",
+            "text/csv",
+        )
+    else:
+        st.info("按「更新 Latest News」後會顯示新聞列表。")
 
 with st.expander("個股股價資料", expanded=False):
     price_col1, price_col2 = st.columns(2)
