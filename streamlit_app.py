@@ -17,6 +17,7 @@ import yfinance as yf
 
 
 TRADING_DAYS = 252
+MACRO_CACHE_VERSION = "2026-09-02-world-indices-v2"
 
 DEFAULT_HOLDINGS = pd.DataFrame(
     [
@@ -240,7 +241,7 @@ def fetch_portfolio_news(
 
 
 @st.cache_data(ttl=60 * 60, show_spinner=False)
-def download_macro_series(start: str, end: str) -> pd.DataFrame:
+def download_macro_series(start: str, end: str, cache_version: str) -> pd.DataFrame:
     pieces = []
     for label, ticker in MACRO_INDICATORS.items():
         try:
@@ -1582,7 +1583,7 @@ with st.expander("總經儀表板", expanded=False):
 
     if st.button("更新總經指標"):
         try:
-            macro = download_macro_series(str(macro_start), str(macro_end))
+            macro = download_macro_series(str(macro_start), str(macro_end), MACRO_CACHE_VERSION)
             macro = add_yield_spreads(macro)
             st.session_state.macro_data = macro
             st.success("已更新總經指標。")
@@ -1666,6 +1667,9 @@ with st.expander("總經儀表板", expanded=False):
             for col in world_index_labels
             if col in macro_data.columns
         ]
+        missing_world_indices = [col for col in world_index_labels if col not in macro_data.columns]
+        if missing_world_indices:
+            st.caption("未抓到的世界股指：" + "、".join(missing_world_indices))
         if world_index_cols:
             world_indices = macro_data[world_index_cols].dropna(how="all")
             world_indices = world_indices / world_indices.ffill().bfill().iloc[0]
