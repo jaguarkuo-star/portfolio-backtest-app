@@ -67,6 +67,37 @@ MACRO_INDICATORS = {
 
 YIELD_TICKERS = {"^IRX", "^FVX", "^TNX", "^TYX", "^UST2Y"}
 
+VERA_RUBIN_SUPPLY_CHAIN = [
+    {"category": "平台核心", "company": "NVIDIA", "ticker": "NVDA", "role": "Vera Rubin GPU/CPU/networking platform owner", "source": "NVIDIA official"},
+    {"category": "晶圓/先進製程", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "key wafer and chip partner", "source": "NVIDIA official"},
+    {"category": "封測/測試", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "SPIL ecosystem exposure", "source": "NVIDIA official"},
+    {"category": "封測/測試", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "key wafer and chip partner", "source": "NVIDIA official"},
+    {"category": "載板/PCB", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "key wafer and chip partner / substrate exposure", "source": "NVIDIA official"},
+    {"category": "載板/PCB", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "PCB/substrate exposure", "source": "industry map"},
+    {"category": "載板/PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB exposure", "source": "industry map"},
+    {"category": "HBM 記憶體", "company": "SK hynix", "ticker": "000660.KS", "role": "HBM supplier", "source": "industry reports"},
+    {"category": "HBM 記憶體", "company": "Samsung Electronics", "ticker": "005930.KS", "role": "HBM supplier", "source": "industry reports"},
+    {"category": "HBM 記憶體", "company": "Micron", "ticker": "MU", "role": "HBM supplier", "source": "industry reports"},
+    {"category": "系統/機櫃組裝", "company": "Foxconn 鴻海", "ticker": "2317.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Quanta 廣達/QCT 雲達", "ticker": "2382.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Wistron 緯創", "ticker": "3231.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Wiwynn 緯穎", "ticker": "6669.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Inventec 英業達", "ticker": "2356.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Pegatron 和碩", "ticker": "4938.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Gigabyte 技嘉", "ticker": "2376.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "ASUS 華碩", "ticker": "2357.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "Compal 仁寶", "ticker": "2324.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "MSI 微星", "ticker": "2377.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "散熱/液冷", "company": "Auras 雙鴻", "ticker": "3324.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
+    {"category": "散熱/液冷", "company": "AVC 奇鋐", "ticker": "3017.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
+    {"category": "散熱/液冷", "company": "Jentech 健策", "ticker": "3653.TW", "role": "thermal module / cooling exposure", "source": "industry map"},
+    {"category": "電源", "company": "Delta 台達電", "ticker": "2308.TW", "role": "AI server power exposure", "source": "industry map"},
+    {"category": "電源", "company": "Lite-On 光寶科", "ticker": "2301.TW", "role": "power supply exposure", "source": "industry map"},
+    {"category": "網通/交換器", "company": "Accton 智邦", "ticker": "2345.TW", "role": "data center switch / networking exposure", "source": "industry map"},
+    {"category": "連接器/線材", "company": "BizLink 貿聯-KY", "ticker": "3665.TW", "role": "cabling / connector exposure", "source": "industry map"},
+    {"category": "滑軌/機構件", "company": "King Slide 川湖", "ticker": "2059.TW", "role": "server rails exposure", "source": "industry map"},
+]
+
 
 st.set_page_config(page_title="資產配置回測工作台", layout="wide")
 
@@ -314,6 +345,45 @@ def format_macro_table(df: pd.DataFrame) -> pd.DataFrame:
         formatted[col] = formatted[col].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
     formatted["區間變化率"] = formatted["區間變化率"].map(lambda x: "" if pd.isna(x) else f"{x:.2%}")
     return formatted
+
+
+def vera_rubin_supply_chain_df() -> pd.DataFrame:
+    return pd.DataFrame(VERA_RUBIN_SUPPLY_CHAIN)
+
+
+def price_performance_summary(prices: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    returns = prices.pct_change(fill_method=None)
+    for ticker in prices.columns:
+        series = prices[ticker].dropna()
+        ret = returns[ticker].dropna()
+        if series.empty:
+            continue
+        years = max((series.index[-1] - series.index[0]).days / 365.25, 1 / 365.25)
+        total_return = series.iloc[-1] / series.iloc[0] - 1 if series.iloc[0] > 0 else np.nan
+        cagr = (series.iloc[-1] / series.iloc[0]) ** (1 / years) - 1 if series.iloc[0] > 0 else np.nan
+        drawdown = series / series.cummax() - 1
+        rows.append(
+            {
+                "Ticker": ticker,
+                "起始價": series.iloc[0],
+                "最新價": series.iloc[-1],
+                "區間報酬": total_return,
+                "年化報酬": cagr,
+                "年化波動": ret.std(ddof=1) * math.sqrt(TRADING_DAYS) if len(ret) > 1 else np.nan,
+                "最大回撤": drawdown.min(),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def format_price_summary(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    for col in ["起始價", "最新價"]:
+        out[col] = out[col].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
+    for col in ["區間報酬", "年化報酬", "年化波動", "最大回撤"]:
+        out[col] = out[col].map(lambda x: "" if pd.isna(x) else f"{x:.2%}")
+    return out
 
 
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
@@ -1573,6 +1643,83 @@ with st.expander("Latest News", expanded=False):
         )
     else:
         st.info("按「更新 Latest News」後會顯示新聞列表。")
+
+with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
+    st.caption("追蹤 NVIDIA Vera Rubin / AI factory 生態系與相關零組件族群；分類是研究用，不代表 NVIDIA 已揭露實際訂單或分配比例。")
+    chain = vera_rubin_supply_chain_df()
+    chain_categories = sorted(chain["category"].unique().tolist())
+    chain_col1, chain_col2 = st.columns(2)
+    selected_chain_categories = chain_col1.multiselect("供應鏈分類", chain_categories, default=chain_categories)
+    selected_chain_source = chain_col2.multiselect(
+        "資料來源類型",
+        sorted(chain["source"].unique().tolist()),
+        default=sorted(chain["source"].unique().tolist()),
+    )
+    filtered_chain = chain[
+        chain["category"].isin(selected_chain_categories) & chain["source"].isin(selected_chain_source)
+    ].copy()
+    st.dataframe(
+        filtered_chain.rename(
+            columns={
+                "category": "分類",
+                "company": "公司",
+                "ticker": "Ticker",
+                "role": "供應鏈角色",
+                "source": "來源類型",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    price_col1, price_col2 = st.columns(2)
+    chain_start = price_col1.date_input("供應鏈股價開始日", date(2024, 1, 1))
+    chain_end = price_col2.date_input("供應鏈股價結束日", date.today())
+    chain_tickers = filtered_chain["ticker"].dropna().astype(str).str.strip()
+    chain_tickers = tuple(t for t in dict.fromkeys(chain_tickers) if t)
+
+    if st.button("更新 Vera Rubin 供應鏈股價"):
+        if not chain_tickers:
+            st.warning("目前篩選條件下沒有可抓取的 ticker。")
+        else:
+            try:
+                chain_prices = download_adjusted_prices(chain_tickers, str(chain_start), str(chain_end))
+                chain_prices = chain_prices[[ticker for ticker in chain_tickers if ticker in chain_prices.columns]].dropna(how="all")
+                st.session_state.vera_rubin_prices = chain_prices
+                st.success(f"已更新 {len(chain_prices.columns):,} 檔供應鏈股價。")
+            except Exception as exc:
+                st.error(f"Vera Rubin 供應鏈股價更新失敗：{exc}")
+
+    chain_prices = st.session_state.get("vera_rubin_prices", pd.DataFrame())
+    if not chain_prices.empty:
+        visible_chain_tickers = st.multiselect(
+            "顯示股票",
+            list(chain_prices.columns),
+            default=list(chain_prices.columns[: min(10, len(chain_prices.columns))]),
+        )
+        if visible_chain_tickers:
+            normalized_chain = chain_prices[visible_chain_tickers].dropna(how="all")
+            normalized_chain = normalized_chain / normalized_chain.ffill().bfill().iloc[0]
+            chain_fig = go.Figure()
+            for ticker in normalized_chain.columns:
+                name = chain.loc[chain["ticker"] == ticker, "company"]
+                label = f"{ticker} {name.iloc[0]}" if not name.empty else ticker
+                chain_fig.add_trace(go.Scatter(x=normalized_chain.index, y=normalized_chain[ticker], mode="lines", name=label))
+            chain_fig.update_layout(title="Vera Rubin 供應鏈股價走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(chain_fig, use_container_width=True)
+
+            summary = price_performance_summary(chain_prices[visible_chain_tickers])
+            summary = summary.merge(chain[["ticker", "company", "category"]], left_on="Ticker", right_on="ticker", how="left")
+            summary = summary.drop(columns=["ticker"]).rename(columns={"company": "公司", "category": "分類"})
+            st.dataframe(format_price_summary(summary), use_container_width=True, hide_index=True)
+            st.download_button(
+                "下載 Vera Rubin 供應鏈股價 CSV",
+                chain_prices[visible_chain_tickers].to_csv().encode("utf-8-sig"),
+                "vera_rubin_supply_chain_prices.csv",
+                "text/csv",
+            )
+    else:
+        st.info("按「更新 Vera Rubin 供應鏈股價」後會顯示走勢與統計。")
 
 with st.expander("總經儀表板", expanded=False):
     st.caption("使用 yfinance 抓市場型總經指標；FedWatch 以 CME 連結為準，Fed Funds futures 僅作隱含利率參考。")
