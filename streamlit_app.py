@@ -133,40 +133,75 @@ def download_trailing_eps(tickers: tuple[str, ...]) -> dict[str, float]:
     return eps
 
 
+def naive_datetime_index(index) -> pd.DatetimeIndex:
+    idx = pd.to_datetime(index)
+    if getattr(idx, "tz", None) is not None:
+        return idx.tz_convert(None)
+    return idx.tz_localize(None)
+
+
+def ttm_from_quarterly_eps(eps: pd.Series) -> pd.Series:
+    eps = pd.to_numeric(eps, errors="coerce").dropna()
+    if eps.empty:
+        return pd.Series(dtype=float)
+    eps.index = naive_datetime_index(eps.index)
+    eps = eps.sort_index()
+    eps = eps[~eps.index.duplicated(keep="last")]
+    return eps.rolling("365D", min_periods=4).sum().dropna()
+
+
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
 def download_historical_eps_ttm(tickers: tuple[str, ...]) -> dict[str, pd.Series]:
     out = {}
     preferred_rows = ["Diluted EPS", "DilutedEPS", "Basic EPS", "BasicEPS"]
     for ticker in tickers:
         try:
-            income = yf.Ticker(ticker).quarterly_income_stmt
-            if income is None or income.empty:
-                continue
+            stock = yf.Ticker(ticker)
+            eps_candidates = []
 
-            eps_row = None
-            normalized = {str(idx).replace(" ", "").lower(): idx for idx in income.index}
-            for name in preferred_rows:
-                key = name.replace(" ", "").lower()
-                if key in normalized:
-                    eps_row = normalized[key]
-                    break
-            if eps_row is not None:
-                eps = pd.to_numeric(income.loc[eps_row], errors="coerce").dropna()
-            elif "netincome" in normalized and "dilutedaverageshares" in normalized:
-                net_income = pd.to_numeric(income.loc[normalized["netincome"]], errors="coerce")
-                shares = pd.to_numeric(income.loc[normalized["dilutedaverageshares"]], errors="coerce")
-                eps = (net_income / shares).dropna()
-            elif "netincome" in normalized and "basicaverageshares" in normalized:
-                net_income = pd.to_numeric(income.loc[normalized["netincome"]], errors="coerce")
-                shares = pd.to_numeric(income.loc[normalized["basicaverageshares"]], errors="coerce")
-                eps = (net_income / shares).dropna()
-            else:
+            earnings_history = stock.get_earnings_history(as_dict=False)
+            if earnings_history is not None and not earnings_history.empty:
+                actual_col = next(
+                    (col for col in earnings_history.columns if str(col).replace(" ", "").lower() in {"epsactual", "reportedeps"}),
+                    None,
+                )
+                if actual_col is not None:
+                    eps_candidates.append(pd.to_numeric(earnings_history[actual_col], errors="coerce").dropna())
+
+            earnings_dates = stock.get_earnings_dates(limit=100)
+            if earnings_dates is not None and not earnings_dates.empty:
+                reported_col = next(
+                    (col for col in earnings_dates.columns if str(col).replace(" ", "").lower() in {"reportedeps", "epsactual"}),
+                    None,
+                )
+                if reported_col is not None:
+                    eps_candidates.append(pd.to_numeric(earnings_dates[reported_col], errors="coerce").dropna())
+
+            income = stock.quarterly_income_stmt
+            if income is not None and not income.empty:
+                eps_row = None
+                normalized = {str(idx).replace(" ", "").lower(): idx for idx in income.index}
+                for name in preferred_rows:
+                    key = name.replace(" ", "").lower()
+                    if key in normalized:
+                        eps_row = normalized[key]
+                        break
+                if eps_row is not None:
+                    eps_candidates.append(pd.to_numeric(income.loc[eps_row], errors="coerce").dropna())
+                elif "netincome" in normalized and "dilutedaverageshares" in normalized:
+                    net_income = pd.to_numeric(income.loc[normalized["netincome"]], errors="coerce")
+                    shares = pd.to_numeric(income.loc[normalized["dilutedaverageshares"]], errors="coerce")
+                    eps_candidates.append((net_income / shares).dropna())
+                elif "netincome" in normalized and "basicaverageshares" in normalized:
+                    net_income = pd.to_numeric(income.loc[normalized["netincome"]], errors="coerce")
+                    shares = pd.to_numeric(income.loc[normalized["basicaverageshares"]], errors="coerce")
+                    eps_candidates.append((net_income / shares).dropna())
+
+            ttm_candidates = [ttm_from_quarterly_eps(eps) for eps in eps_candidates if eps is not None and not eps.empty]
+            ttm_candidates = [ttm for ttm in ttm_candidates if not ttm.empty]
+            if not ttm_candidates:
                 continue
-            if eps.empty:
-                continue
-            eps.index = pd.to_datetime(eps.index).tz_localize(None)
-            eps = eps.sort_index()
-            ttm = eps.rolling("365D", min_periods=4).sum().dropna()
+            ttm = max(ttm_candidates, key=len)
             if not ttm.empty:
                 out[ticker] = ttm
         except Exception:
@@ -348,6 +383,7 @@ def pe_river_figure(
                 mode="lines",
                 name=f"{pe:g}x",
                 line={"width": 1},
+                line_shape="hv",
             )
         )
     fig.add_trace(
@@ -1237,10 +1273,14 @@ with st.expander("本益比河流圖", expanded=False):
                         int(report_lag_days),
                     )
                     valid_eps_count = int(eps_series.dropna().shape[0])
+                    unique_eps_count = int(eps_series.dropna().round(6).nunique())
+                    historical_points = int(historical_eps.get(ticker, pd.Series(dtype=float)).dropna().shape[0])
                     eps_source_rows.append(
                         {
                             "Ticker": ticker,
                             "EPS來源": "歷史12個月滾動TTM" if ticker in historical_eps else "手動EPS TTM" if ticker in manual_eps_map else "缺資料",
+                            "TTM點數": historical_points,
+                            "TTM不同值": unique_eps_count,
                             "有效天數": valid_eps_count,
                             "最新TTM EPS": eps_series.dropna().iloc[-1] if valid_eps_count else np.nan,
                         }
@@ -1271,6 +1311,31 @@ with st.expander("本益比河流圖", expanded=False):
                 if not eps_source.empty:
                     eps_source["最新TTM EPS"] = eps_source["最新TTM EPS"].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
                     st.dataframe(eps_source, use_container_width=True)
+
+                eps_fig = go.Figure()
+                for selected_ticker in selected_tickers:
+                    if selected_ticker not in close.columns:
+                        continue
+                    eps_series = eps_series_for_prices(
+                        selected_ticker,
+                        close[selected_ticker].dropna().index,
+                        historical_eps,
+                        manual_eps_map.get(selected_ticker, 0.0),
+                        int(report_lag_days),
+                    ).dropna()
+                    if not eps_series.empty:
+                        eps_fig.add_trace(
+                            go.Scatter(
+                                x=eps_series.index,
+                                y=eps_series,
+                                mode="lines",
+                                name=selected_ticker,
+                                line_shape="hv",
+                            )
+                        )
+                if eps_fig.data:
+                    eps_fig.update_layout(title="歷史 12 個月滾動 TTM EPS", yaxis_title="TTM EPS", hovermode="x unified")
+                    st.plotly_chart(eps_fig, use_container_width=True)
 
                 for selected_ticker in selected_tickers:
                     if selected_ticker not in close.columns:
