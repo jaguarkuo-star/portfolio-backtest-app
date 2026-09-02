@@ -27,6 +27,27 @@ DEFAULT_HOLDINGS = pd.DataFrame(
     ]
 )
 
+MACRO_INDICATORS = {
+    "VIX 恐慌指數": "^VIX",
+    "美元指數 DXY": "DX-Y.NYB",
+    "USD/TWD": "TWD=X",
+    "黃金期貨": "GC=F",
+    "WTI 原油": "CL=F",
+    "銅期貨": "HG=F",
+    "天然氣": "NG=F",
+    "小麥": "ZW=F",
+    "美股 S&P 500": "^GSPC",
+    "NASDAQ 100": "^NDX",
+    "美債 3M": "^IRX",
+    "美債 2Y": "^UST2Y",
+    "美債 5Y": "^FVX",
+    "美債 10Y": "^TNX",
+    "美債 30Y": "^TYX",
+    "Fed Funds Futures": "ZQ=F",
+}
+
+YIELD_TICKERS = {"^IRX", "^FVX", "^TNX", "^TYX", "^UST2Y"}
+
 
 st.set_page_config(page_title="資產配置回測工作台", layout="wide")
 
@@ -198,6 +219,76 @@ def fetch_portfolio_news(
     news = pd.DataFrame(all_rows)
     news = news.drop_duplicates(subset=["標題", "來源"], keep="first")
     return news[["分類", "標的", "時間", "來源", "標題", "摘要", "連結", "查詢"]]
+
+
+@st.cache_data(ttl=60 * 60, show_spinner=False)
+def download_macro_series(start: str, end: str) -> pd.DataFrame:
+    tickers = tuple(dict.fromkeys(MACRO_INDICATORS.values()))
+    data = yf.download(
+        list(tickers),
+        start=start,
+        end=(pd.Timestamp(end) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
+        auto_adjust=False,
+        actions=False,
+        progress=False,
+        group_by="column",
+        threads=True,
+    )
+    if data.empty:
+        raise RuntimeError("yfinance 沒有回傳總經資料。")
+    close = data["Close"].copy() if isinstance(data.columns, pd.MultiIndex) else data[["Close"]].copy()
+    if not isinstance(close, pd.DataFrame):
+        close = close.to_frame()
+    close.index = pd.to_datetime(close.index).tz_localize(None)
+    close = close.sort_index().ffill().dropna(how="all")
+    renamed = {}
+    for label, ticker in MACRO_INDICATORS.items():
+        if ticker in close.columns:
+            renamed[ticker] = label
+    return close.rename(columns=renamed)
+
+
+def macro_summary(series: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for label in series.columns:
+        data = series[label].dropna()
+        if data.empty:
+            continue
+        latest = float(data.iloc[-1])
+        first = float(data.iloc[0])
+        change = latest - first
+        change_pct = latest / first - 1 if first else np.nan
+        rows.append(
+            {
+                "指標": label,
+                "最新日期": data.index[-1].strftime("%Y-%m-%d"),
+                "最新值": latest,
+                "區間變化": change,
+                "區間變化率": change_pct,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def add_yield_spreads(series: pd.DataFrame) -> pd.DataFrame:
+    out = series.copy()
+    if "美債 10Y" in out.columns and "美債 2Y" in out.columns:
+        out["10Y-2Y 利差"] = out["美債 10Y"] - out["美債 2Y"]
+    if "美債 10Y" in out.columns and "美債 3M" in out.columns:
+        out["10Y-3M 利差"] = out["美債 10Y"] - out["美債 3M"]
+    if "美債 30Y" in out.columns and "美債 10Y" in out.columns:
+        out["30Y-10Y 利差"] = out["美債 30Y"] - out["美債 10Y"]
+    if "Fed Funds Futures" in out.columns:
+        out["Fed Funds 隱含利率"] = 100 - out["Fed Funds Futures"]
+    return out
+
+
+def format_macro_table(df: pd.DataFrame) -> pd.DataFrame:
+    formatted = df.copy()
+    for col in ["最新值", "區間變化"]:
+        formatted[col] = formatted[col].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
+    formatted["區間變化率"] = formatted["區間變化率"].map(lambda x: "" if pd.isna(x) else f"{x:.2%}")
+    return formatted
 
 
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
@@ -1457,6 +1548,70 @@ with st.expander("Latest News", expanded=False):
         )
     else:
         st.info("按「更新 Latest News」後會顯示新聞列表。")
+
+with st.expander("總經儀表板", expanded=False):
+    st.caption("使用 yfinance 抓市場型總經指標；FedWatch 以 CME 連結為準，Fed Funds futures 僅作隱含利率參考。")
+    macro_col1, macro_col2 = st.columns(2)
+    macro_start = macro_col1.date_input("總經資料開始日", date(2023, 1, 1))
+    macro_end = macro_col2.date_input("總經資料結束日", date.today())
+    st.link_button("CME FedWatch", "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html")
+
+    if st.button("更新總經指標"):
+        try:
+            macro = download_macro_series(str(macro_start), str(macro_end))
+            macro = add_yield_spreads(macro)
+            st.session_state.macro_data = macro
+            st.success("已更新總經指標。")
+        except Exception as exc:
+            st.error(f"總經指標更新失敗：{exc}")
+
+    macro_data = st.session_state.get("macro_data", pd.DataFrame())
+    if not macro_data.empty:
+        summary = macro_summary(macro_data)
+        st.dataframe(format_macro_table(summary), use_container_width=True, hide_index=True)
+
+        preferred_macro = [
+            "VIX 恐慌指數",
+            "美元指數 DXY",
+            "USD/TWD",
+            "黃金期貨",
+            "WTI 原油",
+            "銅期貨",
+            "美股 S&P 500",
+            "NASDAQ 100",
+            "Fed Funds 隱含利率",
+        ]
+        selected_macro = st.multiselect(
+            "主要指標",
+            [col for col in macro_data.columns if col not in ["Fed Funds Futures"]],
+            default=[col for col in preferred_macro if col in macro_data.columns],
+        )
+        if selected_macro:
+            normalized_macro = macro_data[selected_macro].dropna(how="all")
+            normalized_macro = normalized_macro / normalized_macro.ffill().bfill().iloc[0]
+            fig = go.Figure()
+            for col in normalized_macro.columns:
+                fig.add_trace(go.Scatter(x=normalized_macro.index, y=normalized_macro[col], mode="lines", name=col))
+            fig.update_layout(title="總經指標走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(fig, use_container_width=True)
+
+        spread_cols = [col for col in ["10Y-2Y 利差", "10Y-3M 利差", "30Y-10Y 利差"] if col in macro_data.columns]
+        if spread_cols:
+            spread_fig = go.Figure()
+            for col in spread_cols:
+                spread_fig.add_trace(go.Scatter(x=macro_data.index, y=macro_data[col], mode="lines", name=col))
+            spread_fig.add_hline(y=0, line_dash="dash", line_color="#9ca3af")
+            spread_fig.update_layout(title="美債長短天期利差", yaxis_title="百分點", hovermode="x unified")
+            st.plotly_chart(spread_fig, use_container_width=True)
+
+        st.download_button(
+            "下載總經指標 CSV",
+            macro_data.to_csv().encode("utf-8-sig"),
+            "macro_indicators.csv",
+            "text/csv",
+        )
+    else:
+        st.info("按「更新總經指標」後會顯示資料。")
 
 with st.expander("個股股價資料", expanded=False):
     price_col1, price_col2 = st.columns(2)
