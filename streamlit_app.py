@@ -2352,6 +2352,37 @@ def bootstrap(returns: pd.Series, samples: int, draws: int, seed: int = 42) -> p
     return pd.DataFrame({"total_return": total, "annualized_return": annualized})
 
 
+GUIDELINE_TEXT = """
+1. 先在左側設定回測區間、Benchmark、再平衡頻率與交易成本。
+2. 在「持股與比例」輸入名稱、Ticker、股數或金額；改完後按「套用持股變更」。
+3. 有填股數時，可以按「股數換算金額」，系統會用 yfinance 最新價格估算金額。
+4. 台股請用 `2330.TW`、`8155.TWO` 這種格式；美股請用 `NVDA`、`GOOGL` 這種格式。
+5. 按「執行回測」後會產生含息報酬走勢、總報酬、CAGR、Alpha/Beta 與 Bootstrap 分布。
+6. 「估值與研究」可以看 DCF、目標價、年報、財報、法說會簡報與公開資訊入口。
+7. 「Latest News」可即時更新持股新聞、世界經濟與產業媒體/X 搜尋結果。
+8. 若要保存個人設定，請輸入自己的保存代號後按「儲存目前設定到資料庫」。
+"""
+
+
+def render_guideline() -> None:
+    st.markdown(GUIDELINE_TEXT)
+    st.caption("資料主要來自 yfinance、Google News RSS、公開資訊觀測站與公開網頁入口；回測結果不代表未來報酬。")
+
+
+if "guideline_seen" not in st.session_state:
+    st.session_state.guideline_seen = False
+
+if not st.session_state.guideline_seen and hasattr(st, "dialog"):
+    @st.dialog("使用 Guideline")
+    def show_guideline_dialog() -> None:
+        render_guideline()
+        if st.button("我知道了，開始使用", type="primary"):
+            st.session_state.guideline_seen = True
+            st.rerun()
+
+    show_guideline_dialog()
+
+
 st.markdown(
     """
     <section class="app-hero">
@@ -2361,6 +2392,12 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+with st.expander("使用 Guideline", expanded=not hasattr(st, "dialog") and not st.session_state.guideline_seen):
+    render_guideline()
+    if not st.session_state.guideline_seen and st.button("我知道了", key="guideline_ack_inline"):
+        st.session_state.guideline_seen = True
+        st.rerun()
 
 if "holdings_default" not in st.session_state:
     st.session_state.holdings_default = ensure_holdings_schema(DEFAULT_HOLDINGS)
