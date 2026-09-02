@@ -112,6 +112,63 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "滑軌/機構件", "company": "King Slide 川湖", "ticker": "2059.TW", "role": "server rails exposure", "source": "industry map"},
 ]
 
+CSP_SUPPLY_CHAIN = [
+    {"csp": "Microsoft Azure", "category": "CSP", "company": "Microsoft", "ticker": "MSFT", "role": "Azure AI data center capex / Maia ASIC / NVIDIA rack demand", "source": "TrendForce / company filings"},
+    {"csp": "Microsoft Azure", "category": "GPU平台", "company": "NVIDIA", "ticker": "NVDA", "role": "rack-scale GPU platform supplier", "source": "TrendForce"},
+    {"csp": "Microsoft Azure", "category": "ODM/系統組裝", "company": "Quanta 廣達", "ticker": "2382.TW", "role": "AI server / rack ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Microsoft Azure", "category": "ODM/系統組裝", "company": "Foxconn 鴻海", "ticker": "2317.TW", "role": "AI server / rack ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Microsoft Azure", "category": "ODM/系統組裝", "company": "Wiwynn 緯穎", "ticker": "6669.TW", "role": "cloud AI server ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Microsoft Azure", "category": "ODM/系統組裝", "company": "Wistron 緯創", "ticker": "3231.TW", "role": "AI server / rack ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Microsoft Azure", "category": "ASIC/網通晶片", "company": "Marvell", "ticker": "MRVL", "role": "custom silicon / networking ASIC exposure", "source": "industry watchlist"},
+    {"csp": "Microsoft Azure", "category": "先進製程", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "advanced-node foundry exposure", "source": "industry watchlist"},
+
+    {"csp": "AWS", "category": "CSP", "company": "Amazon", "ticker": "AMZN", "role": "AWS AI capex / Trainium / NVIDIA rack demand", "source": "TrendForce"},
+    {"csp": "AWS", "category": "GPU平台", "company": "NVIDIA", "ticker": "NVDA", "role": "GB300 / V200 rack-scale system demand", "source": "TrendForce"},
+    {"csp": "AWS", "category": "ASIC", "company": "Amazon Trainium", "ticker": "AMZN", "role": "in-house Trainium ASIC platform", "source": "TrendForce"},
+    {"csp": "AWS", "category": "ODM/系統組裝", "company": "Foxconn 鴻海", "ticker": "2317.TW", "role": "AI server / rack ODM watchlist", "source": "industry watchlist"},
+    {"csp": "AWS", "category": "ODM/系統組裝", "company": "Quanta 廣達", "ticker": "2382.TW", "role": "AI server / rack ODM watchlist", "source": "industry watchlist"},
+    {"csp": "AWS", "category": "ODM/系統組裝", "company": "Wiwynn 緯穎", "ticker": "6669.TW", "role": "cloud AI server ODM watchlist", "source": "industry watchlist"},
+    {"csp": "AWS", "category": "ASIC/網通晶片", "company": "Broadcom", "ticker": "AVGO", "role": "custom silicon / networking exposure watchlist", "source": "industry watchlist"},
+    {"csp": "AWS", "category": "ASIC/網通晶片", "company": "Marvell", "ticker": "MRVL", "role": "custom silicon / networking exposure watchlist", "source": "industry watchlist"},
+
+    {"csp": "Google Cloud", "category": "CSP", "company": "Alphabet", "ticker": "GOOGL", "role": "Google Cloud / Gemini / TPU capex", "source": "TrendForce"},
+    {"csp": "Google Cloud", "category": "ASIC/TPU", "company": "Broadcom", "ticker": "AVGO", "role": "TPU custom silicon supply-chain watchlist", "source": "industry watchlist"},
+    {"csp": "Google Cloud", "category": "先進製程", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "advanced-node foundry exposure", "source": "industry watchlist"},
+    {"csp": "Google Cloud", "category": "ODM/系統組裝", "company": "Inventec 英業達", "ticker": "2356.TW", "role": "Google TPU server ODM watchlist", "source": "Digitimes / industry watchlist"},
+    {"csp": "Google Cloud", "category": "ODM/系統組裝", "company": "Wiwynn 緯穎", "ticker": "6669.TW", "role": "ASIC server assembly watchlist", "source": "industry watchlist"},
+    {"csp": "Google Cloud", "category": "ODM/系統組裝", "company": "Quanta 廣達", "ticker": "2382.TW", "role": "ASIC server allocation watchlist", "source": "industry watchlist"},
+    {"csp": "Google Cloud", "category": "ODM/系統組裝", "company": "Foxconn 鴻海", "ticker": "2317.TW", "role": "ASIC/GPU server allocation watchlist", "source": "industry watchlist"},
+
+    {"csp": "Meta", "category": "CSP", "company": "Meta Platforms", "ticker": "META", "role": "AI capex / GPU-heavy server build-out / MTIA ASIC", "source": "TrendForce"},
+    {"csp": "Meta", "category": "GPU平台", "company": "NVIDIA", "ticker": "NVDA", "role": "primary GPU platform exposure", "source": "TrendForce"},
+    {"csp": "Meta", "category": "GPU平台", "company": "AMD", "ticker": "AMD", "role": "GPU platform exposure watchlist", "source": "TrendForce"},
+    {"csp": "Meta", "category": "ASIC", "company": "Meta MTIA", "ticker": "META", "role": "in-house MTIA ASIC platform", "source": "TrendForce"},
+    {"csp": "Meta", "category": "ODM/系統組裝", "company": "Quanta 廣達", "ticker": "2382.TW", "role": "AI server / rack ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Meta", "category": "ODM/系統組裝", "company": "Wiwynn 緯穎", "ticker": "6669.TW", "role": "cloud AI server ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Meta", "category": "ODM/系統組裝", "company": "Inventec 英業達", "ticker": "2356.TW", "role": "ASIC/GPU server ODM watchlist", "source": "industry watchlist"},
+
+    {"csp": "Oracle Cloud", "category": "CSP", "company": "Oracle", "ticker": "ORCL", "role": "OCI GPU rack-scale deployment / OpenAI-related cloud demand", "source": "TrendForce"},
+    {"csp": "Oracle Cloud", "category": "GPU平台", "company": "NVIDIA", "ticker": "NVDA", "role": "GPU rack-scale platform supplier", "source": "TrendForce"},
+    {"csp": "Oracle Cloud", "category": "ODM/系統組裝", "company": "Supermicro", "ticker": "SMCI", "role": "AI GPU server OEM watchlist", "source": "industry watchlist"},
+    {"csp": "Oracle Cloud", "category": "ODM/系統組裝", "company": "Dell", "ticker": "DELL", "role": "AI GPU server OEM watchlist", "source": "industry watchlist"},
+    {"csp": "Oracle Cloud", "category": "ODM/系統組裝", "company": "Quanta 廣達", "ticker": "2382.TW", "role": "rack-scale server ODM watchlist", "source": "industry watchlist"},
+
+    {"csp": "CoreWeave", "category": "NeoCloud", "company": "CoreWeave", "ticker": "CRWV", "role": "GPU cloud / NVIDIA rack demand watchlist", "source": "industry watchlist"},
+    {"csp": "CoreWeave", "category": "GPU平台", "company": "NVIDIA", "ticker": "NVDA", "role": "GPU platform supplier", "source": "industry watchlist"},
+    {"csp": "CoreWeave", "category": "ODM/系統組裝", "company": "Dell", "ticker": "DELL", "role": "AI GPU server OEM watchlist", "source": "industry watchlist"},
+    {"csp": "CoreWeave", "category": "ODM/系統組裝", "company": "Supermicro", "ticker": "SMCI", "role": "AI GPU server OEM watchlist", "source": "industry watchlist"},
+
+    {"csp": "Tesla / xAI", "category": "AI Cloud", "company": "Tesla", "ticker": "TSLA", "role": "xAI / Dojo / GPU cluster demand watchlist", "source": "industry watchlist"},
+    {"csp": "Tesla / xAI", "category": "GPU平台", "company": "NVIDIA", "ticker": "NVDA", "role": "GPU platform supplier", "source": "industry watchlist"},
+    {"csp": "Tesla / xAI", "category": "ODM/系統組裝", "company": "Quanta 廣達", "ticker": "2382.TW", "role": "AI server ODM watchlist", "source": "industry watchlist"},
+    {"csp": "Tesla / xAI", "category": "散熱/電源", "company": "Delta 台達電", "ticker": "2308.TW", "role": "AI data center power exposure", "source": "industry watchlist"},
+
+    {"csp": "Chinese CSP", "category": "CSP", "company": "Tencent", "ticker": "0700.HK", "role": "China AI cloud capex watchlist", "source": "TrendForce"},
+    {"csp": "Chinese CSP", "category": "CSP", "company": "Alibaba", "ticker": "9988.HK", "role": "China AI cloud capex watchlist", "source": "TrendForce"},
+    {"csp": "Chinese CSP", "category": "CSP", "company": "Baidu", "ticker": "9888.HK", "role": "China AI cloud capex watchlist", "source": "TrendForce"},
+    {"csp": "Chinese CSP", "category": "ODM/系統組裝", "company": "Lenovo", "ticker": "0992.HK", "role": "China server OEM watchlist", "source": "industry watchlist"},
+]
+
 
 st.set_page_config(page_title="資產配置回測工作台", layout="wide")
 
@@ -379,6 +436,27 @@ def ensure_vera_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
     return df[["category", "company", "ticker", "role", "source"]]
+
+
+def csp_supply_chain_df() -> pd.DataFrame:
+    return pd.DataFrame(CSP_SUPPLY_CHAIN)
+
+
+def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
+    df = rows.copy() if rows is not None and not rows.empty else pd.DataFrame()
+    defaults = {
+        "csp": "",
+        "category": "",
+        "company": "",
+        "ticker": "",
+        "role": "",
+        "source": "custom",
+    }
+    for col, default in defaults.items():
+        if col not in df.columns:
+            df[col] = default
+    df["ticker"] = df["ticker"].astype(str).str.strip()
+    return df[["csp", "category", "company", "ticker", "role", "source"]]
 
 
 def price_performance_summary(prices: pd.DataFrame) -> pd.DataFrame:
@@ -943,11 +1021,16 @@ def vera_custom_chain_payload(custom_chain: pd.DataFrame | None = None) -> list[
     return ensure_vera_custom_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
 
 
+def csp_custom_chain_payload(custom_chain: pd.DataFrame | None = None) -> list[dict]:
+    return ensure_csp_custom_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
+
+
 def app_settings_payload(
     holdings: pd.DataFrame,
     valuation: pd.DataFrame,
     reports: pd.DataFrame | None = None,
     custom_chain: pd.DataFrame | None = None,
+    csp_custom_chain: pd.DataFrame | None = None,
 ) -> dict:
     holdings = ensure_holdings_schema(holdings)
     valuation = ensure_valuation_schema(valuation, holdings)
@@ -957,22 +1040,25 @@ def app_settings_payload(
         "valuation": valuation_settings_payload(valuation),
         "target_reports": target_reports_payload(reports, holdings),
         "vera_custom_chain": vera_custom_chain_payload(custom_chain),
+        "csp_custom_chain": csp_custom_chain_payload(csp_custom_chain),
     }
 
 
-def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if isinstance(settings, dict):
         holdings = ensure_holdings_schema(pd.DataFrame(settings.get("holdings", [])))
         valuation = ensure_valuation_schema(pd.DataFrame(settings.get("valuation", [])), holdings)
         reports = ensure_target_reports_schema(pd.DataFrame(settings.get("target_reports", [])), holdings)
         custom_chain = ensure_vera_custom_schema(pd.DataFrame(settings.get("vera_custom_chain", [])))
-        return holdings, valuation, reports, custom_chain
+        csp_custom_chain = ensure_csp_custom_schema(pd.DataFrame(settings.get("csp_custom_chain", [])))
+        return holdings, valuation, reports, custom_chain, csp_custom_chain
     holdings = ensure_holdings_schema(pd.DataFrame(settings))
     return (
         holdings,
         ensure_valuation_schema(pd.DataFrame(), holdings),
         ensure_target_reports_schema(pd.DataFrame(), holdings),
         ensure_vera_custom_schema(pd.DataFrame()),
+        ensure_csp_custom_schema(pd.DataFrame()),
     )
 
 
@@ -1023,7 +1109,7 @@ def test_supabase_connection() -> tuple[bool, str]:
     return False, f"HTTP {response.status_code}: {response.text[:300]}"
 
 
-def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
+def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
@@ -1040,12 +1126,13 @@ def save_settings_to_db(
     valuation: pd.DataFrame,
     reports: pd.DataFrame,
     custom_chain: pd.DataFrame,
+    csp_custom_chain: pd.DataFrame,
 ) -> None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
     body = {
         "user_key": user_key,
-        "settings": app_settings_payload(holdings, valuation, reports, custom_chain),
+        "settings": app_settings_payload(holdings, valuation, reports, custom_chain, csp_custom_chain),
     }
     response = requests.post(url, headers=headers, json=body, timeout=15)
     raise_supabase_error(response)
@@ -1185,6 +1272,10 @@ if "vera_custom_chain" not in st.session_state:
     st.session_state.vera_custom_chain = ensure_vera_custom_schema(pd.DataFrame())
 if "vera_custom_chain_key" not in st.session_state:
     st.session_state.vera_custom_chain_key = 0
+if "csp_custom_chain" not in st.session_state:
+    st.session_state.csp_custom_chain = ensure_csp_custom_schema(pd.DataFrame())
+if "csp_custom_chain_key" not in st.session_state:
+    st.session_state.csp_custom_chain_key = 0
 if "latest_prices" not in st.session_state:
     st.session_state.latest_prices = {}
 st.session_state.valuation_data = ensure_valuation_schema(
@@ -1196,6 +1287,7 @@ st.session_state.target_reports = ensure_target_reports_schema(
     st.session_state.editor_data,
 )
 st.session_state.vera_custom_chain = ensure_vera_custom_schema(st.session_state.vera_custom_chain)
+st.session_state.csp_custom_chain = ensure_csp_custom_schema(st.session_state.csp_custom_chain)
 if "usd_twd" not in st.session_state:
     st.session_state.usd_twd = 31.673
 if "usd_twd_date" not in st.session_state:
@@ -1265,16 +1357,18 @@ with st.expander("每個人自己的預設設定", expanded=False):
                     if loaded is None:
                         st.warning("找不到這個保存代號的設定。")
                     else:
-                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain = loaded
+                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain = loaded
                         st.session_state.holdings_default = ensure_holdings_schema(loaded_holdings)
                         st.session_state.editor_data = ensure_holdings_schema(loaded_holdings)
                         st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
                         st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
                         st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
+                        st.session_state.csp_custom_chain = ensure_csp_custom_schema(loaded_csp_custom_chain)
                         st.session_state.editor_key += 1
                         st.session_state.valuation_key += 1
                         st.session_state.target_reports_key += 1
                         st.session_state.vera_custom_chain_key += 1
+                        st.session_state.csp_custom_chain_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
                 except Exception as exc:
@@ -1290,6 +1384,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.session_state.valuation_data,
                         st.session_state.target_reports,
                         st.session_state.vera_custom_chain,
+                        st.session_state.csp_custom_chain,
                     )
                     st.success("已儲存。之後用同一個保存代號即可載入。")
                 except Exception as exc:
@@ -1301,7 +1396,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
     if uploaded is not None:
         try:
             rows = json.loads(uploaded.getvalue().decode("utf-8"))
-            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain = parse_settings_payload(rows)
+            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain = parse_settings_payload(rows)
             required = ["name", "ticker", "amount", "currency"]
             if not set(required).issubset(loaded_holdings.columns):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
@@ -1311,10 +1406,12 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
                 st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
                 st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
+                st.session_state.csp_custom_chain = ensure_csp_custom_schema(loaded_csp_custom_chain)
                 st.session_state.editor_key += 1
                 st.session_state.valuation_key += 1
                 st.session_state.target_reports_key += 1
                 st.session_state.vera_custom_chain_key += 1
+                st.session_state.csp_custom_chain_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
                 st.rerun()
         except Exception as exc:
@@ -1328,6 +1425,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.valuation_data,
                 st.session_state.target_reports,
                 st.session_state.vera_custom_chain,
+                st.session_state.csp_custom_chain,
             ),
             ensure_ascii=False,
             indent=2,
@@ -1814,6 +1912,116 @@ with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
             )
     else:
         st.info("按「更新 Vera Rubin 供應鏈股價」後會顯示走勢與統計。")
+
+with st.expander("CSP 供應鏈", expanded=False):
+    st.caption("依 Microsoft、AWS、Google、Meta、Oracle 等 CSP 分別追蹤 AI server / GPU rack / ASIC 供應鏈；watchlist 不代表客戶或訂單已由公司正式確認。")
+    with st.form("csp_custom_chain_form"):
+        csp_custom_raw = st.data_editor(
+            st.session_state.csp_custom_chain,
+            num_rows="dynamic",
+            use_container_width=True,
+            key=f"csp_custom_chain_editor_{st.session_state.csp_custom_chain_key}",
+            column_config={
+                "csp": st.column_config.TextColumn("CSP"),
+                "category": st.column_config.TextColumn("分類"),
+                "company": st.column_config.TextColumn("公司"),
+                "ticker": st.column_config.TextColumn("Ticker"),
+                "role": st.column_config.TextColumn("供應鏈角色"),
+                "source": st.column_config.TextColumn("來源類型"),
+            },
+        )
+        apply_csp_custom = st.form_submit_button("套用自訂 CSP 供應鏈")
+
+    if apply_csp_custom:
+        st.session_state.csp_custom_chain = ensure_csp_custom_schema(csp_custom_raw)
+        st.success("已套用自訂 CSP 供應鏈。")
+
+    csp_chain = pd.concat(
+        [csp_supply_chain_df(), ensure_csp_custom_schema(st.session_state.csp_custom_chain)],
+        ignore_index=True,
+    )
+    csp_chain = csp_chain.drop_duplicates(subset=["csp", "ticker", "company", "category"], keep="last")
+    csp_col1, csp_col2, csp_col3 = st.columns(3)
+    selected_csps = csp_col1.multiselect("CSP", sorted(csp_chain["csp"].dropna().unique().tolist()), default=sorted(csp_chain["csp"].dropna().unique().tolist()))
+    selected_csp_categories = csp_col2.multiselect("分類", sorted(csp_chain["category"].dropna().unique().tolist()), default=sorted(csp_chain["category"].dropna().unique().tolist()))
+    selected_csp_sources = csp_col3.multiselect("來源類型", sorted(csp_chain["source"].dropna().unique().tolist()), default=sorted(csp_chain["source"].dropna().unique().tolist()))
+
+    filtered_csp_chain = csp_chain[
+        csp_chain["csp"].isin(selected_csps)
+        & csp_chain["category"].isin(selected_csp_categories)
+        & csp_chain["source"].isin(selected_csp_sources)
+    ].copy()
+    st.dataframe(
+        filtered_csp_chain.rename(
+            columns={
+                "csp": "CSP",
+                "category": "分類",
+                "company": "公司",
+                "ticker": "Ticker",
+                "role": "供應鏈角色",
+                "source": "來源類型",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    csp_price_col1, csp_price_col2 = st.columns(2)
+    csp_start = csp_price_col1.date_input("CSP 供應鏈股價開始日", date(2024, 1, 1))
+    csp_end = csp_price_col2.date_input("CSP 供應鏈股價結束日", date.today())
+    csp_tickers = filtered_csp_chain["ticker"].dropna().astype(str).str.strip()
+    csp_tickers = tuple(t for t in dict.fromkeys(csp_tickers) if t)
+
+    if st.button("更新 CSP 供應鏈股價"):
+        if not csp_tickers:
+            st.warning("目前篩選條件下沒有可抓取的 ticker。")
+        else:
+            try:
+                csp_prices = download_adjusted_prices(csp_tickers, str(csp_start), str(csp_end))
+                csp_prices = csp_prices[[ticker for ticker in csp_tickers if ticker in csp_prices.columns]].dropna(how="all")
+                st.session_state.csp_chain_prices = csp_prices
+                st.success(f"已更新 {len(csp_prices.columns):,} 檔 CSP 供應鏈股價。")
+            except Exception as exc:
+                st.error(f"CSP 供應鏈股價更新失敗：{exc}")
+
+    csp_prices = st.session_state.get("csp_chain_prices", pd.DataFrame())
+    if not csp_prices.empty:
+        visible_csp_tickers = st.multiselect(
+            "顯示 CSP 供應鏈股票",
+            list(csp_prices.columns),
+            default=list(csp_prices.columns[: min(10, len(csp_prices.columns))]),
+        )
+        if visible_csp_tickers:
+            normalized_csp = csp_prices[visible_csp_tickers].dropna(how="all")
+            normalized_csp = normalized_csp / normalized_csp.ffill().bfill().iloc[0]
+            csp_fig = go.Figure()
+            for ticker in normalized_csp.columns:
+                name = csp_chain.loc[csp_chain["ticker"] == ticker, "company"].dropna()
+                label = f"{ticker} {name.iloc[0]}" if not name.empty else ticker
+                csp_fig.add_trace(go.Scatter(x=normalized_csp.index, y=normalized_csp[ticker], mode="lines", name=label))
+            csp_fig.update_layout(title="CSP 供應鏈股價走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(csp_fig, use_container_width=True)
+
+            csp_meta = (
+                csp_chain.groupby("ticker", as_index=False)
+                .agg(
+                    company=("company", "first"),
+                    csp=("csp", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                    category=("category", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                )
+            )
+            csp_summary = price_performance_summary(csp_prices[visible_csp_tickers])
+            csp_summary = csp_summary.merge(csp_meta, left_on="Ticker", right_on="ticker", how="left")
+            csp_summary = csp_summary.drop(columns=["ticker"]).rename(columns={"company": "公司", "csp": "CSP", "category": "分類"})
+            st.dataframe(format_price_summary(csp_summary), use_container_width=True, hide_index=True)
+            st.download_button(
+                "下載 CSP 供應鏈股價 CSV",
+                csp_prices[visible_csp_tickers].to_csv().encode("utf-8-sig"),
+                "csp_supply_chain_prices.csv",
+                "text/csv",
+            )
+    else:
+        st.info("按「更新 CSP 供應鏈股價」後會顯示走勢與統計。")
 
 with st.expander("總經儀表板", expanded=False):
     st.caption("使用 yfinance 抓市場型總經指標；FedWatch 以 CME 連結為準，Fed Funds futures 僅作隱含利率參考。")
