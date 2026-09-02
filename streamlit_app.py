@@ -173,6 +173,8 @@ def ensure_valuation_schema(valuation: pd.DataFrame, holdings: pd.DataFrame) -> 
         "margin_safety": 0.25,
     }
     for col, default in defaults.items():
+        if col not in base.columns:
+            base[col] = default
         base[col] = pd.to_numeric(base[col], errors="coerce").fillna(default)
     return base[
         [
