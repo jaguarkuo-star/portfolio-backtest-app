@@ -38,6 +38,7 @@ MACRO_INDICATORS = {
     "小麥": "ZW=F",
     "美股 S&P 500": "^GSPC",
     "NASDAQ 100": "^NDX",
+    "台灣加權指數": "^TWII",
     "日本 Nikkei 225": "^N225",
     "歐洲 Euro Stoxx 50": "^STOXX50E",
     "英國 FTSE 100": "^FTSE",
@@ -1590,8 +1591,44 @@ with st.expander("總經儀表板", expanded=False):
 
     macro_data = st.session_state.get("macro_data", pd.DataFrame())
     if not macro_data.empty:
-        summary = macro_summary(macro_data)
-        st.dataframe(format_macro_table(summary), use_container_width=True, hide_index=True)
+        world_index_labels = [
+                "美股 S&P 500",
+                "NASDAQ 100",
+                "台灣加權指數",
+                "日本 Nikkei 225",
+            "歐洲 Euro Stoxx 50",
+            "英國 FTSE 100",
+            "新加坡 STI",
+            "中國上證指數",
+            "中國A股 ASHR ETF",
+            "香港恆生指數",
+            "韓國 KOSPI",
+            "費城半導體",
+        ]
+        fx_labels = [
+            "USD/TWD",
+            "EUR/USD",
+            "GBP/USD",
+            "USD/JPY",
+            "USD/CNY",
+            "USD/HKD",
+            "USD/SGD",
+            "USD/KRW",
+            "AUD/USD",
+        ]
+        core_macro_cols = [
+            col
+            for col in macro_data.columns
+            if col not in world_index_labels
+            and col not in fx_labels
+            and col != "Fed Funds Futures"
+        ]
+
+        if core_macro_cols:
+            summary = macro_summary(macro_data[core_macro_cols])
+            st.dataframe(format_macro_table(summary), use_container_width=True, hide_index=True)
+        else:
+            st.info("這次沒有抓到核心總經指標。")
         available = pd.DataFrame(
             {
                 "已抓到指標": list(macro_data.columns),
@@ -1603,26 +1640,16 @@ with st.expander("總經儀表板", expanded=False):
         preferred_macro = [
             "VIX 恐慌指數",
             "美元指數 DXY",
-            "USD/TWD",
             "黃金期貨",
             "WTI 原油",
             "銅期貨",
-            "美股 S&P 500",
-            "NASDAQ 100",
-            "日本 Nikkei 225",
-            "歐洲 Euro Stoxx 50",
-            "英國 FTSE 100",
-            "香港恆生指數",
-            "韓國 KOSPI",
-            "費城半導體",
-            "EUR/USD",
-            "USD/JPY",
-            "USD/CNY",
+            "天然氣",
+            "小麥",
             "Fed Funds 隱含利率",
         ]
         selected_macro = st.multiselect(
             "主要指標",
-            [col for col in macro_data.columns if col not in ["Fed Funds Futures"]],
+            core_macro_cols,
             default=[col for col in preferred_macro if col in macro_data.columns],
         )
         if selected_macro:
@@ -1636,19 +1663,7 @@ with st.expander("總經儀表板", expanded=False):
 
         world_index_cols = [
             col
-            for col in [
-                "美股 S&P 500",
-                "NASDAQ 100",
-                "日本 Nikkei 225",
-                "歐洲 Euro Stoxx 50",
-                "英國 FTSE 100",
-                "新加坡 STI",
-                "中國上證指數",
-                "中國A股 ASHR ETF",
-                "香港恆生指數",
-                "韓國 KOSPI",
-                "費城半導體",
-            ]
+            for col in world_index_labels
             if col in macro_data.columns
         ]
         if world_index_cols:
@@ -1662,17 +1677,7 @@ with st.expander("總經儀表板", expanded=False):
 
         fx_cols = [
             col
-            for col in [
-                "USD/TWD",
-                "EUR/USD",
-                "GBP/USD",
-                "USD/JPY",
-                "USD/CNY",
-                "USD/HKD",
-                "USD/SGD",
-                "USD/KRW",
-                "AUD/USD",
-            ]
+            for col in fx_labels
             if col in macro_data.columns
         ]
         if fx_cols:
