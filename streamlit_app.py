@@ -499,8 +499,8 @@ st.markdown(
     }
 
     [data-testid="stSidebar"] {
-        background: #111827;
-        border-right: 1px solid #1f2937;
+        background: #ffffff;
+        border-right: 1px solid var(--panel-border);
     }
 
     [data-testid="stSidebar"] h1,
@@ -509,14 +509,15 @@ st.markdown(
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] p,
     [data-testid="stSidebar"] small {
-        color: #f9fafb;
+        color: #111827;
     }
 
     [data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
-        color: #f9fafb;
+        color: #111827;
     }
 
+    [data-testid="stSidebar"] *,
     [data-testid="stSidebar"] input,
     [data-testid="stSidebar"] textarea,
     [data-testid="stSidebar"] select,
@@ -534,7 +535,8 @@ st.markdown(
     [data-testid="stSidebar"] [data-baseweb="select"],
     [data-testid="stSidebar"] [data-baseweb="datepicker"],
     [data-testid="stSidebar"] [data-baseweb="base-input"] {
-        background: #ffffff;
+        background: #f8fafc;
+        border: 1px solid #dbe2ea;
         border-radius: 8px;
     }
 
@@ -548,26 +550,6 @@ st.markdown(
     @media (max-width: 768px) {
         [data-testid="stSidebar"] {
             background: #ffffff;
-            border-right: 0;
-        }
-
-        [data-testid="stSidebar"] *,
-        [data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
-        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] *,
-        [data-testid="stSidebar"] [data-testid="stDateInput"] *,
-        [data-testid="stSidebar"] [data-baseweb="input"] *,
-        [data-testid="stSidebar"] [data-baseweb="select"] *,
-        [data-testid="stSidebar"] [data-baseweb="datepicker"] *,
-        [data-testid="stSidebar"] [data-baseweb="base-input"] *,
-        [data-testid="stSidebar"] [data-baseweb="tag"] * {
-            color: #111827 !important;
-        }
-
-        [data-testid="stSidebar"] [data-baseweb="input"],
-        [data-testid="stSidebar"] [data-baseweb="select"],
-        [data-testid="stSidebar"] [data-baseweb="datepicker"],
-        [data-testid="stSidebar"] [data-baseweb="base-input"] {
-            background: #f8fafc;
             border: 1px solid #dbe2ea;
         }
 
