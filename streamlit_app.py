@@ -5,7 +5,7 @@ import math
 import re
 import xml.etree.ElementTree as ET
 from datetime import date
-from urllib.parse import quote, quote_plus, urljoin
+from urllib.parse import parse_qs, quote, quote_plus, unquote, urljoin, urlparse
 
 import numpy as np
 import pandas as pd
@@ -568,6 +568,21 @@ st.markdown(
         font-size: 0.98rem;
     }
 
+    .media-placeholder {
+        min-height: 148px;
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        background:
+            linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(37, 99, 235, 0.08)),
+            #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-weight: 700;
+        margin-bottom: 0.65rem;
+    }
+
     div[data-testid="stExpander"] {
         background: var(--panel-bg);
         border: 1px solid var(--panel-border);
@@ -803,8 +818,20 @@ def find_meta_content(html_text: str, names: tuple[str, ...], base_url: str, is_
     return ""
 
 
+def unwrap_google_redirect(url: str) -> str:
+    parsed = urlparse(str(url or ""))
+    if "google." not in parsed.netloc:
+        return str(url or "")
+    params = parse_qs(parsed.query)
+    for key in ("q", "url"):
+        if params.get(key):
+            return unquote(params[key][0])
+    return str(url or "")
+
+
 @st.cache_data(ttl=60 * 30, show_spinner=False)
 def fetch_url_media_preview(url: str, refresh_id: str = "") -> dict[str, str]:
+    url = unwrap_google_redirect(url)
     if not url:
         return {"image": "", "video": "", "description": ""}
     try:
@@ -980,7 +1007,9 @@ def render_media_cards(media: pd.DataFrame, max_items: int = 12) -> None:
                     try:
                         st.image(row["圖片"], use_container_width=True)
                     except Exception:
-                        pass
+                        st.markdown('<div class="media-placeholder">News Preview</div>', unsafe_allow_html=True)
+                else:
+                    st.markdown('<div class="media-placeholder">News Preview</div>', unsafe_allow_html=True)
                 title = clean_html(row.get("標題", ""))
                 link = str(row.get("連結", ""))
                 if link:
@@ -2570,6 +2599,8 @@ if apply_holdings or auto_amount:
         else:
             st.session_state.auto_amount_message = "沒有填股數大於 0 的持股，所以沒有更新金額。"
     st.session_state.editor_data = edited_raw
+    st.session_state.pop("latest_news", None)
+    st.session_state.pop("latest_news_updated_at", None)
     if auto_amount:
         st.session_state.editor_key += 1
         st.rerun()
@@ -2905,15 +2936,24 @@ with st.expander("Latest News", expanded=False):
     if not latest_news.empty:
         if "latest_news_updated_at" in st.session_state:
             st.caption(f"最近更新：{st.session_state.latest_news_updated_at}")
+        current_holding_labels = [label for label, _ in holding_news_queries(st.session_state.editor_data)]
+        current_holding_label_set = set(current_holding_labels)
+        stale_holding_labels = set(
+            latest_news.loc[latest_news["分類"] == "持股新聞", "標的"].dropna().astype(str)
+        ) - current_holding_label_set
+        if stale_holding_labels:
+            st.warning("目前新聞結果含有舊持股，請按「更新 Latest News」重新抓取目前表格的新聞。")
         selected_categories = st.multiselect(
             "分類",
             sorted(latest_news["分類"].dropna().unique().tolist()),
             default=sorted(latest_news["分類"].dropna().unique().tolist()),
         )
+        non_holding_labels = latest_news.loc[latest_news["分類"] != "持股新聞", "標的"].dropna().astype(str).tolist()
+        label_options = list(dict.fromkeys(current_holding_labels + sorted(set(non_holding_labels))))
         selected_labels = st.multiselect(
             "標的",
-            sorted(latest_news["標的"].dropna().unique().tolist()),
-            default=sorted(latest_news["標的"].dropna().unique().tolist()),
+            label_options,
+            default=label_options,
         )
         filtered_news = latest_news[
             latest_news["分類"].isin(selected_categories) & latest_news["標的"].isin(selected_labels)
@@ -2931,14 +2971,7 @@ with st.expander("Latest News", expanded=False):
                 hide_index=True,
             )
         with news_tab_media:
-            media_items = filtered_news[
-                filtered_news["圖片"].fillna("").astype(str).str.len().gt(0)
-                | filtered_news["影片"].fillna("").astype(str).str.len().gt(0)
-            ].copy()
-            if media_items.empty:
-                st.info("這批新聞沒有抓到可用圖片或影片 metadata，請看新聞表格。")
-            else:
-                render_media_cards(media_items, max_items=12)
+            render_media_cards(filtered_news, max_items=12)
         st.download_button(
             "下載 Latest News CSV",
             filtered_news.to_csv(index=False).encode("utf-8-sig"),
