@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import math
 from datetime import date
@@ -55,6 +57,27 @@ def download_adjusted_prices(tickers: tuple[str, ...], start: str, end: str) -> 
     )
     if data.empty:
         raise RuntimeError("yfinance 沒有回傳資料，請檢查 ticker 或日期。")
+    close = data["Close"].copy() if isinstance(data.columns, pd.MultiIndex) else data[["Close"]].copy()
+    if not isinstance(close, pd.DataFrame):
+        close = close.to_frame()
+    close.index = pd.to_datetime(close.index).tz_localize(None)
+    return close.sort_index().ffill().dropna(how="all")
+
+
+@st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
+def download_close_prices(tickers: tuple[str, ...], start: str, end: str) -> pd.DataFrame:
+    data = yf.download(
+        list(tickers),
+        start=start,
+        end=(pd.Timestamp(end) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
+        auto_adjust=False,
+        actions=False,
+        progress=False,
+        group_by="column",
+        threads=True,
+    )
+    if data.empty:
+        raise RuntimeError("yfinance 沒有回傳股價，請檢查 ticker 或日期。")
     close = data["Close"].copy() if isinstance(data.columns, pd.MultiIndex) else data[["Close"]].copy()
     if not isinstance(close, pd.DataFrame):
         close = close.to_frame()
@@ -148,6 +171,84 @@ def ttm_from_quarterly_eps(eps: pd.Series) -> pd.Series:
     eps = eps.sort_index()
     eps = eps[~eps.index.duplicated(keep="last")]
     return eps.rolling("365D", min_periods=4).sum().dropna()
+
+
+def month_starts(start: str, end: str) -> list[pd.Timestamp]:
+    start_ts = pd.Timestamp(start).replace(day=1)
+    end_ts = pd.Timestamp(end).replace(day=1)
+    return list(pd.date_range(start_ts, end_ts, freq="MS"))
+
+
+def parse_twse_date(value):
+    text = str(value).strip()
+    if not text:
+        return pd.NaT
+    text = text.replace("年", "/").replace("月", "/").replace("日", "")
+    parts = text.replace("-", "/").split("/")
+    try:
+        if len(parts) == 3:
+            year = int(parts[0])
+            if year < 1911:
+                year += 1911
+            return pd.Timestamp(year, int(parts[1]), int(parts[2]))
+        return pd.to_datetime(text, errors="coerce")
+    except Exception:
+        return pd.NaT
+
+
+def parse_number(value) -> float:
+    text = str(value).replace(",", "").replace("--", "").replace("-", "").strip()
+    if not text:
+        return np.nan
+    try:
+        return float(text)
+    except ValueError:
+        return np.nan
+
+
+@st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
+def download_twse_pe_series(ticker: str, start: str, end: str) -> pd.Series:
+    if not ticker.endswith(".TW"):
+        return pd.Series(dtype=float)
+
+    code = tw_stock_code(ticker)
+    rows = []
+    for month in month_starts(start, end):
+        date_text = month.strftime("%Y%m%d")
+        urls = [
+            f"https://www.twse.com.tw/rwd/zh/afterTrading/BWIBBU?date={date_text}&stockNo={code}&response=json",
+            f"https://www.twse.com.tw/exchangeReport/BWIBBU?date={date_text}&stockNo={code}&response=json",
+        ]
+        for url in urls:
+            try:
+                response = requests.get(url, timeout=15)
+                if not response.ok:
+                    continue
+                payload = response.json()
+                data = payload.get("data") or payload.get("aaData") or []
+                fields = payload.get("fields") or payload.get("headers") or []
+                if not data:
+                    continue
+                for item in data:
+                    if isinstance(item, dict):
+                        record = item
+                    else:
+                        record = dict(zip(fields, item))
+                    date_value = record.get("日期") or record.get("Date")
+                    pe_value = record.get("本益比") or record.get("P/E ratio") or record.get("PEratio")
+                    dt = parse_twse_date(date_value)
+                    pe = parse_number(pe_value)
+                    if pd.notna(dt) and pd.notna(pe) and pe > 0:
+                        rows.append((dt, pe))
+                break
+            except Exception:
+                continue
+
+    if not rows:
+        return pd.Series(dtype=float)
+    pe = pd.Series(dict(rows)).sort_index()
+    pe = pe[(pe.index >= pd.Timestamp(start)) & (pe.index <= pd.Timestamp(end))]
+    return pe[~pe.index.duplicated(keep="last")]
 
 
 @st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
@@ -416,10 +517,19 @@ def inferred_position_shares(holdings: pd.DataFrame, latest_prices: dict[str, fl
 def eps_series_for_prices(
     ticker: str,
     price_index: pd.DatetimeIndex,
+    price_series: pd.Series,
+    official_pe: dict[str, pd.Series],
     historical_eps: dict[str, pd.Series],
     manual_eps: float,
     report_lag_days: int,
 ) -> pd.Series:
+    pe = official_pe.get(ticker)
+    if pe is not None and not pe.empty:
+        aligned_price = price_series.reindex(price_index).ffill()
+        aligned_pe = pe.reindex(price_index.union(pe.index)).sort_index().ffill().reindex(price_index)
+        implied_eps = aligned_price / aligned_pe
+        return implied_eps.where(implied_eps > 0)
+
     eps = historical_eps.get(ticker)
     if eps is not None and not eps.empty:
         shifted = eps.copy()
@@ -1240,13 +1350,18 @@ with st.expander("本益比河流圖", expanded=False):
                     for row in ensure_holdings_schema(st.session_state.editor_data).to_dict("records")
                 )
                 download_tickers = river_tickers + (["TWD=X"] if needs_fx else [])
-                close = download_adjusted_prices(tuple(dict.fromkeys(download_tickers)), str(river_start), str(river_end))
+                close = download_close_prices(tuple(dict.fromkeys(download_tickers)), str(river_start), str(river_end))
                 latest_prices = {
                     ticker: float(close[ticker].dropna().iloc[-1])
                     for ticker in river_tickers
                     if ticker in close.columns and not close[ticker].dropna().empty
                 }
                 st.session_state.latest_prices.update(latest_prices)
+                official_pe = {
+                    ticker: download_twse_pe_series(ticker, str(river_start), str(river_end))
+                    for ticker in river_tickers
+                    if ticker.endswith(".TW")
+                }
                 historical_eps = download_historical_eps_ttm(tuple(river_tickers))
 
                 holdings_now = ensure_holdings_schema(st.session_state.editor_data)
@@ -1268,6 +1383,8 @@ with st.expander("本益比河流圖", expanded=False):
                     eps_series = eps_series_for_prices(
                         ticker,
                         close.index,
+                        close[ticker].ffill(),
+                        official_pe,
                         historical_eps,
                         manual_eps_map.get(ticker, 0.0),
                         int(report_lag_days),
@@ -1278,8 +1395,8 @@ with st.expander("本益比河流圖", expanded=False):
                     eps_source_rows.append(
                         {
                             "Ticker": ticker,
-                            "EPS來源": "歷史12個月滾動TTM" if ticker in historical_eps else "手動EPS TTM" if ticker in manual_eps_map else "缺資料",
-                            "TTM點數": historical_points,
+                            "EPS來源": "TWSE官方PE反推" if ticker in official_pe and not official_pe[ticker].empty else "歷史12個月滾動TTM" if ticker in historical_eps else "手動EPS TTM" if ticker in manual_eps_map else "缺資料",
+                            "TTM點數": int(official_pe.get(ticker, pd.Series(dtype=float)).dropna().shape[0]) or historical_points,
                             "TTM不同值": unique_eps_count,
                             "有效天數": valid_eps_count,
                             "最新TTM EPS": eps_series.dropna().iloc[-1] if valid_eps_count else np.nan,
@@ -1319,6 +1436,8 @@ with st.expander("本益比河流圖", expanded=False):
                     eps_series = eps_series_for_prices(
                         selected_ticker,
                         close[selected_ticker].dropna().index,
+                        close[selected_ticker].dropna(),
+                        official_pe,
                         historical_eps,
                         manual_eps_map.get(selected_ticker, 0.0),
                         int(report_lag_days),
