@@ -737,7 +737,7 @@ def normalize_company_display(df: pd.DataFrame) -> pd.DataFrame:
 def normalize_text_columns(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     out = df.copy()
     for col in columns:
-        out[col] = out[col].fillna("").astype(str).str.strip()
+        out[col] = out[col].fillna("").astype(str).str.strip().astype("string")
     return out
 
 
@@ -2231,11 +2231,11 @@ with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
             use_container_width=True,
             key=f"vera_custom_chain_editor_{st.session_state.vera_custom_chain_key}",
             column_config={
-                "category": st.column_config.TextColumn("分類"),
-                "company": st.column_config.TextColumn("公司"),
-                "ticker": st.column_config.TextColumn("Ticker"),
-                "role": st.column_config.TextColumn("供應鏈角色"),
-                "source": st.column_config.TextColumn("來源類型"),
+                "category": st.column_config.Column("分類"),
+                "company": st.column_config.Column("公司"),
+                "ticker": st.column_config.Column("Ticker"),
+                "role": st.column_config.Column("供應鏈角色"),
+                "source": st.column_config.Column("來源類型"),
             },
         )
         apply_custom_chain = st.form_submit_button("套用自訂供應鏈名單")
@@ -2339,12 +2339,12 @@ with st.expander("CSP 供應鏈", expanded=False):
             use_container_width=True,
             key=f"csp_custom_chain_editor_{st.session_state.csp_custom_chain_key}",
             column_config={
-                "csp": st.column_config.TextColumn("CSP"),
-                "category": st.column_config.TextColumn("分類"),
-                "company": st.column_config.TextColumn("公司"),
-                "ticker": st.column_config.TextColumn("Ticker"),
-                "role": st.column_config.TextColumn("供應鏈角色"),
-                "source": st.column_config.TextColumn("來源類型"),
+                "csp": st.column_config.Column("CSP"),
+                "category": st.column_config.Column("分類"),
+                "company": st.column_config.Column("公司"),
+                "ticker": st.column_config.Column("Ticker"),
+                "role": st.column_config.Column("供應鏈角色"),
+                "source": st.column_config.Column("來源類型"),
             },
         )
         apply_csp_custom = st.form_submit_button("套用自訂 CSP 供應鏈")
@@ -2449,12 +2449,12 @@ with st.expander("小型次產業", expanded=False):
             use_container_width=True,
             key=f"small_subindustry_editor_{st.session_state.small_subindustry_custom_key}",
             column_config={
-                "subindustry": st.column_config.TextColumn("次產業"),
-                "category": st.column_config.TextColumn("分類"),
-                "company": st.column_config.TextColumn("公司"),
-                "ticker": st.column_config.TextColumn("Ticker"),
-                "role": st.column_config.TextColumn("供應鏈角色"),
-                "source": st.column_config.TextColumn("來源類型"),
+                "subindustry": st.column_config.Column("次產業"),
+                "category": st.column_config.Column("分類"),
+                "company": st.column_config.Column("公司"),
+                "ticker": st.column_config.Column("Ticker"),
+                "role": st.column_config.Column("供應鏈角色"),
+                "source": st.column_config.Column("來源類型"),
             },
         )
         apply_small_custom = st.form_submit_button("套用自訂小型次產業")
@@ -2571,12 +2571,12 @@ with st.expander("台積電供應鏈", expanded=False):
             use_container_width=True,
             key=f"tsmc_custom_chain_editor_{st.session_state.tsmc_custom_chain_key}",
             column_config={
-                "technology_node": st.column_config.TextColumn("技術節點"),
-                "category": st.column_config.TextColumn("分類"),
-                "company": st.column_config.TextColumn("公司"),
-                "ticker": st.column_config.TextColumn("Ticker"),
-                "role": st.column_config.TextColumn("供應鏈角色"),
-                "source": st.column_config.TextColumn("來源類型"),
+                "technology_node": st.column_config.Column("技術節點"),
+                "category": st.column_config.Column("分類"),
+                "company": st.column_config.Column("公司"),
+                "ticker": st.column_config.Column("Ticker"),
+                "role": st.column_config.Column("供應鏈角色"),
+                "source": st.column_config.Column("來源類型"),
             },
         )
         apply_tsmc_custom = st.form_submit_button("套用自訂台積電供應鏈")
