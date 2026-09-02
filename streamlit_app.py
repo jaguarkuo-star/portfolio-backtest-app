@@ -1382,90 +1382,6 @@ def industry_research_map() -> pd.DataFrame:
     return data.drop_duplicates(subset=["map", "theme", "category", "company", "ticker"], keep="last")
 
 
-def industry_image_library() -> pd.DataFrame:
-    return pd.DataFrame(
-        [
-            {
-                "theme": "Advanced Packaging",
-                "title": "Intel EMIB vs TSMC CoWoS",
-                "source": "TrendForce",
-                "path": "assets/industry_research/trendforce_emib_vs_cowos.jpg",
-                "note": "比較 EMIB-M / EMIB-T 與 CoWoS-S/R/L 的 interposer、bridge、reticle size 與應用路線。",
-            },
-            {
-                "theme": "Silicon Photonics",
-                "title": "TSMC PDK for Photonics Devices",
-                "source": "TSMC / NEWS",
-                "path": "assets/industry_research/tsmc_pdk_photonics_devices.png",
-                "note": "整理 Si/SiN waveguide、coupler、splitter、PD/APD、MRM/MRR、phase shifter 等矽光子元件庫。",
-            },
-            {
-                "theme": "COUPE / CPO",
-                "title": "TSMC Integrated Platform for AI",
-                "source": "TSMC / NEWS",
-                "path": "assets/industry_research/tsmc_ai_platform_coupe.png",
-                "note": "CoWoS cross-section 整合 HBM、SoIC、interposer/RDL 與 TSMC-COUPE，並比較 COUPE-GC / COUPE-EC。",
-            },
-            {
-                "theme": "COUPE / CPO",
-                "title": "From Copper to CPO",
-                "source": "TSMC / NEWS",
-                "path": "assets/industry_research/copper_to_cpo.png",
-                "note": "比較 Cu wire、pluggable optics、CPO、OOI 的功耗與 latency 路徑，凸顯 optical engine 重要性。",
-            },
-            {
-                "theme": "Memory / HBM",
-                "title": "Vera Rubin Memory Demand",
-                "source": "NEWS / TrendForce",
-                "path": "assets/industry_research/vera_rubin_memory_demand.jpg",
-                "note": "Vera Rubin 記憶體需求從 HBM4 擴散到 LPDDR5X/SOCAMM2 與 NAND/SSD/KV cache。",
-            },
-            {
-                "theme": "Advanced Packaging",
-                "title": "Chip Last HIPO Platform",
-                "source": "群創 / NEWS",
-                "path": "assets/industry_research/chip_last_hipos_platform.jpg",
-                "note": "群創 Chip Last / HIPO 技術平台，面板級同步測試與多層 RDL、embedded core 堆疊。",
-            },
-            {
-                "theme": "Semicap Equipment",
-                "title": "Global Toolmaker Lead Times",
-                "source": "NEWS",
-                "path": "assets/industry_research/toolmaker_lead_times.jpg",
-                "note": "ASML、Applied Materials、KLA、Lam Research 與韓系設備商 lead time 拉長，對中國設備替代形成窗口。",
-            },
-            {
-                "theme": "ASIC / CSP",
-                "title": "Multi-Source ASIC Era",
-                "source": "NEWS / TrendForce",
-                "path": "assets/industry_research/multisource_asic_era.jpg",
-                "note": "Google TPU、AWS Trainium、Microsoft Maia、Meta MTIA 的 ASIC 代工/設計夥伴路線圖。",
-            },
-            {
-                "theme": "Interconnect / I/O",
-                "title": "AI Bottleneck: I/O Wall",
-                "source": "TSMC / NEWS",
-                "path": "assets/industry_research/ai_io_wall.jpg",
-                "note": "比較 compute、memory、I/O scaling，凸顯 HBM 與 NVLink/PCIe 頻寬追不上算力的 I/O wall。",
-            },
-            {
-                "theme": "Advanced Packaging",
-                "title": "Chip First vs Chip Last",
-                "source": "WaferChem",
-                "path": "assets/industry_research/chip_first_vs_chip_last.jpg",
-                "note": "比較 InFO chip-first 與 chip-last 流程，含 RDL、molding、de-bonding、die sawing 等製程步驟。",
-            },
-            {
-                "theme": "Silicon Photonics",
-                "title": "Memory Giants' Silicon Photonics Playbooks",
-                "source": "NEWS",
-                "path": "assets/industry_research/memory_silicon_photonics_playbook.jpg",
-                "note": "Samsung 與 SK hynix 在 silicon photonics / CPO / photonic interposer 的切入策略比較。",
-            },
-        ]
-    )
-
-
 def industry_researcher_insights() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -3111,8 +3027,8 @@ with st.expander("產業研究工作台", expanded=True):
         ).str.lower()
         filtered_research = filtered_research[haystack.str.contains(re.escape(keyword), na=False)].copy()
 
-    tab_map, tab_matrix, tab_products, tab_insights, tab_sources, tab_gallery = st.tabs(
-        ["產業地圖", "公司矩陣", "產品/型號", "研究者觀點", "來源閱讀", "研究圖庫"]
+    tab_map, tab_matrix, tab_products, tab_insights, tab_sources = st.tabs(
+        ["產業地圖", "公司矩陣", "產品/型號", "研究者觀點", "來源閱讀"]
     )
     with tab_map:
         if filtered_research.empty:
@@ -3319,45 +3235,6 @@ with st.expander("產業研究工作台", expanded=True):
         source_col1.link_button("SemiAnalysis 搜尋", "https://semianalysis.com/?s=NVIDIA+Rubin+CoWoS+CPO")
         source_col2.link_button("DIGITIMES 搜尋", "https://www.digitimes.com/search?query=NVIDIA%20Rubin%20CoWoS%20CPO")
         source_col3.link_button("TSMC 3DFabric", "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/3DFabric.htm")
-
-    with tab_gallery:
-        gallery = industry_image_library()
-        gallery_col1, gallery_col2 = st.columns([1.3, 2])
-        selected_gallery_themes = gallery_col1.multiselect(
-            "圖庫主題",
-            sorted(gallery["theme"].unique().tolist()),
-            default=sorted(gallery["theme"].unique().tolist()),
-        )
-        gallery_keyword = gallery_col2.text_input("搜尋圖卡", "", key="industry_gallery_keyword")
-        filtered_gallery = gallery[gallery["theme"].isin(selected_gallery_themes)].copy()
-        if gallery_keyword.strip():
-            keyword = gallery_keyword.strip().lower()
-            haystack = (
-                filtered_gallery["theme"]
-                + " "
-                + filtered_gallery["title"]
-                + " "
-                + filtered_gallery["source"]
-                + " "
-                + filtered_gallery["note"]
-            ).str.lower()
-            filtered_gallery = filtered_gallery[haystack.str.contains(re.escape(keyword), na=False)].copy()
-        if filtered_gallery.empty:
-            st.info("目前篩選條件下沒有圖卡。")
-        else:
-            st.caption(f"共 {len(filtered_gallery):,} 張產業圖卡。這些圖片是專案內的靜態研究素材，不會寫入 Supabase。")
-            for start_idx in range(0, len(filtered_gallery), 2):
-                cols = st.columns(2)
-                for offset, col in enumerate(cols):
-                    row_idx = start_idx + offset
-                    if row_idx >= len(filtered_gallery):
-                        continue
-                    row = filtered_gallery.iloc[row_idx]
-                    with col:
-                        st.image(row["path"], use_container_width=True)
-                        st.markdown(f"**{row['title']}**")
-                        st.caption(f"{row['theme']} · {row['source']}")
-                        st.write(row["note"])
 
 with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
     st.caption("追蹤 NVIDIA Vera Rubin / AI factory 生態系與相關零組件族群；official 是 NVIDIA 點名，watchlist 是產業追蹤，不代表 NVIDIA 已揭露實際訂單或分配比例。")
