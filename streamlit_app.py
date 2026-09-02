@@ -408,49 +408,49 @@ TSMC_SUPPLY_CHAIN = [
     {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "Visual Photonics 華星光", "ticker": "4979.TWO", "role": "optical transceiver / laser component watchlist", "source": "industry watchlist"},
     {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "Browave 波若威", "ticker": "3163.TWO", "role": "fiber connection / optical interconnect watchlist", "source": "industry watchlist"},
     {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "PCL 上詮", "ticker": "3363.TWO", "role": "fiber array / optical passive component watchlist", "source": "industry watchlist"},
+]
 
-    {"technology_node": "小型次產業/PCB", "category": "AI伺服器PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB / backplane exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "AI伺服器PCB", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "AI伺服器PCB", "company": "HannStar Board 瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "AI伺服器PCB", "company": "Tripod 健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "AI伺服器PCB", "company": "Compeq 華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "高階IC載板", "company": "ZDT 臻鼎-KY", "ticker": "4958.TW", "role": "advanced PCB / IC substrate watchlist", "source": "ZDT official / user watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "高階IC載板", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "ABF substrate and advanced substrate exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "高階IC載板", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "ABF package substrate exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "高階IC載板", "company": "Nan Ya PCB 南電", "ticker": "8046.TW", "role": "ABF substrate exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "CCL/材料", "company": "Elite Material 台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "CCL/材料", "company": "ITEQ 聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/PCB", "category": "CCL/材料", "company": "Taiwan Union 台光電", "ticker": "2383.TW", "role": "high-speed copper clad laminate exposure", "source": "industry watchlist"},
 
-    {"technology_node": "小型次產業/探針卡", "category": "探針卡/測試介面", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
-    {"technology_node": "小型次產業/探針卡", "category": "探針卡/測試介面", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
-    {"technology_node": "小型次產業/探針卡", "category": "探針卡/測試介面", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
-    {"technology_node": "小型次產業/探針卡", "category": "探針卡/測試介面", "company": "FormFactor", "ticker": "FORM", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/探針卡", "category": "探針卡/測試介面", "company": "Japan Electronic Materials", "ticker": "6855.T", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/探針卡", "category": "探針卡/測試介面", "company": "Micronics Japan", "ticker": "6871.T", "role": "probe card / test socket exposure", "source": "industry watchlist"},
-
-    {"technology_node": "小型次產業/功率半導體", "category": "功率IC/類比", "company": "Monolithic Power", "ticker": "MPWR", "role": "power management silicon ecosystem", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率IC/類比", "company": "Texas Instruments", "ticker": "TXN", "role": "power management and analog semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率IC/類比", "company": "Analog Devices", "ticker": "ADI", "role": "power / mixed-signal silicon exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "Onsemi", "ticker": "ON", "role": "power semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "Diodes", "ticker": "DIOD", "role": "discrete / analog power semiconductor watchlist", "source": "user watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "Alpha and Omega Semi", "ticker": "AOSL", "role": "power semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "Infineon", "ticker": "IFX.DE", "role": "power semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "Renesas", "ticker": "6723.T", "role": "power and mixed-signal semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "ROHM", "ticker": "6963.T", "role": "power semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率元件", "company": "STMicroelectronics", "ticker": "STM", "role": "power semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "GaN/寬能隙", "company": "Navitas", "ticker": "NVTS", "role": "GaN power semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "電源轉換IC", "company": "Power Integrations", "ticker": "POWI", "role": "power conversion semiconductor exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/功率半導體", "category": "功率IC/類比", "company": "Silergy 矽力-KY", "ticker": "6415.TW", "role": "power management IC exposure", "source": "industry watchlist"},
-
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "OSAT / advanced packaging exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "Amkor", "ticker": "AMKR", "role": "OSAT / advanced packaging and test exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "Powertech 力成", "ticker": "6239.TW", "role": "memory and logic packaging / test exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "ChipMOS 南茂", "ticker": "8150.TW", "role": "semiconductor assembly and test exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "Greatek Electronics 矽格", "ticker": "6257.TW", "role": "IC testing and backend service watchlist", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "Walton 華東", "ticker": "8110.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "封測/OSAT", "company": "Orient Semi 華泰", "ticker": "2329.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
-    {"technology_node": "小型次產業/封測", "category": "測試服務", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "wafer sort / final test exposure", "source": "industry watchlist"},
+SMALL_SUBINDUSTRY_CHAIN = [
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB / backplane exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "HannStar Board 瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Tripod 健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Compeq 華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "高階IC載板", "company": "ZDT 臻鼎-KY", "ticker": "4958.TW", "role": "advanced PCB / IC substrate watchlist", "source": "ZDT official / user watchlist"},
+    {"subindustry": "PCB", "category": "高階IC載板", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "ABF substrate and advanced substrate exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "高階IC載板", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "ABF package substrate exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "高階IC載板", "company": "Nan Ya PCB 南電", "ticker": "8046.TW", "role": "ABF substrate exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "CCL/材料", "company": "Elite Material 台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "CCL/材料", "company": "ITEQ 聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "CCL/材料", "company": "Taiwan Union 台光電", "ticker": "2383.TW", "role": "high-speed copper clad laminate exposure", "source": "industry watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "FormFactor", "ticker": "FORM", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "Japan Electronic Materials", "ticker": "6855.T", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "Micronics Japan", "ticker": "6871.T", "role": "probe card / test socket exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Monolithic Power", "ticker": "MPWR", "role": "power management silicon ecosystem", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Texas Instruments", "ticker": "TXN", "role": "power management and analog semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Analog Devices", "ticker": "ADI", "role": "power / mixed-signal silicon exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Onsemi", "ticker": "ON", "role": "power semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Diodes", "ticker": "DIOD", "role": "discrete / analog power semiconductor watchlist", "source": "user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Alpha and Omega Semi", "ticker": "AOSL", "role": "power semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Infineon", "ticker": "IFX.DE", "role": "power semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "Renesas", "ticker": "6723.T", "role": "power and mixed-signal semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "ROHM", "ticker": "6963.T", "role": "power semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "STMicroelectronics", "ticker": "STM", "role": "power semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "GaN/寬能隙", "company": "Navitas", "ticker": "NVTS", "role": "GaN power semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "電源轉換IC", "company": "Power Integrations", "ticker": "POWI", "role": "power conversion semiconductor exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Silergy 矽力-KY", "ticker": "6415.TW", "role": "power management IC exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "OSAT / advanced packaging exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "Amkor", "ticker": "AMKR", "role": "OSAT / advanced packaging and test exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "Powertech 力成", "ticker": "6239.TW", "role": "memory and logic packaging / test exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "ChipMOS 南茂", "ticker": "8150.TW", "role": "semiconductor assembly and test exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "Greatek Electronics 矽格", "ticker": "6257.TW", "role": "IC testing and backend service watchlist", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "Walton 華東", "ticker": "8110.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "Orient Semi 華泰", "ticker": "2329.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "測試服務", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "wafer sort / final test exposure", "source": "industry watchlist"},
 ]
 
 
@@ -730,6 +730,10 @@ def tsmc_supply_chain_df() -> pd.DataFrame:
     return pd.DataFrame(TSMC_SUPPLY_CHAIN)
 
 
+def small_subindustry_chain_df() -> pd.DataFrame:
+    return pd.DataFrame(SMALL_SUBINDUSTRY_CHAIN)
+
+
 def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
     df = rows.copy() if rows is not None and not rows.empty else pd.DataFrame()
     defaults = {
@@ -762,6 +766,23 @@ def ensure_tsmc_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
     return df[["technology_node", "category", "company", "ticker", "role", "source"]]
+
+
+def ensure_small_subindustry_schema(rows: pd.DataFrame) -> pd.DataFrame:
+    df = rows.copy() if rows is not None and not rows.empty else pd.DataFrame()
+    defaults = {
+        "subindustry": "",
+        "category": "",
+        "company": "",
+        "ticker": "",
+        "role": "",
+        "source": "custom",
+    }
+    for col, default in defaults.items():
+        if col not in df.columns:
+            df[col] = default
+    df["ticker"] = df["ticker"].astype(str).str.strip()
+    return df[["subindustry", "category", "company", "ticker", "role", "source"]]
 
 
 def price_performance_summary(prices: pd.DataFrame) -> pd.DataFrame:
@@ -1334,6 +1355,10 @@ def tsmc_custom_chain_payload(custom_chain: pd.DataFrame | None = None) -> list[
     return ensure_tsmc_custom_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
 
 
+def small_subindustry_custom_payload(custom_chain: pd.DataFrame | None = None) -> list[dict]:
+    return ensure_small_subindustry_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
+
+
 def app_settings_payload(
     holdings: pd.DataFrame,
     valuation: pd.DataFrame,
@@ -1341,6 +1366,7 @@ def app_settings_payload(
     custom_chain: pd.DataFrame | None = None,
     csp_custom_chain: pd.DataFrame | None = None,
     tsmc_custom_chain: pd.DataFrame | None = None,
+    small_subindustry_custom: pd.DataFrame | None = None,
 ) -> dict:
     holdings = ensure_holdings_schema(holdings)
     valuation = ensure_valuation_schema(valuation, holdings)
@@ -1352,10 +1378,11 @@ def app_settings_payload(
         "vera_custom_chain": vera_custom_chain_payload(custom_chain),
         "csp_custom_chain": csp_custom_chain_payload(csp_custom_chain),
         "tsmc_custom_chain": tsmc_custom_chain_payload(tsmc_custom_chain),
+        "small_subindustry_custom": small_subindustry_custom_payload(small_subindustry_custom),
     }
 
 
-def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if isinstance(settings, dict):
         holdings = ensure_holdings_schema(pd.DataFrame(settings.get("holdings", [])))
         valuation = ensure_valuation_schema(pd.DataFrame(settings.get("valuation", [])), holdings)
@@ -1363,7 +1390,8 @@ def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.Dat
         custom_chain = ensure_vera_custom_schema(pd.DataFrame(settings.get("vera_custom_chain", [])))
         csp_custom_chain = ensure_csp_custom_schema(pd.DataFrame(settings.get("csp_custom_chain", [])))
         tsmc_custom_chain = ensure_tsmc_custom_schema(pd.DataFrame(settings.get("tsmc_custom_chain", [])))
-        return holdings, valuation, reports, custom_chain, csp_custom_chain, tsmc_custom_chain
+        small_subindustry_custom = ensure_small_subindustry_schema(pd.DataFrame(settings.get("small_subindustry_custom", [])))
+        return holdings, valuation, reports, custom_chain, csp_custom_chain, tsmc_custom_chain, small_subindustry_custom
     holdings = ensure_holdings_schema(pd.DataFrame(settings))
     return (
         holdings,
@@ -1372,6 +1400,7 @@ def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.Dat
         ensure_vera_custom_schema(pd.DataFrame()),
         ensure_csp_custom_schema(pd.DataFrame()),
         ensure_tsmc_custom_schema(pd.DataFrame()),
+        ensure_small_subindustry_schema(pd.DataFrame()),
     )
 
 
@@ -1422,7 +1451,7 @@ def test_supabase_connection() -> tuple[bool, str]:
     return False, f"HTTP {response.status_code}: {response.text[:300]}"
 
 
-def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
+def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
@@ -1441,12 +1470,21 @@ def save_settings_to_db(
     custom_chain: pd.DataFrame,
     csp_custom_chain: pd.DataFrame,
     tsmc_custom_chain: pd.DataFrame,
+    small_subindustry_custom: pd.DataFrame,
 ) -> None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
     body = {
         "user_key": user_key,
-        "settings": app_settings_payload(holdings, valuation, reports, custom_chain, csp_custom_chain, tsmc_custom_chain),
+        "settings": app_settings_payload(
+            holdings,
+            valuation,
+            reports,
+            custom_chain,
+            csp_custom_chain,
+            tsmc_custom_chain,
+            small_subindustry_custom,
+        ),
     }
     response = requests.post(url, headers=headers, json=body, timeout=15)
     raise_supabase_error(response)
@@ -1594,6 +1632,10 @@ if "tsmc_custom_chain" not in st.session_state:
     st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(pd.DataFrame())
 if "tsmc_custom_chain_key" not in st.session_state:
     st.session_state.tsmc_custom_chain_key = 0
+if "small_subindustry_custom" not in st.session_state:
+    st.session_state.small_subindustry_custom = ensure_small_subindustry_schema(pd.DataFrame())
+if "small_subindustry_custom_key" not in st.session_state:
+    st.session_state.small_subindustry_custom_key = 0
 if "latest_prices" not in st.session_state:
     st.session_state.latest_prices = {}
 st.session_state.valuation_data = ensure_valuation_schema(
@@ -1607,6 +1649,7 @@ st.session_state.target_reports = ensure_target_reports_schema(
 st.session_state.vera_custom_chain = ensure_vera_custom_schema(st.session_state.vera_custom_chain)
 st.session_state.csp_custom_chain = ensure_csp_custom_schema(st.session_state.csp_custom_chain)
 st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(st.session_state.tsmc_custom_chain)
+st.session_state.small_subindustry_custom = ensure_small_subindustry_schema(st.session_state.small_subindustry_custom)
 if "usd_twd" not in st.session_state:
     st.session_state.usd_twd = 31.673
 if "usd_twd_date" not in st.session_state:
@@ -1676,7 +1719,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                     if loaded is None:
                         st.warning("找不到這個保存代號的設定。")
                     else:
-                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain, loaded_tsmc_custom_chain = loaded
+                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain, loaded_tsmc_custom_chain, loaded_small_subindustry = loaded
                         st.session_state.holdings_default = ensure_holdings_schema(loaded_holdings)
                         st.session_state.editor_data = ensure_holdings_schema(loaded_holdings)
                         st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
@@ -1684,12 +1727,14 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
                         st.session_state.csp_custom_chain = ensure_csp_custom_schema(loaded_csp_custom_chain)
                         st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(loaded_tsmc_custom_chain)
+                        st.session_state.small_subindustry_custom = ensure_small_subindustry_schema(loaded_small_subindustry)
                         st.session_state.editor_key += 1
                         st.session_state.valuation_key += 1
                         st.session_state.target_reports_key += 1
                         st.session_state.vera_custom_chain_key += 1
                         st.session_state.csp_custom_chain_key += 1
                         st.session_state.tsmc_custom_chain_key += 1
+                        st.session_state.small_subindustry_custom_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
                 except Exception as exc:
@@ -1707,6 +1752,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.session_state.vera_custom_chain,
                         st.session_state.csp_custom_chain,
                         st.session_state.tsmc_custom_chain,
+                        st.session_state.small_subindustry_custom,
                     )
                     st.success("已儲存。之後用同一個保存代號即可載入。")
                 except Exception as exc:
@@ -1718,7 +1764,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
     if uploaded is not None:
         try:
             rows = json.loads(uploaded.getvalue().decode("utf-8"))
-            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain, loaded_tsmc_custom_chain = parse_settings_payload(rows)
+            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain, loaded_tsmc_custom_chain, loaded_small_subindustry = parse_settings_payload(rows)
             required = ["name", "ticker", "amount", "currency"]
             if not set(required).issubset(loaded_holdings.columns):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
@@ -1730,12 +1776,14 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
                 st.session_state.csp_custom_chain = ensure_csp_custom_schema(loaded_csp_custom_chain)
                 st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(loaded_tsmc_custom_chain)
+                st.session_state.small_subindustry_custom = ensure_small_subindustry_schema(loaded_small_subindustry)
                 st.session_state.editor_key += 1
                 st.session_state.valuation_key += 1
                 st.session_state.target_reports_key += 1
                 st.session_state.vera_custom_chain_key += 1
                 st.session_state.csp_custom_chain_key += 1
                 st.session_state.tsmc_custom_chain_key += 1
+                st.session_state.small_subindustry_custom_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
                 st.rerun()
         except Exception as exc:
@@ -1751,6 +1799,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.vera_custom_chain,
                 st.session_state.csp_custom_chain,
                 st.session_state.tsmc_custom_chain,
+                st.session_state.small_subindustry_custom,
             ),
             ensure_ascii=False,
             indent=2,
@@ -2347,6 +2396,128 @@ with st.expander("CSP 供應鏈", expanded=False):
             )
     else:
         st.info("按「更新 CSP 供應鏈股價」後會顯示走勢與統計。")
+
+with st.expander("小型次產業", expanded=False):
+    st.caption("獨立追蹤 PCB、探針卡、功率半導體、封測等小型次產業；這裡是主題觀察清單，不隸屬單一客戶或單一製程。")
+    with st.form("small_subindustry_form"):
+        small_custom_raw = st.data_editor(
+            st.session_state.small_subindustry_custom,
+            num_rows="dynamic",
+            use_container_width=True,
+            key=f"small_subindustry_editor_{st.session_state.small_subindustry_custom_key}",
+            column_config={
+                "subindustry": st.column_config.TextColumn("次產業"),
+                "category": st.column_config.TextColumn("分類"),
+                "company": st.column_config.TextColumn("公司"),
+                "ticker": st.column_config.TextColumn("Ticker"),
+                "role": st.column_config.TextColumn("供應鏈角色"),
+                "source": st.column_config.TextColumn("來源類型"),
+            },
+        )
+        apply_small_custom = st.form_submit_button("套用自訂小型次產業")
+
+    if apply_small_custom:
+        st.session_state.small_subindustry_custom = ensure_small_subindustry_schema(small_custom_raw)
+        st.success("已套用自訂小型次產業。")
+
+    small_chain = pd.concat(
+        [small_subindustry_chain_df(), ensure_small_subindustry_schema(st.session_state.small_subindustry_custom)],
+        ignore_index=True,
+    )
+    small_chain = small_chain.drop_duplicates(subset=["subindustry", "ticker", "company", "category"], keep="last")
+    small_col1, small_col2, small_col3 = st.columns(3)
+    selected_small_subindustries = small_col1.multiselect(
+        "次產業",
+        sorted(small_chain["subindustry"].dropna().unique().tolist()),
+        default=sorted(small_chain["subindustry"].dropna().unique().tolist()),
+    )
+    selected_small_categories = small_col2.multiselect(
+        "分類",
+        sorted(small_chain["category"].dropna().unique().tolist()),
+        default=sorted(small_chain["category"].dropna().unique().tolist()),
+    )
+    selected_small_sources = small_col3.multiselect(
+        "來源類型",
+        sorted(small_chain["source"].dropna().unique().tolist()),
+        default=sorted(small_chain["source"].dropna().unique().tolist()),
+    )
+
+    filtered_small_chain = small_chain[
+        small_chain["subindustry"].isin(selected_small_subindustries)
+        & small_chain["category"].isin(selected_small_categories)
+        & small_chain["source"].isin(selected_small_sources)
+    ].copy()
+    st.dataframe(
+        filtered_small_chain.rename(
+            columns={
+                "subindustry": "次產業",
+                "category": "分類",
+                "company": "公司",
+                "ticker": "Ticker",
+                "role": "供應鏈角色",
+                "source": "來源類型",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    small_price_col1, small_price_col2 = st.columns(2)
+    small_start = small_price_col1.date_input("小型次產業股價開始日", date(2024, 1, 1))
+    small_end = small_price_col2.date_input("小型次產業股價結束日", date.today())
+    small_tickers = filtered_small_chain["ticker"].dropna().astype(str).str.strip()
+    small_tickers = tuple(t for t in dict.fromkeys(small_tickers) if t)
+
+    if st.button("更新小型次產業股價"):
+        if not small_tickers:
+            st.warning("目前篩選條件下沒有可抓取的 ticker。")
+        else:
+            try:
+                small_prices = download_adjusted_prices(small_tickers, str(small_start), str(small_end))
+                small_prices = small_prices[[ticker for ticker in small_tickers if ticker in small_prices.columns]].dropna(how="all")
+                st.session_state.small_subindustry_prices = small_prices
+                st.success(f"已更新 {len(small_prices.columns):,} 檔小型次產業股價。")
+            except Exception as exc:
+                st.error(f"小型次產業股價更新失敗：{exc}")
+
+    small_prices = st.session_state.get("small_subindustry_prices", pd.DataFrame())
+    if not small_prices.empty:
+        visible_small_tickers = st.multiselect(
+            "顯示小型次產業股票",
+            list(small_prices.columns),
+            default=list(small_prices.columns[: min(10, len(small_prices.columns))]),
+        )
+        if visible_small_tickers:
+            normalized_small = small_prices[visible_small_tickers].dropna(how="all")
+            normalized_small = normalized_small / normalized_small.ffill().bfill().iloc[0]
+            small_fig = go.Figure()
+            for ticker in normalized_small.columns:
+                name = small_chain.loc[small_chain["ticker"] == ticker, "company"].dropna()
+                label = f"{ticker} {name.iloc[0]}" if not name.empty else ticker
+                small_fig.add_trace(go.Scatter(x=normalized_small.index, y=normalized_small[ticker], mode="lines", name=label))
+            small_fig.update_layout(title="小型次產業股價走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(small_fig, use_container_width=True)
+
+            small_meta = (
+                small_chain.groupby("ticker", as_index=False)
+                .agg(
+                    company=("company", "first"),
+                    subindustry=("subindustry", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                    category=("category", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                )
+            )
+            small_summary = price_performance_summary(small_prices[visible_small_tickers])
+            small_summary = small_summary.merge(small_meta, left_on="Ticker", right_on="ticker", how="left")
+            small_summary = small_summary.drop(columns=["ticker"]).rename(columns={"company": "公司", "subindustry": "次產業", "category": "分類"})
+            st.dataframe(format_price_summary(small_summary), use_container_width=True, hide_index=True)
+            st.download_button(
+                "下載小型次產業股價 CSV",
+                small_prices[visible_small_tickers].to_csv().encode("utf-8-sig"),
+                "small_subindustry_prices.csv",
+                "text/csv",
+            )
+    else:
+        st.info("按「更新小型次產業股價」後會顯示走勢與統計。")
 
 with st.expander("台積電供應鏈", expanded=False):
     st.caption("依台積電技術節點追蹤先進製程、CoWoS、SoIC、CoPoS、Glass-core substrate、矽光子與相關設備/材料/封測/檢測族群；watchlist 不代表台積電已揭露實際訂單或分配比例。")
