@@ -569,7 +569,7 @@ def clean_html(text: str) -> str:
 
 
 @st.cache_data(ttl=60 * 30, show_spinner=False)
-def fetch_google_news(query: str, limit: int, language: str = "zh-TW") -> list[dict]:
+def fetch_google_news(query: str, limit: int, language: str = "zh-TW", refresh_id: str = "") -> list[dict]:
     hl = "zh-TW" if language == "zh-TW" else "en-US"
     gl = "TW" if language == "zh-TW" else "US"
     ceid = "TW:zh-Hant" if language == "zh-TW" else "US:en"
@@ -647,12 +647,13 @@ def fetch_research_article_links(
     keyword: str,
     per_source_limit: int,
     language: str,
+    refresh_id: str,
 ) -> pd.DataFrame:
     rows = []
     for source_name, source_query in source_queries:
         query = f"{source_query} {keyword}".strip()
         try:
-            for row in fetch_google_news(query, per_source_limit, language):
+            for row in fetch_google_news(query, per_source_limit, language, refresh_id):
                 row["研究來源"] = source_name
                 rows.append(row)
         except Exception as exc:
@@ -2746,14 +2747,23 @@ with st.expander("產業研究工作台", expanded=True):
             step=1,
             key="research_article_limit",
         )
-        if st.button("更新研究文章搜尋", key="refresh_research_articles"):
+        refresh_col1, refresh_col2 = st.columns([1, 3])
+        if refresh_col1.button("即時更新文章", key="refresh_research_articles"):
             selected_queries = tuple((name, research_source_options[name]) for name in selected_article_sources)
+            st.session_state.research_article_updated_at = pd.Timestamp.now(tz="Asia/Taipei").strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
             st.session_state.research_article_links = fetch_research_article_links(
                 selected_queries,
                 article_keyword,
                 int(article_limit),
                 "zh-TW",
+                st.session_state.research_article_updated_at,
             )
+        if "research_article_updated_at" in st.session_state:
+            refresh_col2.caption(f"最近更新：{st.session_state.research_article_updated_at}，每次按下都會重新抓資料。")
+        else:
+            refresh_col2.caption("按下即時更新文章後，會用目前來源與關鍵字重新抓最新搜尋結果。")
         if "research_article_links" in st.session_state:
             article_links = st.session_state.research_article_links
             st.dataframe(
