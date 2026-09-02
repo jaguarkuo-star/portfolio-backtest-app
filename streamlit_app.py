@@ -119,6 +119,20 @@ def download_analyst_targets(tickers: tuple[str, ...]) -> dict[str, dict[str, fl
     return targets
 
 
+@st.cache_data(ttl=60 * 60 * 8, show_spinner=False)
+def download_trailing_eps(tickers: tuple[str, ...]) -> dict[str, float]:
+    eps = {}
+    for ticker in tickers:
+        try:
+            info = yf.Ticker(ticker).info
+            value = info.get("trailingEps") if isinstance(info, dict) else None
+            if value is not None and pd.notna(value):
+                eps[ticker] = float(value)
+        except Exception:
+            continue
+    return eps
+
+
 def ensure_holdings_schema(holdings: pd.DataFrame) -> pd.DataFrame:
     df = holdings.copy()
     for col, default in {
@@ -139,6 +153,7 @@ def ensure_valuation_schema(valuation: pd.DataFrame, holdings: pd.DataFrame) -> 
     for col, default in {
         "ticker": "",
         "target_price": 0.0,
+        "eps_ttm": 0.0,
         "fcf_per_share": 0.0,
         "growth_1_5": 0.10,
         "terminal_growth": 0.02,
@@ -156,6 +171,7 @@ def ensure_valuation_schema(valuation: pd.DataFrame, holdings: pd.DataFrame) -> 
                 [
                     "ticker",
                     "target_price",
+                    "eps_ttm",
                     "fcf_per_share",
                     "growth_1_5",
                     "terminal_growth",
@@ -170,6 +186,7 @@ def ensure_valuation_schema(valuation: pd.DataFrame, holdings: pd.DataFrame) -> 
 
     defaults = {
         "target_price": 0.0,
+        "eps_ttm": 0.0,
         "fcf_per_share": 0.0,
         "growth_1_5": 0.10,
         "terminal_growth": 0.02,
@@ -187,6 +204,7 @@ def ensure_valuation_schema(valuation: pd.DataFrame, holdings: pd.DataFrame) -> 
             "ticker",
             "currency",
             "target_price",
+            "eps_ttm",
             "fcf_per_share",
             "growth_1_5",
             "terminal_growth",
@@ -251,6 +269,66 @@ def format_count(value) -> str:
         return f"{int(value)}"
     except (TypeError, ValueError):
         return str(value)
+
+
+def parse_pe_multiples(text: str) -> list[float]:
+    values = []
+    for part in text.replace("，", ",").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        try:
+            value = float(part)
+            if value > 0:
+                values.append(value)
+        except ValueError:
+            continue
+    return sorted(dict.fromkeys(values))
+
+
+def pe_river_figure(
+    series: pd.Series,
+    eps_base: float,
+    pe_multiples: list[float],
+    title: str,
+    y_title: str,
+) -> go.Figure:
+    fig = go.Figure()
+    for pe in pe_multiples:
+        fig.add_trace(
+            go.Scatter(
+                x=series.index,
+                y=np.repeat(eps_base * pe, len(series)),
+                mode="lines",
+                name=f"{pe:g}x",
+                line={"width": 1},
+            )
+        )
+    fig.add_trace(
+        go.Scatter(
+            x=series.index,
+            y=series,
+            mode="lines",
+            name="價格/市值",
+            line={"width": 3, "color": "#111827"},
+        )
+    )
+    fig.update_layout(title=title, yaxis_title=y_title, hovermode="x unified")
+    return fig
+
+
+def inferred_position_shares(holdings: pd.DataFrame, latest_prices: dict[str, float]) -> dict[str, float]:
+    df = ensure_holdings_schema(holdings)
+    out = {}
+    for row in df.to_dict("records"):
+        ticker = row["ticker"]
+        shares = float(pd.to_numeric(row["shares"], errors="coerce")) if pd.notna(row["shares"]) else 0.0
+        if shares <= 0:
+            latest = latest_prices.get(ticker, np.nan)
+            amount = float(pd.to_numeric(row["amount"], errors="coerce")) if pd.notna(row["amount"]) else 0.0
+            shares = amount / latest if pd.notna(latest) and latest > 0 else 0.0
+        out[ticker] = shares
+    return out
 
 
 def dcf_two_stage(
@@ -332,6 +410,7 @@ def valuation_settings_payload(valuation: pd.DataFrame) -> list[dict]:
     cols = [
         "ticker",
         "target_price",
+        "eps_ttm",
         "fcf_per_share",
         "growth_1_5",
         "terminal_growth",
@@ -820,8 +899,8 @@ st.session_state.valuation_data = ensure_valuation_schema(st.session_state.valua
 
 with st.expander("估值與研究", expanded=False):
     st.caption("DCF 使用兩階段模型：前 5 年成長率 + 永續成長率。FCF 可以先用每股自由現金流或你想估的每股盈餘替代。")
-    research_col1, research_col2 = st.columns(2)
-    current_tickers = tuple(dict.fromkeys(edited["ticker"].dropna().astype(str).str.strip()))
+    research_col1, research_col2, research_col3 = st.columns(3)
+    current_tickers = tuple(t for t in dict.fromkeys(edited["ticker"].dropna().astype(str).str.strip()) if t)
 
     if research_col1.button("抓最新股價"):
         try:
@@ -841,6 +920,24 @@ with st.expander("估值與研究", expanded=False):
         except Exception as exc:
             st.warning(f"Yahoo 目標價更新失敗：{exc}")
 
+    if research_col3.button("抓 EPS TTM"):
+        try:
+            eps_data = download_trailing_eps(current_tickers)
+            if not eps_data:
+                st.warning("yfinance 沒有回傳可用 EPS，請手動填 EPS TTM。")
+            else:
+                valuation_for_eps = ensure_valuation_schema(st.session_state.valuation_data, st.session_state.editor_data)
+                valuation_for_eps["eps_ttm"] = valuation_for_eps.apply(
+                    lambda r: eps_data.get(r["ticker"], r["eps_ttm"]),
+                    axis=1,
+                )
+                st.session_state.valuation_data = valuation_for_eps
+                st.session_state.valuation_key += 1
+                st.success("已更新 EPS TTM。")
+                st.rerun()
+        except Exception as exc:
+            st.warning(f"EPS 更新失敗：{exc}")
+
     with st.form("valuation_form"):
         valuation_raw = st.data_editor(
             st.session_state.valuation_data,
@@ -853,6 +950,7 @@ with st.expander("估值與研究", expanded=False):
                 "ticker": st.column_config.TextColumn("Ticker"),
                 "currency": st.column_config.TextColumn("幣別"),
                 "target_price": st.column_config.NumberColumn("手動目標價", min_value=0.0, step=1.0),
+                "eps_ttm": st.column_config.NumberColumn("EPS TTM", step=1.0),
                 "fcf_per_share": st.column_config.NumberColumn("每股FCF", min_value=0.0, step=1.0),
                 "growth_1_5": st.column_config.NumberColumn("前5年成長率", step=0.01, format="%.4f"),
                 "terminal_growth": st.column_config.NumberColumn("永續成長率", step=0.005, format="%.4f"),
@@ -876,7 +974,7 @@ with st.expander("估值與研究", expanded=False):
             use_container_width=True,
             key=f"target_reports_editor_{st.session_state.target_reports_key}",
             column_config={
-                "ticker": st.column_config.SelectboxColumn("Ticker", options=list(current_tickers)),
+                "ticker": st.column_config.SelectboxColumn("Ticker", options=list(current_tickers) if current_tickers else [""]),
                 "institution": st.column_config.TextColumn("券商/來源"),
                 "report_date": st.column_config.TextColumn("日期"),
                 "rating": st.column_config.TextColumn("評等"),
@@ -1015,6 +1113,100 @@ with st.expander("估值與研究", expanded=False):
             column_config={"來源連結": st.column_config.LinkColumn("來源連結")},
         )
     st.caption("Yahoo 目標價是摘要資料，不一定含券商明細；若要有可追溯性，請在多筆法人目標價表填入來源連結。")
+
+with st.expander("本益比河流圖", expanded=False):
+    pe_col1, pe_col2, pe_col3 = st.columns(3)
+    river_start = pe_col1.date_input("河流圖開始日", date(2021, 1, 1))
+    river_end = pe_col2.date_input("河流圖結束日", date.today())
+    pe_text = pe_col3.text_input("本益比倍數", "10,15,20,25,30")
+    selected_tickers = st.multiselect("個別公司", list(current_tickers), default=list(current_tickers))
+
+    if st.button("畫本益比河流圖"):
+        pe_multiples = parse_pe_multiples(pe_text)
+        valuation_for_pe = ensure_valuation_schema(st.session_state.valuation_data, st.session_state.editor_data)
+        eps_map = {
+            row["ticker"]: float(row["eps_ttm"])
+            for row in valuation_for_pe.to_dict("records")
+            if pd.notna(row["eps_ttm"]) and float(row["eps_ttm"]) > 0
+        }
+        if not pe_multiples:
+            st.warning("請至少輸入一個有效的本益比倍數，例如 10,15,20,25,30。")
+        elif not eps_map:
+            st.warning("請先在估值與研究區填 EPS TTM，或按「抓 EPS TTM」。")
+        else:
+            try:
+                river_tickers = list(current_tickers)
+                needs_fx = any(
+                    row["currency"] == "USD"
+                    for row in ensure_holdings_schema(st.session_state.editor_data).to_dict("records")
+                )
+                download_tickers = river_tickers + (["TWD=X"] if needs_fx else [])
+                close = download_adjusted_prices(tuple(dict.fromkeys(download_tickers)), str(river_start), str(river_end))
+                latest_prices = {
+                    ticker: float(close[ticker].dropna().iloc[-1])
+                    for ticker in river_tickers
+                    if ticker in close.columns and not close[ticker].dropna().empty
+                }
+                st.session_state.latest_prices.update(latest_prices)
+
+                holdings_now = ensure_holdings_schema(st.session_state.editor_data)
+                position_shares = inferred_position_shares(holdings_now, latest_prices)
+                fx = clean_fx(close["TWD=X"]) if "TWD=X" in close.columns else pd.Series(1.0, index=close.index)
+                portfolio_value = pd.Series(0.0, index=close.index)
+                portfolio_earnings = 0.0
+
+                for row in holdings_now.to_dict("records"):
+                    ticker = row["ticker"]
+                    if ticker not in close.columns:
+                        continue
+                    shares = position_shares.get(ticker, 0.0)
+                    if shares <= 0:
+                        continue
+                    multiplier = fx if row["currency"] == "USD" else 1.0
+                    portfolio_value = portfolio_value.add(close[ticker].ffill() * shares * multiplier, fill_value=0)
+                    eps = eps_map.get(ticker, np.nan)
+                    if pd.notna(eps) and eps > 0:
+                        last_fx = float(fx.dropna().iloc[-1]) if row["currency"] == "USD" and not fx.dropna().empty else 1.0
+                        portfolio_earnings += shares * eps * last_fx
+
+                portfolio_value = portfolio_value.dropna()
+                if portfolio_earnings > 0 and not portfolio_value.empty:
+                    st.plotly_chart(
+                        pe_river_figure(
+                            portfolio_value,
+                            portfolio_earnings,
+                            pe_multiples,
+                            "全部投組本益比河流圖",
+                            "投組市值，台幣",
+                        ),
+                        use_container_width=True,
+                    )
+                    current_port_pe = portfolio_value.iloc[-1] / portfolio_earnings
+                    st.metric("目前投組本益比", f"{current_port_pe:.2f}x")
+                else:
+                    st.warning("投組河流圖需要有效股數或可由金額反推的股數，以及至少一檔有效 EPS。")
+
+                for selected_ticker in selected_tickers:
+                    if selected_ticker not in close.columns:
+                        continue
+                    selected_eps = eps_map.get(selected_ticker, np.nan)
+                    if pd.notna(selected_eps) and selected_eps > 0:
+                        company_price = close[selected_ticker].dropna()
+                        st.plotly_chart(
+                            pe_river_figure(
+                                company_price,
+                                selected_eps,
+                                pe_multiples,
+                                f"{selected_ticker} 本益比河流圖",
+                                "股價，原幣",
+                            ),
+                            use_container_width=True,
+                        )
+                        st.metric(f"{selected_ticker} 目前本益比", f"{company_price.iloc[-1] / selected_eps:.2f}x")
+                    else:
+                        st.warning(f"{selected_ticker} 沒有有效 EPS TTM，無法畫個股河流圖。")
+            except Exception as exc:
+                st.error(f"本益比河流圖產生失敗：{exc}")
 
 if st.button("執行回測", type="primary"):
     with st.spinner("正在連接 yfinance 並計算..."):
