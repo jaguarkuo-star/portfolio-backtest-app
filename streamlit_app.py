@@ -2030,6 +2030,26 @@ def mops_link(ticker: str) -> str:
     return f"https://mops.twse.com.tw/mops/web/t100sb07_1?co_id={quote(code)}"
 
 
+def report_links(name: str, ticker: str) -> dict[str, str]:
+    name = str(name or "").strip()
+    ticker = str(ticker or "").strip()
+    code = tw_stock_code(ticker)
+    if ticker.endswith((".TW", ".TWO")):
+        return {
+            "年報/10-K": f"https://mops.twse.com.tw/mops/web/t57sb01_q5?co_id={quote(code)}",
+            "財報/10-Q": f"https://mops.twse.com.tw/mops/web/t164sb03?co_id={quote(code)}",
+            "法說簡報/IR": mops_link(ticker),
+            "公開資訊/SEC": f"https://mops.twse.com.tw/mops/web/t05st03?co_id={quote(code)}",
+        }
+    query_name = name or ticker
+    return {
+        "年報/10-K": f"https://www.google.com/search?q={quote_plus(query_name + ' investor relations annual report 10-K')}",
+        "財報/10-Q": f"https://www.google.com/search?q={quote_plus(query_name + ' investor relations quarterly results 10-Q')}",
+        "法說簡報/IR": f"https://www.google.com/search?q={quote_plus(query_name + ' investor relations presentation earnings call')}",
+        "公開資訊/SEC": f"https://www.sec.gov/edgar/search/#/q={quote_plus(ticker)}",
+    }
+
+
 def add_twd_values(
     holdings: pd.DataFrame,
     usd_twd: float,
@@ -2800,6 +2820,7 @@ with st.expander("估值與研究", expanded=False):
         preferred_target = manual_mean if pd.notna(manual_mean) else manual_target if manual_target > 0 else yahoo_mean
         upside = preferred_target / latest - 1 if pd.notna(preferred_target) and pd.notna(latest) and latest > 0 else np.nan
         dcf_gap = dcf["fair_value"] / latest - 1 if pd.notna(dcf["fair_value"]) and pd.notna(latest) and latest > 0 else np.nan
+        links = report_links(row["name"], ticker)
         rows.append(
             {
                 "名稱": row["name"],
@@ -2823,7 +2844,10 @@ with st.expander("估值與研究", expanded=False):
                 "Yahoo最高": yahoo_high,
                 "Yahoo分析師數": yahoo_count,
                 "目標價空間": upside,
-                "法說會": mops_link(ticker) if ticker.endswith((".TW", ".TWO")) else "",
+                "年報/10-K": links["年報/10-K"],
+                "財報/10-Q": links["財報/10-Q"],
+                "法說簡報/IR": links["法說簡報/IR"],
+                "公開資訊/SEC": links["公開資訊/SEC"],
             }
         )
 
@@ -2854,7 +2878,23 @@ with st.expander("估值與研究", expanded=False):
         valuation_result,
         use_container_width=True,
         column_config={
-            "法說會": st.column_config.LinkColumn("法說會"),
+            "年報/10-K": st.column_config.LinkColumn("年報/10-K"),
+            "財報/10-Q": st.column_config.LinkColumn("財報/10-Q"),
+            "法說簡報/IR": st.column_config.LinkColumn("法說簡報/IR"),
+            "公開資訊/SEC": st.column_config.LinkColumn("公開資訊/SEC"),
+        },
+    )
+    document_cols = ["名稱", "Ticker", "年報/10-K", "財報/10-Q", "法說簡報/IR", "公開資訊/SEC"]
+    st.markdown("**年報 / 財報 / 法說會簡報入口**")
+    st.dataframe(
+        valuation_result[document_cols],
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "年報/10-K": st.column_config.LinkColumn("年報/10-K"),
+            "財報/10-Q": st.column_config.LinkColumn("財報/10-Q"),
+            "法說簡報/IR": st.column_config.LinkColumn("法說簡報/IR"),
+            "公開資訊/SEC": st.column_config.LinkColumn("公開資訊/SEC"),
         },
     )
     if analyst_targets:
