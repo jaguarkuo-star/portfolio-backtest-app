@@ -38,6 +38,23 @@ MACRO_INDICATORS = {
     "小麥": "ZW=F",
     "美股 S&P 500": "^GSPC",
     "NASDAQ 100": "^NDX",
+    "日本 Nikkei 225": "^N225",
+    "歐洲 Euro Stoxx 50": "^STOXX50E",
+    "英國 FTSE 100": "^FTSE",
+    "新加坡 STI": "^STI",
+    "中國上證指數": "000001.SS",
+    "中國滬深300": "000300.SS",
+    "香港恆生指數": "^HSI",
+    "韓國 KOSPI": "^KS11",
+    "費城半導體": "^SOX",
+    "EUR/USD": "EURUSD=X",
+    "GBP/USD": "GBPUSD=X",
+    "USD/JPY": "JPY=X",
+    "USD/CNH": "CNH=X",
+    "USD/HKD": "HKD=X",
+    "USD/SGD": "SGD=X",
+    "USD/KRW": "KRW=X",
+    "AUD/USD": "AUDUSD=X",
     "美債 3M": "^IRX",
     "美債 2Y": "^UST2Y",
     "美債 5Y": "^FVX",
@@ -1579,6 +1596,15 @@ with st.expander("總經儀表板", expanded=False):
             "銅期貨",
             "美股 S&P 500",
             "NASDAQ 100",
+            "日本 Nikkei 225",
+            "歐洲 Euro Stoxx 50",
+            "英國 FTSE 100",
+            "香港恆生指數",
+            "韓國 KOSPI",
+            "費城半導體",
+            "EUR/USD",
+            "USD/JPY",
+            "USD/CNH",
             "Fed Funds 隱含利率",
         ]
         selected_macro = st.multiselect(
@@ -1594,6 +1620,56 @@ with st.expander("總經儀表板", expanded=False):
                 fig.add_trace(go.Scatter(x=normalized_macro.index, y=normalized_macro[col], mode="lines", name=col))
             fig.update_layout(title="總經指標走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
             st.plotly_chart(fig, use_container_width=True)
+
+        world_index_cols = [
+            col
+            for col in [
+                "美股 S&P 500",
+                "NASDAQ 100",
+                "日本 Nikkei 225",
+                "歐洲 Euro Stoxx 50",
+                "英國 FTSE 100",
+                "新加坡 STI",
+                "中國上證指數",
+                "中國滬深300",
+                "香港恆生指數",
+                "韓國 KOSPI",
+                "費城半導體",
+            ]
+            if col in macro_data.columns
+        ]
+        if world_index_cols:
+            world_indices = macro_data[world_index_cols].dropna(how="all")
+            world_indices = world_indices / world_indices.ffill().bfill().iloc[0]
+            world_fig = go.Figure()
+            for col in world_indices.columns:
+                world_fig.add_trace(go.Scatter(x=world_indices.index, y=world_indices[col], mode="lines", name=col))
+            world_fig.update_layout(title="世界主要股指，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(world_fig, use_container_width=True)
+
+        fx_cols = [
+            col
+            for col in [
+                "USD/TWD",
+                "EUR/USD",
+                "GBP/USD",
+                "USD/JPY",
+                "USD/CNH",
+                "USD/HKD",
+                "USD/SGD",
+                "USD/KRW",
+                "AUD/USD",
+            ]
+            if col in macro_data.columns
+        ]
+        if fx_cols:
+            fx_data = macro_data[fx_cols].dropna(how="all")
+            fx_norm = fx_data / fx_data.ffill().bfill().iloc[0]
+            fx_fig = go.Figure()
+            for col in fx_norm.columns:
+                fx_fig.add_trace(go.Scatter(x=fx_norm.index, y=fx_norm[col], mode="lines", name=col))
+            fx_fig.update_layout(title="世界主要匯率，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(fx_fig, use_container_width=True)
 
         spread_cols = [col for col in ["10Y-2Y 利差", "10Y-3M 利差", "30Y-10Y 利差"] if col in macro_data.columns]
         if spread_cols:
