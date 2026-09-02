@@ -1324,172 +1324,73 @@ with st.expander("估值與研究", expanded=False):
         )
     st.caption("Yahoo 目標價是摘要資料，不一定含券商明細；若要有可追溯性，請在多筆法人目標價表填入來源連結。")
 
-with st.expander("本益比河流圖", expanded=False):
-    st.caption("上市台股 .TW 優先使用 TWSE 官方每日本益比反推 EPS；美股不使用 TWSE，改用 yfinance 歷史 EPS；資料不足時才使用手動 EPS TTM。")
-    pe_col1, pe_col2, pe_col3 = st.columns(3)
-    river_start = pe_col1.date_input("河流圖開始日", date(2021, 1, 1))
-    river_end = pe_col2.date_input("河流圖結束日", date.today())
-    pe_text = pe_col3.text_input("本益比倍數", "10,15,20,25,30")
-    report_lag_days = st.number_input("財報公布延遲天數", min_value=0, max_value=120, value=45, step=5)
-    selected_tickers = st.multiselect("個別公司", list(current_tickers), default=list(current_tickers))
+with st.expander("個股股價資料", expanded=False):
+    price_col1, price_col2 = st.columns(2)
+    price_start = price_col1.date_input("股價資料開始日", date(2021, 1, 1))
+    price_end = price_col2.date_input("股價資料結束日", date.today())
+    selected_tickers = st.multiselect("股票", list(current_tickers), default=list(current_tickers))
+    use_adjusted_price = st.checkbox("使用含息調整價格", value=True)
 
-    if st.button("畫本益比河流圖"):
-        pe_multiples = parse_pe_multiples(pe_text)
-        valuation_for_pe = ensure_valuation_schema(st.session_state.valuation_data, st.session_state.editor_data)
-        manual_eps_map = {
-            row["ticker"]: float(row["eps_ttm"])
-            for row in valuation_for_pe.to_dict("records")
-            if pd.notna(row["eps_ttm"]) and float(row["eps_ttm"]) > 0
-        }
-        if not pe_multiples:
-            st.warning("請至少輸入一個有效的本益比倍數，例如 10,15,20,25,30。")
+    if st.button("顯示個股股價資料"):
+        if not selected_tickers:
+            st.warning("請至少選一檔股票。")
         else:
             try:
-                river_tickers = list(current_tickers)
-                needs_fx = any(
-                    row["currency"] == "USD"
-                    for row in ensure_holdings_schema(st.session_state.editor_data).to_dict("records")
-                )
-                download_tickers = river_tickers + (["TWD=X"] if needs_fx else [])
-                close = download_close_prices(tuple(dict.fromkeys(download_tickers)), str(river_start), str(river_end))
-                latest_prices = {
-                    ticker: float(close[ticker].dropna().iloc[-1])
-                    for ticker in river_tickers
-                    if ticker in close.columns and not close[ticker].dropna().empty
-                }
-                st.session_state.latest_prices.update(latest_prices)
-                official_pe = {
-                    ticker: download_twse_pe_series(ticker, str(river_start), str(river_end))
-                    for ticker in river_tickers
-                    if ticker.endswith(".TW")
-                }
-                historical_eps = download_historical_eps_ttm(tuple(river_tickers))
-
-                holdings_now = ensure_holdings_schema(st.session_state.editor_data)
-                position_shares = inferred_position_shares(holdings_now, latest_prices)
-                fx = clean_fx(close["TWD=X"]) if "TWD=X" in close.columns else pd.Series(1.0, index=close.index)
-                portfolio_value = pd.Series(0.0, index=close.index)
-                portfolio_earnings = pd.Series(0.0, index=close.index)
-                eps_source_rows = []
-
-                for row in holdings_now.to_dict("records"):
-                    ticker = row["ticker"]
-                    if ticker not in close.columns:
-                        continue
-                    shares = position_shares.get(ticker, 0.0)
-                    if shares <= 0:
-                        continue
-                    multiplier = fx if row["currency"] == "USD" else 1.0
-                    portfolio_value = portfolio_value.add(close[ticker].ffill() * shares * multiplier, fill_value=0)
-                    eps_series = eps_series_for_prices(
-                        ticker,
-                        close.index,
-                        close[ticker].ffill(),
-                        official_pe,
-                        historical_eps,
-                        manual_eps_map.get(ticker, 0.0),
-                        int(report_lag_days),
-                    )
-                    valid_eps_count = int(eps_series.dropna().shape[0])
-                    unique_eps_count = int(eps_series.dropna().round(6).nunique())
-                    historical_points = int(historical_eps.get(ticker, pd.Series(dtype=float)).dropna().shape[0])
-                    eps_source_rows.append(
-                        {
-                            "Ticker": ticker,
-                            "EPS來源": "TWSE官方PE反推" if ticker in official_pe and not official_pe[ticker].empty else "歷史12個月滾動TTM" if ticker in historical_eps else "手動EPS TTM" if ticker in manual_eps_map else "缺資料",
-                            "TTM點數": int(official_pe.get(ticker, pd.Series(dtype=float)).dropna().shape[0]) or historical_points,
-                            "TTM不同值": unique_eps_count,
-                            "有效天數": valid_eps_count,
-                            "最新TTM EPS": eps_series.dropna().iloc[-1] if valid_eps_count else np.nan,
-                        }
-                    )
-                    if valid_eps_count:
-                        portfolio_earnings = portfolio_earnings.add(eps_series * shares * multiplier, fill_value=0)
-
-                portfolio_value = portfolio_value.dropna()
-                portfolio_earnings = portfolio_earnings.replace(0, np.nan).dropna()
-                aligned_portfolio = pd.concat({"value": portfolio_value, "earnings": portfolio_earnings}, axis=1).dropna()
-                if not aligned_portfolio.empty:
-                    st.plotly_chart(
-                        pe_river_figure(
-                            aligned_portfolio["value"],
-                            aligned_portfolio["earnings"],
-                            pe_multiples,
-                            "全部投組歷史本益比河流圖",
-                            "投組市值，台幣",
-                        ),
-                        use_container_width=True,
-                    )
-                    current_port_pe = aligned_portfolio["value"].iloc[-1] / aligned_portfolio["earnings"].iloc[-1]
-                    st.metric("目前投組本益比", f"{current_port_pe:.2f}x")
+                if use_adjusted_price:
+                    close = download_adjusted_prices(tuple(dict.fromkeys(selected_tickers)), str(price_start), str(price_end))
                 else:
-                    st.warning("投組河流圖需要有效股數或可由金額反推的股數，以及歷史 EPS TTM 或手動 EPS。")
+                    close = download_close_prices(tuple(dict.fromkeys(selected_tickers)), str(price_start), str(price_end))
+                close = close[[ticker for ticker in selected_tickers if ticker in close.columns]].dropna(how="all")
+                if close.empty:
+                    st.warning("這個區間沒有可用股價資料。")
+                else:
+                    fig = go.Figure()
+                    for ticker in close.columns:
+                        fig.add_trace(go.Scatter(x=close.index, y=close[ticker], mode="lines", name=ticker))
+                    fig.update_layout(title="個股股價走勢", yaxis_title="價格", hovermode="x unified")
+                    st.plotly_chart(fig, use_container_width=True)
 
-                eps_source = pd.DataFrame(eps_source_rows)
-                if not eps_source.empty:
-                    eps_source["最新TTM EPS"] = eps_source["最新TTM EPS"].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
-                    st.dataframe(eps_source, use_container_width=True)
+                    normalized = close / close.ffill().bfill().iloc[0]
+                    norm_fig = go.Figure()
+                    for ticker in normalized.columns:
+                        norm_fig.add_trace(go.Scatter(x=normalized.index, y=normalized[ticker], mode="lines", name=ticker))
+                    norm_fig.update_layout(title="個股報酬走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+                    st.plotly_chart(norm_fig, use_container_width=True)
 
-                eps_fig = go.Figure()
-                for selected_ticker in selected_tickers:
-                    if selected_ticker not in close.columns:
-                        continue
-                    eps_series = eps_series_for_prices(
-                        selected_ticker,
-                        close[selected_ticker].dropna().index,
-                        close[selected_ticker].dropna(),
-                        official_pe,
-                        historical_eps,
-                        manual_eps_map.get(selected_ticker, 0.0),
-                        int(report_lag_days),
-                    ).dropna()
-                    if not eps_series.empty:
-                        eps_fig.add_trace(
-                            go.Scatter(
-                                x=eps_series.index,
-                                y=eps_series,
-                                mode="lines",
-                                name=selected_ticker,
-                                line_shape="hv",
-                            )
+                    returns = close.pct_change(fill_method=None)
+                    rows = []
+                    for ticker in close.columns:
+                        series = close[ticker].dropna()
+                        ret = returns[ticker].dropna()
+                        if series.empty:
+                            continue
+                        years = max((series.index[-1] - series.index[0]).days / 365.25, 1 / 365.25)
+                        total_return = series.iloc[-1] / series.iloc[0] - 1 if series.iloc[0] else np.nan
+                        cagr = (series.iloc[-1] / series.iloc[0]) ** (1 / years) - 1 if series.iloc[0] > 0 else np.nan
+                        drawdown = series / series.cummax() - 1
+                        rows.append(
+                            {
+                                "Ticker": ticker,
+                                "起始日": series.index[0].strftime("%Y-%m-%d"),
+                                "結束日": series.index[-1].strftime("%Y-%m-%d"),
+                                "起始價": series.iloc[0],
+                                "最新價": series.iloc[-1],
+                                "區間報酬": total_return,
+                                "年化報酬": cagr,
+                                "年化波動": ret.std(ddof=1) * math.sqrt(TRADING_DAYS) if len(ret) > 1 else np.nan,
+                                "最大回撤": drawdown.min(),
+                            }
                         )
-                if eps_fig.data:
-                    eps_fig.update_layout(title="歷史 12 個月滾動 TTM EPS", yaxis_title="TTM EPS", hovermode="x unified")
-                    st.plotly_chart(eps_fig, use_container_width=True)
 
-                for selected_ticker in selected_tickers:
-                    if selected_ticker not in close.columns:
-                        continue
-                    company_price = close[selected_ticker].dropna()
-                    selected_eps = eps_series_for_prices(
-                        selected_ticker,
-                        company_price.index,
-                        company_price,
-                        official_pe,
-                        historical_eps,
-                        manual_eps_map.get(selected_ticker, 0.0),
-                        int(report_lag_days),
-                    )
-                    aligned_company = pd.concat({"price": company_price, "eps": selected_eps}, axis=1).dropna()
-                    if not aligned_company.empty:
-                        st.plotly_chart(
-                            pe_river_figure(
-                                aligned_company["price"],
-                                aligned_company["eps"],
-                                pe_multiples,
-                                f"{selected_ticker} 歷史本益比河流圖",
-                                "股價，原幣",
-                            ),
-                            use_container_width=True,
-                        )
-                        st.metric(
-                            f"{selected_ticker} 目前本益比",
-                            f"{aligned_company['price'].iloc[-1] / aligned_company['eps'].iloc[-1]:.2f}x",
-                        )
-                    else:
-                        st.warning(f"{selected_ticker} 沒有有效歷史 EPS TTM 或手動 EPS，無法畫個股河流圖。")
+                    price_summary = pd.DataFrame(rows)
+                    for col in ["起始價", "最新價"]:
+                        price_summary[col] = price_summary[col].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
+                    for col in ["區間報酬", "年化報酬", "年化波動", "最大回撤"]:
+                        price_summary[col] = price_summary[col].map(lambda x: "" if pd.isna(x) else f"{x:.2%}")
+                    st.dataframe(price_summary, use_container_width=True)
+                    st.download_button("下載個股股價 CSV", close.to_csv().encode("utf-8"), "stock_prices.csv", "text/csv")
             except Exception as exc:
-                st.error(f"本益比河流圖產生失敗：{exc}")
+                st.error(f"個股股價資料產生失敗：{exc}")
 
 if st.button("執行回測", type="primary"):
     with st.spinner("正在連接 yfinance 並計算..."):
