@@ -75,20 +75,20 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "載板/PCB", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "key wafer and chip partner / substrate exposure", "source": "NVIDIA official"},
     {"category": "載板/PCB", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "PCB/substrate exposure", "source": "industry map"},
     {"category": "載板/PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB exposure", "source": "industry map"},
-    {"category": "主板/配卡/I/O board", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
+    {"category": "主板/配卡/I/O board", "company": "博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
     {"category": "主板/配卡/I/O board", "company": "Catcher 可成", "ticker": "2474.TW", "role": "MGX mechanical / structural component supply-chain watchlist", "source": "user watchlist"},
     {"category": "背板/PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server backplane / PCB exposure", "source": "industry map"},
-    {"category": "背板/PCB", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "AI server backplane / board exposure", "source": "user watchlist"},
-    {"category": "背板/PCB", "company": "HannStar Board 瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
-    {"category": "背板/PCB", "company": "Tripod 健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
-    {"category": "背板/PCB", "company": "Compeq 華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
-    {"category": "CCL/材料", "company": "Elite Material 台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
-    {"category": "CCL/材料", "company": "ITEQ 聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"category": "背板/PCB", "company": "博智", "ticker": "8155.TWO", "role": "AI server backplane / board exposure", "source": "user watchlist"},
+    {"category": "背板/PCB", "company": "瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"category": "背板/PCB", "company": "健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"category": "背板/PCB", "company": "華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
+    {"category": "CCL/材料", "company": "台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"category": "CCL/材料", "company": "聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
     {"category": "HBM 記憶體", "company": "SK hynix", "ticker": "000660.KS", "role": "HBM supplier", "source": "industry reports"},
     {"category": "HBM 記憶體", "company": "Samsung Electronics", "ticker": "005930.KS", "role": "HBM supplier", "source": "industry reports"},
     {"category": "HBM 記憶體", "company": "Micron", "ticker": "MU", "role": "HBM supplier", "source": "industry reports"},
     {"category": "系統/機櫃組裝", "company": "Foxconn 鴻海", "ticker": "2317.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
-    {"category": "系統/機櫃組裝", "company": "Quanta 廣達/QCT 雲達", "ticker": "2382.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
+    {"category": "系統/機櫃組裝", "company": "廣達/QCT 雲達", "ticker": "2382.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "Wistron 緯創", "ticker": "3231.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "Wiwynn 緯穎", "ticker": "6669.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "Inventec 英業達", "ticker": "2356.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
@@ -97,11 +97,11 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "系統/機櫃組裝", "company": "ASUS 華碩", "ticker": "2357.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "Compal 仁寶", "ticker": "2324.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
     {"category": "系統/機櫃組裝", "company": "MSI 微星", "ticker": "2377.TW", "role": "Vera Rubin system manufacturing partner", "source": "NVIDIA official"},
-    {"category": "機櫃/機構件", "company": "Chenbro 勤誠", "ticker": "8210.TW", "role": "AI server chassis / rack mechanical exposure", "source": "industry watchlist"},
-    {"category": "機櫃/機構件", "company": "AIC 營邦", "ticker": "3693.TWO", "role": "Vera Rubin system manufacturing partner / chassis and server platform exposure", "source": "NVIDIA official"},
-    {"category": "散熱/液冷", "company": "Auras 雙鴻", "ticker": "3324.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
-    {"category": "散熱/液冷", "company": "AVC 奇鋐", "ticker": "3017.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
-    {"category": "散熱/液冷", "company": "Jentech 健策", "ticker": "3653.TW", "role": "thermal module / cooling exposure", "source": "industry map"},
+    {"category": "機櫃/機構件", "company": "勤誠", "ticker": "8210.TW", "role": "AI server chassis / rack mechanical exposure", "source": "industry watchlist"},
+    {"category": "機櫃/機構件", "company": "營邦", "ticker": "3693.TWO", "role": "Vera Rubin system manufacturing partner / chassis and server platform exposure", "source": "NVIDIA official"},
+    {"category": "散熱/液冷", "company": "雙鴻", "ticker": "3324.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
+    {"category": "散熱/液冷", "company": "奇鋐", "ticker": "3017.TW", "role": "AI server cooling / liquid cooling exposure", "source": "industry map"},
+    {"category": "散熱/液冷", "company": "健策", "ticker": "3653.TW", "role": "thermal module / cooling exposure", "source": "industry map"},
     {"category": "電源", "company": "Delta 台達電", "ticker": "2308.TW", "role": "AI server power exposure", "source": "industry map"},
     {"category": "電源", "company": "Lite-On 光寶科", "ticker": "2301.TW", "role": "power supply exposure", "source": "industry map"},
     {"category": "網通/交換器", "company": "Accton 智邦", "ticker": "2345.TW", "role": "data center switch / networking exposure", "source": "industry map"},
@@ -303,26 +303,26 @@ TSMC_SUPPLY_CHAIN = [
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "蝕刻/沉積設備", "company": "Lam Research", "ticker": "LRCX", "role": "etch and deposition equipment exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "蝕刻/沉積設備", "company": "ASM International", "ticker": "ASMI.AS", "role": "ALD / epitaxy / advanced deposition equipment exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "Tokyo Electron", "ticker": "8035.T", "role": "coater/developer, etch and deposition equipment exposure", "source": "industry watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "Grand Process 弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "Scientech 辛耘", "ticker": "3583.TW", "role": "semiconductor equipment, wet process and wafer reclaim exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "GPM 均豪", "ticker": "5443.TWO", "role": "wet process / automation equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "C Sun 志聖", "ticker": "2467.TW", "role": "thermal process / semiconductor equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "GlobalWafers 環球晶", "ticker": "6488.TWO", "role": "silicon wafer substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "辛耘", "ticker": "3583.TW", "role": "semiconductor equipment, wet process and wafer reclaim exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "均豪", "ticker": "5443.TWO", "role": "wet process / automation equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "志聖", "ticker": "2467.TW", "role": "thermal process / semiconductor equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "環球晶", "ticker": "6488.TWO", "role": "silicon wafer substrate exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "Shin-Etsu Chemical", "ticker": "4063.T", "role": "silicon wafer and semiconductor materials exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "SUMCO", "ticker": "3436.T", "role": "silicon wafer exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "光阻/化學材料", "company": "JSR", "ticker": "4185.T", "role": "photoresist / semiconductor materials exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "光阻/化學材料", "company": "TOK", "ticker": "4186.T", "role": "photoresist and lithography materials exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "特用氣體/材料", "company": "Linde", "ticker": "LIN", "role": "semiconductor industrial gas exposure", "source": "industry watchlist"},
     {"technology_node": "先進製程 N2/N3/N4/N5", "category": "特用氣體/材料", "company": "Air Liquide", "ticker": "AI.PA", "role": "semiconductor industrial gas exposure", "source": "industry watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "耗材/載具", "company": "Gudeng 家登", "ticker": "3680.TW", "role": "EUV pod / reticle carrier / wafer handling exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "耗材/材料", "company": "Kinik 中砂", "ticker": "1560.TW", "role": "CMP conditioner / diamond disk / semiconductor consumables exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "再生晶圓", "company": "PSMC 昇陽半導體", "ticker": "8028.TW", "role": "wafer reclaim / test wafer exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "United Integrated Services 聖暉", "ticker": "5536.TW", "role": "semiconductor cleanroom / facility engineering exposure", "source": "industry watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "Acter 亞翔", "ticker": "6139.TW", "role": "semiconductor cleanroom / facility engineering exposure", "source": "industry watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "Marketech 帆宣", "ticker": "6196.TW", "role": "semiconductor facility system integration / tool hookup exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "L&K Engineering 漢唐", "ticker": "2404.TW", "role": "cleanroom / facility engineering exposure", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "AMC 意德士", "ticker": "7556.TWO", "role": "AMC monitoring / contamination control watchlist", "source": "user watchlist"},
-    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "Shian Yih 翔名", "ticker": "8091.TWO", "role": "vacuum chamber / precision component watchlist", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "耗材/載具", "company": "家登", "ticker": "3680.TW", "role": "EUV pod / reticle carrier / wafer handling exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "耗材/材料", "company": "中砂", "ticker": "1560.TW", "role": "CMP conditioner / diamond disk / semiconductor consumables exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "再生晶圓", "company": "昇陽半導體", "ticker": "8028.TW", "role": "wafer reclaim / test wafer exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "聖暉", "ticker": "5536.TW", "role": "semiconductor cleanroom / facility engineering exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "亞翔", "ticker": "6139.TW", "role": "semiconductor cleanroom / facility engineering exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "帆宣", "ticker": "6196.TW", "role": "semiconductor facility system integration / tool hookup exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "漢唐", "ticker": "2404.TW", "role": "cleanroom / facility engineering exposure", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "意德士", "ticker": "7556.TWO", "role": "AMC monitoring / contamination control watchlist", "source": "user watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "翔名", "ticker": "8091.TWO", "role": "vacuum chamber / precision component watchlist", "source": "user watchlist"},
 
     {"technology_node": "CoWoS", "category": "先進封裝", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "CoWoS platform and capacity bottleneck", "source": "TSMC official"},
     {"technology_node": "CoWoS", "category": "封測", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "advanced packaging / SPIL ecosystem exposure", "source": "industry watchlist"},
@@ -335,29 +335,29 @@ TSMC_SUPPLY_CHAIN = [
     {"technology_node": "CoWoS", "category": "封裝設備", "company": "Disco", "ticker": "6146.T", "role": "wafer dicing / grinding equipment exposure", "source": "industry watchlist"},
     {"technology_node": "CoWoS", "category": "封裝設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced packaging equipment watchlist", "source": "industry watchlist"},
     {"technology_node": "CoWoS", "category": "封裝設備", "company": "BESI", "ticker": "BESI.AS", "role": "hybrid bonding / advanced packaging equipment exposure", "source": "industry watchlist"},
-    {"technology_node": "CoWoS", "category": "封裝設備", "company": "Wan Run 萬潤", "ticker": "6187.TWO", "role": "semiconductor automation / advanced packaging equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "封裝設備", "company": "Scientech 辛耘", "ticker": "3583.TW", "role": "advanced packaging / wet process equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "封裝設備", "company": "Grand Process 弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment for advanced packaging watchlist", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "封裝設備", "company": "GPM 均豪", "ticker": "5443.TWO", "role": "automation / wet process equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "封裝設備", "company": "GMM 均華", "ticker": "6640.TWO", "role": "advanced packaging equipment / pick-and-place watchlist", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "萬潤", "ticker": "6187.TWO", "role": "semiconductor automation / advanced packaging equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "辛耘", "ticker": "3583.TW", "role": "advanced packaging / wet process equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment for advanced packaging watchlist", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "均豪", "ticker": "5443.TWO", "role": "automation / wet process equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "均華", "ticker": "6640.TWO", "role": "advanced packaging equipment / pick-and-place watchlist", "source": "user watchlist"},
     {"technology_node": "CoWoS", "category": "檢測/測試", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "AI chip wafer sort / final test exposure", "source": "industry watchlist"},
     {"technology_node": "CoWoS", "category": "檢測/測試", "company": "Advantest", "ticker": "6857.T", "role": "ATE exposure for advanced logic and HBM-linked testing", "source": "industry watchlist"},
     {"technology_node": "CoWoS", "category": "檢測/測試", "company": "Teradyne", "ticker": "TER", "role": "ATE exposure", "source": "industry watchlist"},
-    {"technology_node": "CoWoS", "category": "檢測/測試", "company": "Hon Precision 鴻勁", "ticker": "7769.TW", "role": "test handler / semiconductor automation exposure", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "測試介面", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "測試介面", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
-    {"technology_node": "CoWoS", "category": "測試介面", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "檢測/測試", "company": "鴻勁", "ticker": "7769.TW", "role": "test handler / semiconductor automation exposure", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "測試介面", "company": "精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "測試介面", "company": "穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "測試介面", "company": "旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
 
     {"technology_node": "SoIC", "category": "3D封裝/混合鍵合", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "SoIC 3D silicon stacking platform", "source": "TSMC official"},
     {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "BESI", "ticker": "BESI.AS", "role": "hybrid bonding equipment exposure", "source": "industry watchlist"},
     {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "ASM International", "ticker": "ASMI.AS", "role": "advanced deposition / hybrid bonding process ecosystem exposure", "source": "industry watchlist"},
     {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced bonding equipment watchlist", "source": "industry watchlist"},
-    {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "Wan Run 萬潤", "ticker": "6187.TWO", "role": "semiconductor automation / advanced packaging equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "GMM 均華", "ticker": "6640.TWO", "role": "advanced packaging equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "萬潤", "ticker": "6187.TWO", "role": "semiconductor automation / advanced packaging equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "均華", "ticker": "6640.TWO", "role": "advanced packaging equipment watchlist", "source": "user watchlist"},
     {"technology_node": "SoIC", "category": "量測/檢測設備", "company": "KLA", "ticker": "KLAC", "role": "overlay, inspection and metrology for 3D integration", "source": "industry watchlist"},
     {"technology_node": "SoIC", "category": "量測/檢測設備", "company": "Onto Innovation", "ticker": "ONTO", "role": "advanced packaging metrology / inspection exposure", "source": "industry watchlist"},
-    {"technology_node": "SoIC", "category": "濕製程/清洗", "company": "Grand Process 弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "SoIC", "category": "濕製程/清洗", "company": "Scientech 辛耘", "ticker": "3583.TW", "role": "semiconductor equipment / wafer handling and process watchlist", "source": "user watchlist"},
+    {"technology_node": "SoIC", "category": "濕製程/清洗", "company": "弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "SoIC", "category": "濕製程/清洗", "company": "辛耘", "ticker": "3583.TW", "role": "semiconductor equipment / wafer handling and process watchlist", "source": "user watchlist"},
     {"technology_node": "SoIC", "category": "封測", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "3D packaging ecosystem exposure", "source": "industry watchlist"},
 
     {"technology_node": "COUPE", "category": "SoIC/矽光子整合", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "compact universal photonics engine roadmap for Si photonics integration", "source": "TSMC official"},
@@ -375,16 +375,16 @@ TSMC_SUPPLY_CHAIN = [
     {"technology_node": "CoPoS", "category": "面板級/大尺寸封裝", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "CoPoS / panel-level advanced packaging roadmap exposure", "source": "TrendForce / industry reports"},
     {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "Applied Materials", "ticker": "AMAT", "role": "large-panel packaging process equipment exposure", "source": "industry watchlist"},
     {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced packaging equipment watchlist", "source": "industry watchlist"},
-    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "Wan Run 萬潤", "ticker": "6187.TWO", "role": "panel-level packaging automation watchlist", "source": "user watchlist"},
-    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "GPM 均豪", "ticker": "5443.TWO", "role": "wet process / large-format process equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "GMM 均華", "ticker": "6640.TWO", "role": "advanced packaging equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "C Sun 志聖", "ticker": "2467.TW", "role": "thermal process / drying and curing equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "萬潤", "ticker": "6187.TWO", "role": "panel-level packaging automation watchlist", "source": "user watchlist"},
+    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "均豪", "ticker": "5443.TWO", "role": "wet process / large-format process equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "均華", "ticker": "6640.TWO", "role": "advanced packaging equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "志聖", "ticker": "2467.TW", "role": "thermal process / drying and curing equipment watchlist", "source": "user watchlist"},
     {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "Innolux 群創", "ticker": "3481.TW", "role": "panel-level packaging / glass-related watchlist", "source": "industry watchlist"},
     {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "AUO 友達", "ticker": "2409.TW", "role": "panel-level packaging / glass-related watchlist", "source": "industry watchlist"},
-    {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "GIS 業成", "ticker": "6456.TW", "role": "large-panel process / module assembly watchlist", "source": "industry watchlist"},
+    {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "業成", "ticker": "6456.TW", "role": "large-panel process / module assembly watchlist", "source": "industry watchlist"},
     {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "ZDT 臻鼎-KY", "ticker": "4958.TW", "role": "advanced PCB / substrate and panel-level packaging watchlist", "source": "ZDT official / user watchlist"},
-    {"technology_node": "CoPoS", "category": "廠務/工程", "company": "Marketech 帆宣", "ticker": "6196.TW", "role": "facility system integration / tool hookup watchlist", "source": "user watchlist"},
-    {"technology_node": "CoPoS", "category": "廠務/工程", "company": "L&K Engineering 漢唐", "ticker": "2404.TW", "role": "cleanroom / facility engineering exposure", "source": "user watchlist"},
+    {"technology_node": "CoPoS", "category": "廠務/工程", "company": "帆宣", "ticker": "6196.TW", "role": "facility system integration / tool hookup watchlist", "source": "user watchlist"},
+    {"technology_node": "CoPoS", "category": "廠務/工程", "company": "漢唐", "ticker": "2404.TW", "role": "cleanroom / facility engineering exposure", "source": "user watchlist"},
 
     {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Intel", "ticker": "INTC", "role": "glass substrate technology roadmap reference", "source": "industry reports"},
     {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Corning", "ticker": "GLW", "role": "precision glass / advanced substrate material exposure", "source": "industry watchlist"},
@@ -395,10 +395,10 @@ TSMC_SUPPLY_CHAIN = [
     {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "ZDT 臻鼎-KY", "ticker": "4958.TW", "role": "advanced PCB / IC substrate watchlist", "source": "ZDT official / user watchlist"},
     {"technology_node": "Glass-core substrate", "category": "玻璃/面板", "company": "Innolux 群創", "ticker": "3481.TW", "role": "glass process / panel-level packaging watchlist", "source": "industry watchlist"},
     {"technology_node": "Glass-core substrate", "category": "玻璃/面板", "company": "AUO 友達", "ticker": "2409.TW", "role": "glass process / panel-level packaging watchlist", "source": "industry watchlist"},
-    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "GPM 均豪", "ticker": "5443.TWO", "role": "wet process / glass via process equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "Wan Run 萬潤", "ticker": "6187.TWO", "role": "large-format substrate automation watchlist", "source": "user watchlist"},
-    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "C Sun 志聖", "ticker": "2467.TW", "role": "thermal process / curing equipment watchlist", "source": "user watchlist"},
-    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "Grand Process 弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "均豪", "ticker": "5443.TWO", "role": "wet process / glass via process equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "萬潤", "ticker": "6187.TWO", "role": "large-format substrate automation watchlist", "source": "user watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "志聖", "ticker": "2467.TW", "role": "thermal process / curing equipment watchlist", "source": "user watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "TGV/玻璃加工設備", "company": "弘塑", "ticker": "3131.TWO", "role": "wet process / cleaning equipment watchlist", "source": "user watchlist"},
 
     {"technology_node": "矽光子/CPO", "category": "矽光子", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "silicon photonics / advanced optical packaging exposure", "source": "TSMC / NVIDIA ecosystem"},
     {"technology_node": "矽光子/CPO", "category": "光源/光元件", "company": "Lumentum", "ticker": "LITE", "role": "external laser source exposure", "source": "industry watchlist"},
@@ -412,31 +412,31 @@ TSMC_SUPPLY_CHAIN = [
 
 
 SMALL_SUBINDUSTRY_CHAIN = [
-    {"subindustry": "矽光子", "category": "光學鏡頭/精密光學", "company": "Largan 大立光", "ticker": "3008.TW", "role": "precision optics / optical alignment watchlist", "source": "user watchlist"},
-    {"subindustry": "矽光子", "category": "光學鏡頭/精密光學", "company": "GSEO 玉晶光", "ticker": "3406.TW", "role": "precision optics / optical component watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光學鏡頭/精密光學", "company": "大立光", "ticker": "3008.TW", "role": "precision optics / optical alignment watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光學鏡頭/精密光學", "company": "玉晶光", "ticker": "3406.TW", "role": "precision optics / optical component watchlist", "source": "user watchlist"},
     {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "LandMark Optoelectronics 聯亞", "ticker": "3081.TWO", "role": "InP laser / optical component watchlist", "source": "industry watchlist"},
     {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "Visual Photonics 華星光", "ticker": "4979.TWO", "role": "optical transceiver / laser component watchlist", "source": "industry watchlist"},
     {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "Browave 波若威", "ticker": "3163.TWO", "role": "fiber connection / optical interconnect watchlist", "source": "industry watchlist"},
     {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "PCL 上詮", "ticker": "3363.TWO", "role": "fiber array / optical passive component watchlist", "source": "industry watchlist"},
-    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "AOI-KY 光聖", "ticker": "6442.TW", "role": "optical communication module / silicon photonics watchlist", "source": "user watchlist"},
-    {"subindustry": "矽光子", "category": "光通訊/光元件", "company": "U-Ming 聯鈞", "ticker": "3450.TW", "role": "optical communication component / laser packaging watchlist", "source": "user watchlist"},
-    {"subindustry": "矽光子", "category": "光通訊/光元件", "company": "Genius 源傑科技", "ticker": "6690.TW", "role": "optical transceiver / silicon photonics component watchlist", "source": "user watchlist"},
-    {"subindustry": "矽光子", "category": "磊晶/光元件", "company": "BEST 元澄半導體", "ticker": "7415.TWO", "role": "compound semiconductor / silicon photonics epitaxy watchlist", "source": "TPEX / user watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光收發", "company": "光聖", "ticker": "6442.TW", "role": "optical communication module / silicon photonics watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光元件", "company": "聯鈞", "ticker": "3450.TW", "role": "optical communication component / laser packaging watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "光通訊/光元件", "company": "源傑科技", "ticker": "7917.TWO", "role": "optical transceiver / silicon photonics component watchlist", "source": "user watchlist"},
+    {"subindustry": "矽光子", "category": "磊晶/光元件", "company": "元澄半導體", "ticker": "7415.TWO", "role": "compound semiconductor / silicon photonics epitaxy watchlist", "source": "TPEX / user watchlist"},
     {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Gold Circuit 金像電", "ticker": "2368.TW", "role": "AI server PCB / backplane exposure", "source": "industry watchlist"},
-    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Bojen 博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
-    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "HannStar Board 瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
-    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Tripod 健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
-    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "Compeq 華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "博智", "ticker": "8155.TWO", "role": "server motherboard, adapter card and I/O board exposure", "source": "user watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "瀚宇博", "ticker": "5469.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "健鼎", "ticker": "3044.TW", "role": "server PCB / backplane watchlist", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "AI伺服器PCB", "company": "華通", "ticker": "2313.TW", "role": "PCB / server board watchlist", "source": "industry watchlist"},
     {"subindustry": "PCB", "category": "高階IC載板", "company": "ZDT 臻鼎-KY", "ticker": "4958.TW", "role": "advanced PCB / IC substrate watchlist", "source": "ZDT official / user watchlist"},
     {"subindustry": "PCB", "category": "高階IC載板", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "ABF substrate and advanced substrate exposure", "source": "industry watchlist"},
     {"subindustry": "PCB", "category": "高階IC載板", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "ABF package substrate exposure", "source": "industry watchlist"},
     {"subindustry": "PCB", "category": "高階IC載板", "company": "Nan Ya PCB 南電", "ticker": "8046.TW", "role": "ABF substrate exposure", "source": "industry watchlist"},
-    {"subindustry": "PCB", "category": "CCL/材料", "company": "Elite Material 台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
-    {"subindustry": "PCB", "category": "CCL/材料", "company": "ITEQ 聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
-    {"subindustry": "PCB", "category": "CCL/材料", "company": "Taiwan Union 台光電", "ticker": "2383.TW", "role": "high-speed copper clad laminate exposure", "source": "industry watchlist"},
-    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
-    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
-    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
+    {"subindustry": "PCB", "category": "CCL/材料", "company": "台燿", "ticker": "6274.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "CCL/材料", "company": "聯茂", "ticker": "6213.TW", "role": "high-speed CCL material exposure", "source": "industry watchlist"},
+    {"subindustry": "PCB", "category": "CCL/材料", "company": "台光電", "ticker": "2383.TW", "role": "high-speed copper clad laminate exposure", "source": "industry watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
+    {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
     {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "FormFactor", "ticker": "FORM", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
     {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "Japan Electronic Materials", "ticker": "6855.T", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
     {"subindustry": "探針卡", "category": "探針卡/測試介面", "company": "Micronics Japan", "ticker": "6871.T", "role": "probe card / test socket exposure", "source": "industry watchlist"},
@@ -445,11 +445,11 @@ SMALL_SUBINDUSTRY_CHAIN = [
     {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Analog Devices", "ticker": "ADI", "role": "power / mixed-signal silicon exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Onsemi", "ticker": "ON", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Diodes", "ticker": "DIOD", "role": "discrete / analog power semiconductor watchlist", "source": "user watchlist"},
-    {"subindustry": "功率半導體", "category": "功率元件", "company": "PANJIT 強茂", "ticker": "2481.TW", "role": "rectifier diode / MOSFET / power discrete IDM exposure", "source": "industry reports / user watchlist"},
-    {"subindustry": "功率半導體", "category": "功率元件", "company": "Lite-On Semi 德微", "ticker": "3675.TWO", "role": "Schottky diode / rectifier / MOSFET exposure", "source": "industry reports / user watchlist"},
-    {"subindustry": "功率半導體", "category": "功率元件", "company": "Taiwan Semi 台半", "ticker": "5425.TWO", "role": "automotive diode / MOSFET / power discrete exposure", "source": "industry reports / user watchlist"},
-    {"subindustry": "功率半導體", "category": "功率元件", "company": "A-Power 富鼎", "ticker": "8261.TW", "role": "MOSFET / power semiconductor exposure", "source": "industry reports / user watchlist"},
-    {"subindustry": "功率半導體", "category": "導線架/散熱材料", "company": "SDI 順德", "ticker": "2351.TW", "role": "lead frame / power module material exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "強茂", "ticker": "2481.TW", "role": "rectifier diode / MOSFET / power discrete IDM exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "德微", "ticker": "3675.TWO", "role": "Schottky diode / rectifier / MOSFET exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "台半", "ticker": "5425.TWO", "role": "automotive diode / MOSFET / power discrete exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "功率元件", "company": "富鼎", "ticker": "8261.TW", "role": "MOSFET / power semiconductor exposure", "source": "industry reports / user watchlist"},
+    {"subindustry": "功率半導體", "category": "導線架/散熱材料", "company": "順德", "ticker": "2351.TW", "role": "lead frame / power module material exposure", "source": "industry reports / user watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Alpha and Omega Semi", "ticker": "AOSL", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Infineon", "ticker": "IFX.DE", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "功率元件", "company": "Renesas", "ticker": "6723.T", "role": "power and mixed-signal semiconductor exposure", "source": "industry watchlist"},
@@ -457,14 +457,14 @@ SMALL_SUBINDUSTRY_CHAIN = [
     {"subindustry": "功率半導體", "category": "功率元件", "company": "STMicroelectronics", "ticker": "STM", "role": "power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "GaN/寬能隙", "company": "Navitas", "ticker": "NVTS", "role": "GaN power semiconductor exposure", "source": "industry watchlist"},
     {"subindustry": "功率半導體", "category": "電源轉換IC", "company": "Power Integrations", "ticker": "POWI", "role": "power conversion semiconductor exposure", "source": "industry watchlist"},
-    {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "Silergy 矽力-KY", "ticker": "6415.TW", "role": "power management IC exposure", "source": "industry watchlist"},
+    {"subindustry": "功率半導體", "category": "功率IC/類比", "company": "矽力-KY", "ticker": "6415.TW", "role": "power management IC exposure", "source": "industry watchlist"},
     {"subindustry": "封測", "category": "封測/OSAT", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "OSAT / advanced packaging exposure", "source": "industry watchlist"},
     {"subindustry": "封測", "category": "封測/OSAT", "company": "Amkor", "ticker": "AMKR", "role": "OSAT / advanced packaging and test exposure", "source": "industry watchlist"},
-    {"subindustry": "封測", "category": "封測/OSAT", "company": "Powertech 力成", "ticker": "6239.TW", "role": "memory and logic packaging / test exposure", "source": "industry watchlist"},
-    {"subindustry": "封測", "category": "封測/OSAT", "company": "ChipMOS 南茂", "ticker": "8150.TW", "role": "semiconductor assembly and test exposure", "source": "industry watchlist"},
-    {"subindustry": "封測", "category": "封測/OSAT", "company": "Greatek Electronics 矽格", "ticker": "6257.TW", "role": "IC testing and backend service watchlist", "source": "industry watchlist"},
-    {"subindustry": "封測", "category": "封測/OSAT", "company": "Walton 華東", "ticker": "8110.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
-    {"subindustry": "封測", "category": "封測/OSAT", "company": "Orient Semi 華泰", "ticker": "2329.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "力成", "ticker": "6239.TW", "role": "memory and logic packaging / test exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "南茂", "ticker": "8150.TW", "role": "semiconductor assembly and test exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "矽格", "ticker": "6257.TW", "role": "IC testing and backend service watchlist", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "華東", "ticker": "8110.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
+    {"subindustry": "封測", "category": "封測/OSAT", "company": "華泰", "ticker": "2329.TW", "role": "IC packaging and testing exposure", "source": "industry watchlist"},
     {"subindustry": "封測", "category": "測試服務", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "wafer sort / final test exposure", "source": "industry watchlist"},
 ]
 
@@ -717,8 +717,25 @@ def format_macro_table(df: pd.DataFrame) -> pd.DataFrame:
     return formatted
 
 
+def display_company_name(company: str, ticker: str) -> str:
+    text = str(company or "").strip()
+    ticker = str(ticker or "").strip()
+    if ticker.endswith((".TW", ".TWO")) and re.search(r"[\u4e00-\u9fff]", text):
+        match = re.search(r"[\u4e00-\u9fff]", text)
+        if match and match.start() > 0:
+            return text[match.start():].strip()
+    return text
+
+
+def normalize_company_display(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    if {"company", "ticker"}.issubset(out.columns):
+        out["company"] = out.apply(lambda row: display_company_name(row["company"], row["ticker"]), axis=1)
+    return out
+
+
 def vera_rubin_supply_chain_df() -> pd.DataFrame:
-    return pd.DataFrame(VERA_RUBIN_SUPPLY_CHAIN)
+    return normalize_company_display(pd.DataFrame(VERA_RUBIN_SUPPLY_CHAIN))
 
 
 def ensure_vera_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
@@ -734,19 +751,20 @@ def ensure_vera_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_company_display(df)
     return df[["category", "company", "ticker", "role", "source"]]
 
 
 def csp_supply_chain_df() -> pd.DataFrame:
-    return pd.DataFrame(CSP_SUPPLY_CHAIN)
+    return normalize_company_display(pd.DataFrame(CSP_SUPPLY_CHAIN))
 
 
 def tsmc_supply_chain_df() -> pd.DataFrame:
-    return pd.DataFrame(TSMC_SUPPLY_CHAIN)
+    return normalize_company_display(pd.DataFrame(TSMC_SUPPLY_CHAIN))
 
 
 def small_subindustry_chain_df() -> pd.DataFrame:
-    return pd.DataFrame(SMALL_SUBINDUSTRY_CHAIN)
+    return normalize_company_display(pd.DataFrame(SMALL_SUBINDUSTRY_CHAIN))
 
 
 def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
@@ -763,6 +781,7 @@ def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_company_display(df)
     return df[["csp", "category", "company", "ticker", "role", "source"]]
 
 
@@ -780,6 +799,7 @@ def ensure_tsmc_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_company_display(df)
     return df[["technology_node", "category", "company", "ticker", "role", "source"]]
 
 
@@ -797,6 +817,7 @@ def ensure_small_subindustry_schema(rows: pd.DataFrame) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
+    df = normalize_company_display(df)
     return df[["subindustry", "category", "company", "ticker", "role", "source"]]
 
 
