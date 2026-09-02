@@ -471,6 +471,195 @@ SMALL_SUBINDUSTRY_CHAIN = [
 
 st.set_page_config(page_title="資產配置回測工作台", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    :root {
+        --app-bg: #f5f7fb;
+        --panel-bg: #ffffff;
+        --panel-border: #dbe2ea;
+        --text-main: #17202c;
+        --text-muted: #647084;
+        --accent: #0f766e;
+        --accent-strong: #0b5f59;
+        --accent-soft: #e7f5f2;
+        --gold: #b7791f;
+        --danger-soft: #fff1f2;
+    }
+
+    html, body, [data-testid="stAppViewContainer"] {
+        background: var(--app-bg);
+        color: var(--text-main);
+    }
+
+    [data-testid="stHeader"] {
+        background: rgba(245, 247, 251, 0.86);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(219, 226, 234, 0.7);
+    }
+
+    [data-testid="stSidebar"] {
+        background: #111827;
+        border-right: 1px solid #1f2937;
+    }
+
+    [data-testid="stSidebar"] * {
+        color: #f9fafb;
+    }
+
+    [data-testid="stSidebar"] input,
+    [data-testid="stSidebar"] textarea,
+    [data-testid="stSidebar"] select {
+        color: #111827;
+    }
+
+    [data-testid="stAppViewContainer"] .main .block-container {
+        max-width: 1440px;
+        padding-top: 2.1rem;
+        padding-bottom: 4rem;
+    }
+
+    .app-hero {
+        border: 1px solid var(--panel-border);
+        background:
+            linear-gradient(135deg, rgba(15, 118, 110, 0.10), rgba(183, 121, 31, 0.08)),
+            var(--panel-bg);
+        padding: 1.35rem 1.55rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .app-hero h1 {
+        font-size: 2rem;
+        line-height: 1.18;
+        margin: 0 0 0.35rem;
+        letter-spacing: 0;
+        color: var(--text-main);
+    }
+
+    .app-hero p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.98rem;
+    }
+
+    div[data-testid="stExpander"] {
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        margin-bottom: 0.85rem;
+        overflow: hidden;
+    }
+
+    div[data-testid="stExpander"] > details > summary {
+        background: #fbfcfe;
+        border-bottom: 1px solid var(--panel-border);
+        min-height: 3rem;
+    }
+
+    div[data-testid="stMetric"] {
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        padding: 0.95rem 1rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    div[data-testid="stMetricLabel"] {
+        color: var(--text-muted);
+        font-weight: 650;
+    }
+
+    div[data-testid="stMetricValue"] {
+        color: var(--text-main);
+        font-weight: 760;
+    }
+
+    .stButton > button,
+    .stDownloadButton > button,
+    div[data-testid="stFormSubmitButton"] button,
+    .stLinkButton > a {
+        border-radius: 8px;
+        border: 1px solid var(--panel-border);
+        font-weight: 650;
+        min-height: 2.65rem;
+        transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    }
+
+    .stButton > button:hover,
+    .stDownloadButton > button:hover,
+    div[data-testid="stFormSubmitButton"] button:hover,
+    .stLinkButton > a:hover {
+        border-color: rgba(15, 118, 110, 0.55);
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+        transform: translateY(-1px);
+    }
+
+    .stButton > button[kind="primary"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #ffffff;
+    }
+
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.35rem;
+        border-bottom: 1px solid var(--panel-border);
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px 8px 0 0;
+        padding: 0.65rem 0.95rem;
+        color: var(--text-muted);
+        font-weight: 650;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: var(--accent-strong);
+        background: var(--accent-soft);
+    }
+
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"] {
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    [data-testid="stPlotlyChart"] {
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        padding: 0.7rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    div[data-testid="stAlert"] {
+        border-radius: 8px;
+        border: 1px solid var(--panel-border);
+    }
+
+    h2, h3 {
+        letter-spacing: 0;
+        color: var(--text-main);
+    }
+
+    small, .stCaption, [data-testid="stCaptionContainer"] {
+        color: var(--text-muted);
+    }
+
+    hr {
+        border-color: var(--panel-border);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+px.defaults.template = "plotly_white"
+px.defaults.color_discrete_sequence = ["#0f766e", "#2563eb", "#b7791f", "#7c3aed", "#dc2626", "#0891b2", "#475569"]
+
 
 def raise_supabase_error(response: requests.Response) -> None:
     if response.ok:
@@ -1956,7 +2145,15 @@ def bootstrap(returns: pd.Series, samples: int, draws: int, seed: int = 42) -> p
     return pd.DataFrame({"total_return": total, "annualized_return": annualized})
 
 
-st.title("資產配置回測工作台")
+st.markdown(
+    """
+    <section class="app-hero">
+        <h1>資產配置回測工作台</h1>
+        <p>輸入持股、金額與股數，快速查看含息回測、Bootstrap 分布、估值資料、即時新聞與 AI 供應鏈研究地圖。</p>
+    </section>
+    """,
+    unsafe_allow_html=True,
+)
 
 if "holdings_default" not in st.session_state:
     st.session_state.holdings_default = ensure_holdings_schema(DEFAULT_HOLDINGS)
@@ -2579,8 +2776,8 @@ with st.expander("產業研究工作台", expanded=True):
         ).str.lower()
         filtered_research = filtered_research[haystack.str.contains(re.escape(keyword), na=False)].copy()
 
-    tab_map, tab_matrix, tab_products, tab_insights, tab_sources, tab_images = st.tabs(
-        ["產業地圖", "公司矩陣", "產品/型號", "研究者觀點", "來源閱讀", "圖片入口"]
+    tab_map, tab_matrix, tab_products, tab_insights, tab_sources = st.tabs(
+        ["產業地圖", "公司矩陣", "產品/型號", "研究者觀點", "來源閱讀"]
     )
     with tab_map:
         if filtered_research.empty:
@@ -2611,7 +2808,6 @@ with st.expander("產業研究工作台", expanded=True):
             "product_models",
             "research_note",
             "source_url",
-            "image_search",
         ]
         st.dataframe(
             filtered_research[display_cols].rename(
@@ -2625,14 +2821,12 @@ with st.expander("產業研究工作台", expanded=True):
                     "product_models": "產品/型號",
                     "research_note": "研究備註",
                     "source_url": "來源",
-                    "image_search": "圖片搜尋",
                 }
             ),
             use_container_width=True,
             hide_index=True,
             column_config={
                 "來源": st.column_config.LinkColumn("來源"),
-                "圖片搜尋": st.column_config.LinkColumn("圖片搜尋"),
             },
         )
         st.download_button(
@@ -2790,23 +2984,6 @@ with st.expander("產業研究工作台", expanded=True):
         source_col1.link_button("SemiAnalysis 搜尋", "https://semianalysis.com/?s=NVIDIA+Rubin+CoWoS+CPO")
         source_col2.link_button("DIGITIMES 搜尋", "https://www.digitimes.com/search?query=NVIDIA%20Rubin%20CoWoS%20CPO")
         source_col3.link_button("TSMC 3DFabric", "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/3DFabric.htm")
-
-    with tab_images:
-        image_rows = filtered_research[["theme", "category", "company", "product_models", "image_search"]].drop_duplicates()
-        st.dataframe(
-            image_rows.rename(
-                columns={
-                    "theme": "主題/節點",
-                    "category": "分類",
-                    "company": "公司",
-                    "product_models": "產品/型號",
-                    "image_search": "圖片搜尋",
-                }
-            ),
-            use_container_width=True,
-            hide_index=True,
-            column_config={"圖片搜尋": st.column_config.LinkColumn("圖片搜尋")},
-        )
 
 with st.expander("NVIDIA Vera Rubin 供應鏈", expanded=False):
     st.caption("追蹤 NVIDIA Vera Rubin / AI factory 生態系與相關零組件族群；official 是 NVIDIA 點名，watchlist 是產業追蹤，不代表 NVIDIA 已揭露實際訂單或分配比例。")
