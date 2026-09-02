@@ -498,61 +498,7 @@ st.markdown(
         border-bottom: 1px solid rgba(219, 226, 234, 0.7);
     }
 
-    [data-testid="stSidebar"] {
-        background: #ffffff;
-        border-right: 1px solid var(--panel-border);
-    }
-
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3,
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] small {
-        color: #111827;
-    }
-
-    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
-        color: #111827;
-    }
-
-    [data-testid="stSidebar"] *,
-    [data-testid="stSidebar"] input,
-    [data-testid="stSidebar"] textarea,
-    [data-testid="stSidebar"] select,
-    [data-testid="stSidebar"] [data-testid="stDateInput"] *,
-    [data-testid="stSidebar"] [data-baseweb="datepicker"] *,
-    [data-testid="stSidebar"] [data-baseweb="input"] *,
-    [data-testid="stSidebar"] [data-baseweb="select"] *,
-    [data-testid="stSidebar"] [data-baseweb="base-input"] *,
-    [data-testid="stSidebar"] [data-baseweb="input"] input,
-    [data-testid="stSidebar"] [data-baseweb="base-input"] input {
-        color: #111827 !important;
-    }
-
-    [data-testid="stSidebar"] [data-baseweb="input"],
-    [data-testid="stSidebar"] [data-baseweb="select"],
-    [data-testid="stSidebar"] [data-baseweb="datepicker"],
-    [data-testid="stSidebar"] [data-baseweb="base-input"] {
-        background: #f8fafc;
-        border: 1px solid #dbe2ea;
-        border-radius: 8px;
-    }
-
-    [data-testid="stSidebar"] [data-baseweb="tag"] *,
-    [data-testid="stSidebar"] [data-baseweb="popover"] *,
-    [data-testid="stSidebar"] [role="option"],
-    [data-testid="stSidebar"] [role="listbox"] * {
-        color: #111827 !important;
-    }
-
     @media (max-width: 768px) {
-        [data-testid="stSidebar"] {
-            background: #ffffff;
-            border: 1px solid #dbe2ea;
-        }
-
         [data-testid="stAppViewContainer"] .main .block-container {
             padding-left: 0.85rem;
             padding-right: 0.85rem;
