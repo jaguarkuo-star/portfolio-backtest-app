@@ -134,12 +134,21 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "先進封裝/設備", "company": "Disco", "ticker": "6146.T", "role": "wafer dicing / grinding equipment exposure", "source": "industry watchlist"},
     {"category": "先進封裝/設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced packaging equipment watchlist", "source": "industry watchlist"},
     {"category": "半導體檢測", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "AI chip wafer sort / final test exposure", "source": "industry reports"},
+    {"category": "半導體檢測", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
+    {"category": "半導體檢測", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
+    {"category": "半導體檢測", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
     {"category": "半導體檢測", "company": "Greatek Electronics 矽格", "ticker": "6257.TW", "role": "IC testing and backend service watchlist", "source": "industry watchlist"},
     {"category": "半導體檢測", "company": "Chroma 致茂", "ticker": "2360.TW", "role": "power/semiconductor test equipment exposure", "source": "industry watchlist"},
+    {"category": "半導體檢測", "company": "FormFactor", "ticker": "FORM", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
+    {"category": "半導體檢測", "company": "Camtek", "ticker": "CAMT", "role": "advanced packaging inspection / metrology exposure", "source": "industry watchlist"},
+    {"category": "半導體檢測", "company": "Onto Innovation", "ticker": "ONTO", "role": "advanced packaging metrology / inspection exposure", "source": "industry watchlist"},
+    {"category": "半導體檢測", "company": "Keysight", "ticker": "KEYS", "role": "high-speed electrical / optical test equipment exposure", "source": "industry watchlist"},
+    {"category": "半導體檢測", "company": "Anritsu", "ticker": "6754.T", "role": "optical and high-speed network test equipment exposure", "source": "industry watchlist"},
     {"category": "半導體檢測", "company": "Advantest", "ticker": "6857.T", "role": "semiconductor ATE exposure", "source": "industry watchlist"},
     {"category": "半導體檢測", "company": "Teradyne", "ticker": "TER", "role": "semiconductor ATE exposure", "source": "industry watchlist"},
     {"category": "800V HVDC/電源", "company": "Delta 台達電", "ticker": "2308.TW", "role": "800 VDC power component ecosystem / AI data center power", "source": "NVIDIA 800 VDC official"},
     {"category": "800V HVDC/電源", "company": "Lite-On 光寶科", "ticker": "2301.TW", "role": "power component ecosystem exposure", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源", "company": "Flex", "ticker": "FLEX", "role": "power module / data center power manufacturing exposure", "source": "NVIDIA 800 VDC official"},
     {"category": "800V HVDC/電源", "company": "Eaton", "ticker": "ETN", "role": "data center electrical infrastructure / UPS / switchgear exposure", "source": "NVIDIA 800 VDC official"},
     {"category": "800V HVDC/電源", "company": "Vertiv", "ticker": "VRT", "role": "data center power and thermal infrastructure exposure", "source": "NVIDIA 800 VDC official"},
     {"category": "800V HVDC/電源", "company": "Schneider Electric", "ticker": "SU.PA", "role": "data center electrical distribution ecosystem", "source": "NVIDIA 800 VDC official"},
@@ -147,8 +156,20 @@ VERA_RUBIN_SUPPLY_CHAIN = [
     {"category": "800V HVDC/電源半導體", "company": "Analog Devices", "ticker": "ADI", "role": "power / mixed-signal silicon ecosystem", "source": "NVIDIA 800 VDC official"},
     {"category": "800V HVDC/電源半導體", "company": "Monolithic Power", "ticker": "MPWR", "role": "power management silicon ecosystem", "source": "NVIDIA 800 VDC official"},
     {"category": "800V HVDC/電源半導體", "company": "Onsemi", "ticker": "ON", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "Diodes", "ticker": "DIOD", "role": "discrete / analog power semiconductor watchlist", "source": "user watchlist"},
+    {"category": "800V HVDC/電源半導體", "company": "Alpha and Omega Semi", "ticker": "AOSL", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "Infineon", "ticker": "IFX.DE", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "Renesas", "ticker": "6723.T", "role": "power and mixed-signal semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "ROHM", "ticker": "6963.T", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "STMicroelectronics", "ticker": "STM", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "Navitas", "ticker": "NVTS", "role": "GaN power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"category": "800V HVDC/電源半導體", "company": "Power Integrations", "ticker": "POWI", "role": "power conversion semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
     {"category": "連接器/線材", "company": "BizLink 貿聯-KY", "ticker": "3665.TW", "role": "cabling / connector exposure", "source": "industry map"},
     {"category": "連接器/線材", "company": "Lotes 嘉澤", "ticker": "3533.TW", "role": "server connector exposure", "source": "industry watchlist"},
+    {"category": "連接器/線材", "company": "FIT Hon Teng 鴻騰", "ticker": "6088.HK", "role": "connector and cable assembly watchlist", "source": "industry watchlist"},
+    {"category": "連接器/線材", "company": "Amphenol", "ticker": "APH", "role": "high-speed connector / cable exposure", "source": "industry watchlist"},
+    {"category": "連接器/線材", "company": "TE Connectivity", "ticker": "TEL", "role": "high-speed connector / cable exposure", "source": "industry watchlist"},
+    {"category": "連接器/線材", "company": "Luxshare 立訊精密", "ticker": "002475.SZ", "role": "high-speed cable / connector assembly watchlist", "source": "industry watchlist"},
     {"category": "滑軌/機構件", "company": "King Slide 川湖", "ticker": "2059.TW", "role": "server rails exposure", "source": "industry map"},
 ]
 
@@ -235,12 +256,21 @@ CSP_SUPPLY_CHAIN = [
     {"csp": "Cross-CSP infrastructure", "category": "先進封裝/設備", "company": "Disco", "ticker": "6146.T", "role": "wafer dicing / grinding equipment exposure", "source": "industry watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "先進封裝/設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced packaging equipment watchlist", "source": "industry watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "AI chip wafer sort / final test exposure", "source": "industry reports"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Greatek Electronics 矽格", "ticker": "6257.TW", "role": "IC testing and backend service watchlist", "source": "industry watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Chroma 致茂", "ticker": "2360.TW", "role": "power/semiconductor test equipment exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "FormFactor", "ticker": "FORM", "role": "probe card / wafer test interface exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Camtek", "ticker": "CAMT", "role": "advanced packaging inspection / metrology exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Onto Innovation", "ticker": "ONTO", "role": "advanced packaging metrology / inspection exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Keysight", "ticker": "KEYS", "role": "high-speed electrical / optical test equipment exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Anritsu", "ticker": "6754.T", "role": "optical and high-speed network test equipment exposure", "source": "industry watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Advantest", "ticker": "6857.T", "role": "semiconductor ATE exposure", "source": "industry watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "半導體檢測", "company": "Teradyne", "ticker": "TER", "role": "semiconductor ATE exposure", "source": "industry watchlist"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源", "company": "Delta 台達電", "ticker": "2308.TW", "role": "800 VDC power component ecosystem / AI data center power", "source": "NVIDIA 800 VDC official"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源", "company": "Lite-On 光寶科", "ticker": "2301.TW", "role": "power component ecosystem exposure", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源", "company": "Flex", "ticker": "FLEX", "role": "power module / data center power manufacturing exposure", "source": "NVIDIA 800 VDC official"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源", "company": "Eaton", "ticker": "ETN", "role": "data center electrical infrastructure / UPS / switchgear exposure", "source": "NVIDIA 800 VDC official"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源", "company": "Vertiv", "ticker": "VRT", "role": "data center power and thermal infrastructure exposure", "source": "NVIDIA 800 VDC official"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源", "company": "Schneider Electric", "ticker": "SU.PA", "role": "data center electrical distribution ecosystem", "source": "NVIDIA 800 VDC official"},
@@ -248,6 +278,99 @@ CSP_SUPPLY_CHAIN = [
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Analog Devices", "ticker": "ADI", "role": "power / mixed-signal silicon ecosystem", "source": "NVIDIA 800 VDC official"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Monolithic Power", "ticker": "MPWR", "role": "power management silicon ecosystem", "source": "NVIDIA 800 VDC official"},
     {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Onsemi", "ticker": "ON", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Diodes", "ticker": "DIOD", "role": "discrete / analog power semiconductor watchlist", "source": "user watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Alpha and Omega Semi", "ticker": "AOSL", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Infineon", "ticker": "IFX.DE", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Renesas", "ticker": "6723.T", "role": "power and mixed-signal semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "ROHM", "ticker": "6963.T", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "STMicroelectronics", "ticker": "STM", "role": "power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Navitas", "ticker": "NVTS", "role": "GaN power semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "800V HVDC/電源半導體", "company": "Power Integrations", "ticker": "POWI", "role": "power conversion semiconductor ecosystem", "source": "NVIDIA 800 VDC official"},
+    {"csp": "Cross-CSP infrastructure", "category": "連接器/線材", "company": "BizLink 貿聯-KY", "ticker": "3665.TW", "role": "cabling / connector exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "連接器/線材", "company": "Lotes 嘉澤", "ticker": "3533.TW", "role": "server connector exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "連接器/線材", "company": "FIT Hon Teng 鴻騰", "ticker": "6088.HK", "role": "connector and cable assembly watchlist", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "連接器/線材", "company": "Amphenol", "ticker": "APH", "role": "high-speed connector / cable exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "連接器/線材", "company": "TE Connectivity", "ticker": "TEL", "role": "high-speed connector / cable exposure", "source": "industry watchlist"},
+    {"csp": "Cross-CSP infrastructure", "category": "連接器/線材", "company": "Luxshare 立訊精密", "ticker": "002475.SZ", "role": "high-speed cable / connector assembly watchlist", "source": "industry watchlist"},
+]
+
+
+TSMC_SUPPLY_CHAIN = [
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "晶圓代工", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "advanced-node foundry platform owner", "source": "TSMC official"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "EUV/微影設備", "company": "ASML", "ticker": "ASML", "role": "EUV lithography equipment bottleneck", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "量測/檢測設備", "company": "KLA", "ticker": "KLAC", "role": "process control / inspection / metrology exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "蝕刻/沉積設備", "company": "Applied Materials", "ticker": "AMAT", "role": "deposition, materials engineering and advanced packaging equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "蝕刻/沉積設備", "company": "Lam Research", "ticker": "LRCX", "role": "etch and deposition equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "前段設備", "company": "Tokyo Electron", "ticker": "8035.T", "role": "coater/developer, etch and deposition equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "GlobalWafers 環球晶", "ticker": "6488.TWO", "role": "silicon wafer substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "Shin-Etsu Chemical", "ticker": "4063.T", "role": "silicon wafer and semiconductor materials exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "矽晶圓/材料", "company": "SUMCO", "ticker": "3436.T", "role": "silicon wafer exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "光阻/化學材料", "company": "JSR", "ticker": "4185.T", "role": "photoresist / semiconductor materials exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "光阻/化學材料", "company": "TOK", "ticker": "4186.T", "role": "photoresist and lithography materials exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "特用氣體/材料", "company": "Linde", "ticker": "LIN", "role": "semiconductor industrial gas exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "特用氣體/材料", "company": "Air Liquide", "ticker": "AI.PA", "role": "semiconductor industrial gas exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "United Integrated Services 聖暉", "ticker": "5536.TW", "role": "semiconductor cleanroom / facility engineering exposure", "source": "industry watchlist"},
+    {"technology_node": "先進製程 N2/N3/N4/N5", "category": "廠務/工程", "company": "Acter 亞翔", "ticker": "6139.TW", "role": "semiconductor cleanroom / facility engineering exposure", "source": "industry watchlist"},
+
+    {"technology_node": "CoWoS", "category": "先進封裝", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "CoWoS platform and capacity bottleneck", "source": "TSMC official"},
+    {"technology_node": "CoWoS", "category": "封測", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "advanced packaging / SPIL ecosystem exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "封測", "company": "Amkor", "ticker": "AMKR", "role": "advanced packaging and test exposure", "source": "Amkor official"},
+    {"technology_node": "CoWoS", "category": "載板/ABF", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "ABF package substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "載板/ABF", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "ABF substrate and advanced substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "載板/ABF", "company": "Nan Ya PCB 南電", "ticker": "8046.TW", "role": "ABF substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "Disco", "ticker": "6146.T", "role": "wafer dicing / grinding equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced packaging equipment watchlist", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "封裝設備", "company": "BESI", "ticker": "BESI.AS", "role": "hybrid bonding / advanced packaging equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "檢測/測試", "company": "KYEC 京元電子", "ticker": "2449.TW", "role": "AI chip wafer sort / final test exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "檢測/測試", "company": "Advantest", "ticker": "6857.T", "role": "ATE exposure for advanced logic and HBM-linked testing", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "檢測/測試", "company": "Teradyne", "ticker": "TER", "role": "ATE exposure", "source": "industry watchlist"},
+    {"technology_node": "CoWoS", "category": "測試介面", "company": "CHPT 精測", "ticker": "6510.TWO", "role": "probe card / load board / test interface exposure", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "測試介面", "company": "WinWay 穎崴", "ticker": "6515.TW", "role": "test socket / probe card / burn-in socket exposure", "source": "user watchlist"},
+    {"technology_node": "CoWoS", "category": "測試介面", "company": "MPI 旺矽", "ticker": "6223.TWO", "role": "probe card and semiconductor test interface exposure", "source": "user watchlist"},
+
+    {"technology_node": "SoIC", "category": "3D封裝/混合鍵合", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "SoIC 3D silicon stacking platform", "source": "TSMC official"},
+    {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "BESI", "ticker": "BESI.AS", "role": "hybrid bonding equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "SoIC", "category": "混合鍵合設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced bonding equipment watchlist", "source": "industry watchlist"},
+    {"technology_node": "SoIC", "category": "量測/檢測設備", "company": "KLA", "ticker": "KLAC", "role": "overlay, inspection and metrology for 3D integration", "source": "industry watchlist"},
+    {"technology_node": "SoIC", "category": "量測/檢測設備", "company": "Onto Innovation", "ticker": "ONTO", "role": "advanced packaging metrology / inspection exposure", "source": "industry watchlist"},
+    {"technology_node": "SoIC", "category": "封測", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "3D packaging ecosystem exposure", "source": "industry watchlist"},
+
+    {"technology_node": "COUPE", "category": "SoIC/矽光子整合", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "compact universal photonics engine roadmap for Si photonics integration", "source": "TSMC official"},
+    {"technology_node": "COUPE", "category": "SoIC/矽光子整合", "company": "ASE 日月光投控", "ticker": "3711.TW", "role": "advanced optical package validation / backend integration exposure", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "矽光子/光引擎", "company": "Lumentum", "ticker": "LITE", "role": "external laser source / optical engine exposure", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "矽光子/光引擎", "company": "Coherent", "ticker": "COHR", "role": "laser and optical component exposure", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "矽光子/光引擎", "company": "Fabrinet", "ticker": "FN", "role": "optical module and precision manufacturing exposure", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "矽光子/光引擎", "company": "Broadcom", "ticker": "AVGO", "role": "switch ASIC / silicon photonics and high-speed SerDes exposure", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "矽光子/光引擎", "company": "Marvell", "ticker": "MRVL", "role": "electro-optical interconnect / DSP / SerDes exposure", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "光通訊台廠", "company": "LandMark Optoelectronics 聯亞", "ticker": "3081.TWO", "role": "InP laser / optical component watchlist", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "光通訊台廠", "company": "Visual Photonics 華星光", "ticker": "4979.TWO", "role": "optical transceiver / laser component watchlist", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "光通訊台廠", "company": "Browave 波若威", "ticker": "3163.TWO", "role": "fiber connection / optical interconnect watchlist", "source": "industry watchlist"},
+    {"technology_node": "COUPE", "category": "光通訊台廠", "company": "PCL 上詮", "ticker": "3363.TWO", "role": "fiber array / optical passive component watchlist", "source": "industry watchlist"},
+
+    {"technology_node": "CoPoS", "category": "面板級/大尺寸封裝", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "CoPoS / panel-level advanced packaging roadmap exposure", "source": "TrendForce / industry reports"},
+    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "Applied Materials", "ticker": "AMAT", "role": "large-panel packaging process equipment exposure", "source": "industry watchlist"},
+    {"technology_node": "CoPoS", "category": "面板級封裝設備", "company": "ASMPT", "ticker": "0522.HK", "role": "advanced packaging equipment watchlist", "source": "industry watchlist"},
+    {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "Innolux 群創", "ticker": "3481.TW", "role": "panel-level packaging / glass-related watchlist", "source": "industry watchlist"},
+    {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "AUO 友達", "ticker": "2409.TW", "role": "panel-level packaging / glass-related watchlist", "source": "industry watchlist"},
+    {"technology_node": "CoPoS", "category": "面板/載板供應鏈", "company": "GIS 業成", "ticker": "6456.TW", "role": "large-panel process / module assembly watchlist", "source": "industry watchlist"},
+
+    {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Intel", "ticker": "INTC", "role": "glass substrate technology roadmap reference", "source": "industry reports"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Corning", "ticker": "GLW", "role": "precision glass / advanced substrate material exposure", "source": "industry watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Ibiden", "ticker": "4062.T", "role": "advanced package substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Shinko Electric", "ticker": "6967.T", "role": "advanced package substrate exposure", "source": "industry watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Kinsus 景碩", "ticker": "3189.TW", "role": "advanced substrate watchlist", "source": "industry watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃核心基板", "company": "Unimicron 欣興", "ticker": "3037.TW", "role": "advanced substrate watchlist", "source": "industry watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃/面板", "company": "Innolux 群創", "ticker": "3481.TW", "role": "glass process / panel-level packaging watchlist", "source": "industry watchlist"},
+    {"technology_node": "Glass-core substrate", "category": "玻璃/面板", "company": "AUO 友達", "ticker": "2409.TW", "role": "glass process / panel-level packaging watchlist", "source": "industry watchlist"},
+
+    {"technology_node": "矽光子/CPO", "category": "矽光子", "company": "TSMC 台積電", "ticker": "2330.TW", "role": "silicon photonics / advanced optical packaging exposure", "source": "TSMC / NVIDIA ecosystem"},
+    {"technology_node": "矽光子/CPO", "category": "光源/光元件", "company": "Lumentum", "ticker": "LITE", "role": "external laser source exposure", "source": "industry watchlist"},
+    {"technology_node": "矽光子/CPO", "category": "光源/光元件", "company": "Coherent", "ticker": "COHR", "role": "laser and optical component exposure", "source": "industry watchlist"},
+    {"technology_node": "矽光子/CPO", "category": "光通訊製造", "company": "Fabrinet", "ticker": "FN", "role": "optical manufacturing exposure", "source": "industry watchlist"},
+    {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "LandMark Optoelectronics 聯亞", "ticker": "3081.TWO", "role": "InP laser / optical component watchlist", "source": "industry watchlist"},
+    {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "Visual Photonics 華星光", "ticker": "4979.TWO", "role": "optical transceiver / laser component watchlist", "source": "industry watchlist"},
+    {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "Browave 波若威", "ticker": "3163.TWO", "role": "fiber connection / optical interconnect watchlist", "source": "industry watchlist"},
+    {"technology_node": "矽光子/CPO", "category": "光通訊台廠", "company": "PCL 上詮", "ticker": "3363.TWO", "role": "fiber array / optical passive component watchlist", "source": "industry watchlist"},
 ]
 
 
@@ -523,6 +646,10 @@ def csp_supply_chain_df() -> pd.DataFrame:
     return pd.DataFrame(CSP_SUPPLY_CHAIN)
 
 
+def tsmc_supply_chain_df() -> pd.DataFrame:
+    return pd.DataFrame(TSMC_SUPPLY_CHAIN)
+
+
 def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
     df = rows.copy() if rows is not None and not rows.empty else pd.DataFrame()
     defaults = {
@@ -538,6 +665,23 @@ def ensure_csp_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
             df[col] = default
     df["ticker"] = df["ticker"].astype(str).str.strip()
     return df[["csp", "category", "company", "ticker", "role", "source"]]
+
+
+def ensure_tsmc_custom_schema(rows: pd.DataFrame) -> pd.DataFrame:
+    df = rows.copy() if rows is not None and not rows.empty else pd.DataFrame()
+    defaults = {
+        "technology_node": "",
+        "category": "",
+        "company": "",
+        "ticker": "",
+        "role": "",
+        "source": "custom",
+    }
+    for col, default in defaults.items():
+        if col not in df.columns:
+            df[col] = default
+    df["ticker"] = df["ticker"].astype(str).str.strip()
+    return df[["technology_node", "category", "company", "ticker", "role", "source"]]
 
 
 def price_performance_summary(prices: pd.DataFrame) -> pd.DataFrame:
@@ -1106,12 +1250,17 @@ def csp_custom_chain_payload(custom_chain: pd.DataFrame | None = None) -> list[d
     return ensure_csp_custom_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
 
 
+def tsmc_custom_chain_payload(custom_chain: pd.DataFrame | None = None) -> list[dict]:
+    return ensure_tsmc_custom_schema(custom_chain if custom_chain is not None else pd.DataFrame()).to_dict("records")
+
+
 def app_settings_payload(
     holdings: pd.DataFrame,
     valuation: pd.DataFrame,
     reports: pd.DataFrame | None = None,
     custom_chain: pd.DataFrame | None = None,
     csp_custom_chain: pd.DataFrame | None = None,
+    tsmc_custom_chain: pd.DataFrame | None = None,
 ) -> dict:
     holdings = ensure_holdings_schema(holdings)
     valuation = ensure_valuation_schema(valuation, holdings)
@@ -1122,17 +1271,19 @@ def app_settings_payload(
         "target_reports": target_reports_payload(reports, holdings),
         "vera_custom_chain": vera_custom_chain_payload(custom_chain),
         "csp_custom_chain": csp_custom_chain_payload(csp_custom_chain),
+        "tsmc_custom_chain": tsmc_custom_chain_payload(tsmc_custom_chain),
     }
 
 
-def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if isinstance(settings, dict):
         holdings = ensure_holdings_schema(pd.DataFrame(settings.get("holdings", [])))
         valuation = ensure_valuation_schema(pd.DataFrame(settings.get("valuation", [])), holdings)
         reports = ensure_target_reports_schema(pd.DataFrame(settings.get("target_reports", [])), holdings)
         custom_chain = ensure_vera_custom_schema(pd.DataFrame(settings.get("vera_custom_chain", [])))
         csp_custom_chain = ensure_csp_custom_schema(pd.DataFrame(settings.get("csp_custom_chain", [])))
-        return holdings, valuation, reports, custom_chain, csp_custom_chain
+        tsmc_custom_chain = ensure_tsmc_custom_schema(pd.DataFrame(settings.get("tsmc_custom_chain", [])))
+        return holdings, valuation, reports, custom_chain, csp_custom_chain, tsmc_custom_chain
     holdings = ensure_holdings_schema(pd.DataFrame(settings))
     return (
         holdings,
@@ -1140,6 +1291,7 @@ def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.Dat
         ensure_target_reports_schema(pd.DataFrame(), holdings),
         ensure_vera_custom_schema(pd.DataFrame()),
         ensure_csp_custom_schema(pd.DataFrame()),
+        ensure_tsmc_custom_schema(pd.DataFrame()),
     )
 
 
@@ -1190,7 +1342,7 @@ def test_supabase_connection() -> tuple[bool, str]:
     return False, f"HTTP {response.status_code}: {response.text[:300]}"
 
 
-def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
+def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
@@ -1208,12 +1360,13 @@ def save_settings_to_db(
     reports: pd.DataFrame,
     custom_chain: pd.DataFrame,
     csp_custom_chain: pd.DataFrame,
+    tsmc_custom_chain: pd.DataFrame,
 ) -> None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
     body = {
         "user_key": user_key,
-        "settings": app_settings_payload(holdings, valuation, reports, custom_chain, csp_custom_chain),
+        "settings": app_settings_payload(holdings, valuation, reports, custom_chain, csp_custom_chain, tsmc_custom_chain),
     }
     response = requests.post(url, headers=headers, json=body, timeout=15)
     raise_supabase_error(response)
@@ -1357,6 +1510,10 @@ if "csp_custom_chain" not in st.session_state:
     st.session_state.csp_custom_chain = ensure_csp_custom_schema(pd.DataFrame())
 if "csp_custom_chain_key" not in st.session_state:
     st.session_state.csp_custom_chain_key = 0
+if "tsmc_custom_chain" not in st.session_state:
+    st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(pd.DataFrame())
+if "tsmc_custom_chain_key" not in st.session_state:
+    st.session_state.tsmc_custom_chain_key = 0
 if "latest_prices" not in st.session_state:
     st.session_state.latest_prices = {}
 st.session_state.valuation_data = ensure_valuation_schema(
@@ -1369,6 +1526,7 @@ st.session_state.target_reports = ensure_target_reports_schema(
 )
 st.session_state.vera_custom_chain = ensure_vera_custom_schema(st.session_state.vera_custom_chain)
 st.session_state.csp_custom_chain = ensure_csp_custom_schema(st.session_state.csp_custom_chain)
+st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(st.session_state.tsmc_custom_chain)
 if "usd_twd" not in st.session_state:
     st.session_state.usd_twd = 31.673
 if "usd_twd_date" not in st.session_state:
@@ -1438,18 +1596,20 @@ with st.expander("每個人自己的預設設定", expanded=False):
                     if loaded is None:
                         st.warning("找不到這個保存代號的設定。")
                     else:
-                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain = loaded
+                        loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain, loaded_tsmc_custom_chain = loaded
                         st.session_state.holdings_default = ensure_holdings_schema(loaded_holdings)
                         st.session_state.editor_data = ensure_holdings_schema(loaded_holdings)
                         st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
                         st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
                         st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
                         st.session_state.csp_custom_chain = ensure_csp_custom_schema(loaded_csp_custom_chain)
+                        st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(loaded_tsmc_custom_chain)
                         st.session_state.editor_key += 1
                         st.session_state.valuation_key += 1
                         st.session_state.target_reports_key += 1
                         st.session_state.vera_custom_chain_key += 1
                         st.session_state.csp_custom_chain_key += 1
+                        st.session_state.tsmc_custom_chain_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
                 except Exception as exc:
@@ -1466,6 +1626,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.session_state.target_reports,
                         st.session_state.vera_custom_chain,
                         st.session_state.csp_custom_chain,
+                        st.session_state.tsmc_custom_chain,
                     )
                     st.success("已儲存。之後用同一個保存代號即可載入。")
                 except Exception as exc:
@@ -1477,7 +1638,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
     if uploaded is not None:
         try:
             rows = json.loads(uploaded.getvalue().decode("utf-8"))
-            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain = parse_settings_payload(rows)
+            loaded_holdings, loaded_valuation, loaded_reports, loaded_custom_chain, loaded_csp_custom_chain, loaded_tsmc_custom_chain = parse_settings_payload(rows)
             required = ["name", "ticker", "amount", "currency"]
             if not set(required).issubset(loaded_holdings.columns):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
@@ -1488,11 +1649,13 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
                 st.session_state.vera_custom_chain = ensure_vera_custom_schema(loaded_custom_chain)
                 st.session_state.csp_custom_chain = ensure_csp_custom_schema(loaded_csp_custom_chain)
+                st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(loaded_tsmc_custom_chain)
                 st.session_state.editor_key += 1
                 st.session_state.valuation_key += 1
                 st.session_state.target_reports_key += 1
                 st.session_state.vera_custom_chain_key += 1
                 st.session_state.csp_custom_chain_key += 1
+                st.session_state.tsmc_custom_chain_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
                 st.rerun()
         except Exception as exc:
@@ -1507,6 +1670,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.target_reports,
                 st.session_state.vera_custom_chain,
                 st.session_state.csp_custom_chain,
+                st.session_state.tsmc_custom_chain,
             ),
             ensure_ascii=False,
             indent=2,
@@ -2103,6 +2267,128 @@ with st.expander("CSP 供應鏈", expanded=False):
             )
     else:
         st.info("按「更新 CSP 供應鏈股價」後會顯示走勢與統計。")
+
+with st.expander("台積電供應鏈", expanded=False):
+    st.caption("依台積電技術節點追蹤先進製程、CoWoS、SoIC、CoPoS、Glass-core substrate、矽光子與相關設備/材料/封測/檢測族群；watchlist 不代表台積電已揭露實際訂單或分配比例。")
+    with st.form("tsmc_custom_chain_form"):
+        tsmc_custom_raw = st.data_editor(
+            st.session_state.tsmc_custom_chain,
+            num_rows="dynamic",
+            use_container_width=True,
+            key=f"tsmc_custom_chain_editor_{st.session_state.tsmc_custom_chain_key}",
+            column_config={
+                "technology_node": st.column_config.TextColumn("技術節點"),
+                "category": st.column_config.TextColumn("分類"),
+                "company": st.column_config.TextColumn("公司"),
+                "ticker": st.column_config.TextColumn("Ticker"),
+                "role": st.column_config.TextColumn("供應鏈角色"),
+                "source": st.column_config.TextColumn("來源類型"),
+            },
+        )
+        apply_tsmc_custom = st.form_submit_button("套用自訂台積電供應鏈")
+
+    if apply_tsmc_custom:
+        st.session_state.tsmc_custom_chain = ensure_tsmc_custom_schema(tsmc_custom_raw)
+        st.success("已套用自訂台積電供應鏈。")
+
+    tsmc_chain = pd.concat(
+        [tsmc_supply_chain_df(), ensure_tsmc_custom_schema(st.session_state.tsmc_custom_chain)],
+        ignore_index=True,
+    )
+    tsmc_chain = tsmc_chain.drop_duplicates(subset=["technology_node", "ticker", "company", "category"], keep="last")
+    tsmc_col1, tsmc_col2, tsmc_col3 = st.columns(3)
+    selected_tsmc_nodes = tsmc_col1.multiselect(
+        "技術節點",
+        sorted(tsmc_chain["technology_node"].dropna().unique().tolist()),
+        default=sorted(tsmc_chain["technology_node"].dropna().unique().tolist()),
+    )
+    selected_tsmc_categories = tsmc_col2.multiselect(
+        "分類",
+        sorted(tsmc_chain["category"].dropna().unique().tolist()),
+        default=sorted(tsmc_chain["category"].dropna().unique().tolist()),
+    )
+    selected_tsmc_sources = tsmc_col3.multiselect(
+        "來源類型",
+        sorted(tsmc_chain["source"].dropna().unique().tolist()),
+        default=sorted(tsmc_chain["source"].dropna().unique().tolist()),
+    )
+
+    filtered_tsmc_chain = tsmc_chain[
+        tsmc_chain["technology_node"].isin(selected_tsmc_nodes)
+        & tsmc_chain["category"].isin(selected_tsmc_categories)
+        & tsmc_chain["source"].isin(selected_tsmc_sources)
+    ].copy()
+    st.dataframe(
+        filtered_tsmc_chain.rename(
+            columns={
+                "technology_node": "技術節點",
+                "category": "分類",
+                "company": "公司",
+                "ticker": "Ticker",
+                "role": "供應鏈角色",
+                "source": "來源類型",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    tsmc_price_col1, tsmc_price_col2 = st.columns(2)
+    tsmc_start = tsmc_price_col1.date_input("台積電供應鏈股價開始日", date(2024, 1, 1))
+    tsmc_end = tsmc_price_col2.date_input("台積電供應鏈股價結束日", date.today())
+    tsmc_tickers = filtered_tsmc_chain["ticker"].dropna().astype(str).str.strip()
+    tsmc_tickers = tuple(t for t in dict.fromkeys(tsmc_tickers) if t)
+
+    if st.button("更新台積電供應鏈股價"):
+        if not tsmc_tickers:
+            st.warning("目前篩選條件下沒有可抓取的 ticker。")
+        else:
+            try:
+                tsmc_prices = download_adjusted_prices(tsmc_tickers, str(tsmc_start), str(tsmc_end))
+                tsmc_prices = tsmc_prices[[ticker for ticker in tsmc_tickers if ticker in tsmc_prices.columns]].dropna(how="all")
+                st.session_state.tsmc_chain_prices = tsmc_prices
+                st.success(f"已更新 {len(tsmc_prices.columns):,} 檔台積電供應鏈股價。")
+            except Exception as exc:
+                st.error(f"台積電供應鏈股價更新失敗：{exc}")
+
+    tsmc_prices = st.session_state.get("tsmc_chain_prices", pd.DataFrame())
+    if not tsmc_prices.empty:
+        visible_tsmc_tickers = st.multiselect(
+            "顯示台積電供應鏈股票",
+            list(tsmc_prices.columns),
+            default=list(tsmc_prices.columns[: min(10, len(tsmc_prices.columns))]),
+        )
+        if visible_tsmc_tickers:
+            normalized_tsmc = tsmc_prices[visible_tsmc_tickers].dropna(how="all")
+            normalized_tsmc = normalized_tsmc / normalized_tsmc.ffill().bfill().iloc[0]
+            tsmc_fig = go.Figure()
+            for ticker in normalized_tsmc.columns:
+                name = tsmc_chain.loc[tsmc_chain["ticker"] == ticker, "company"].dropna()
+                label = f"{ticker} {name.iloc[0]}" if not name.empty else ticker
+                tsmc_fig.add_trace(go.Scatter(x=normalized_tsmc.index, y=normalized_tsmc[ticker], mode="lines", name=label))
+            tsmc_fig.update_layout(title="台積電供應鏈股價走勢，起點=1.00", yaxis_title="Growth of 1.00", hovermode="x unified")
+            st.plotly_chart(tsmc_fig, use_container_width=True)
+
+            tsmc_meta = (
+                tsmc_chain.groupby("ticker", as_index=False)
+                .agg(
+                    company=("company", "first"),
+                    technology_node=("technology_node", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                    category=("category", lambda x: " / ".join(dict.fromkeys(x.dropna().astype(str)))),
+                )
+            )
+            tsmc_summary = price_performance_summary(tsmc_prices[visible_tsmc_tickers])
+            tsmc_summary = tsmc_summary.merge(tsmc_meta, left_on="Ticker", right_on="ticker", how="left")
+            tsmc_summary = tsmc_summary.drop(columns=["ticker"]).rename(columns={"company": "公司", "technology_node": "技術節點", "category": "分類"})
+            st.dataframe(format_price_summary(tsmc_summary), use_container_width=True, hide_index=True)
+            st.download_button(
+                "下載台積電供應鏈股價 CSV",
+                tsmc_prices[visible_tsmc_tickers].to_csv().encode("utf-8-sig"),
+                "tsmc_supply_chain_prices.csv",
+                "text/csv",
+            )
+    else:
+        st.info("按「更新台積電供應鏈股價」後會顯示走勢與統計。")
 
 with st.expander("總經儀表板", expanded=False):
     st.caption("使用 yfinance 抓市場型總經指標；FedWatch 以 CME 連結為準，Fed Funds futures 僅作隱含利率參考。")
