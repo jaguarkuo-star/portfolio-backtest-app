@@ -104,11 +104,16 @@ def download_analyst_targets(tickers: tuple[str, ...]) -> dict[str, dict[str, fl
         try:
             raw = yf.Ticker(ticker).analyst_price_targets
             if isinstance(raw, dict) and raw:
-                targets[ticker] = {
-                    key: float(value)
-                    for key, value in raw.items()
-                    if value is not None and pd.notna(value)
-                }
+                clean = {}
+                for key, value in raw.items():
+                    if value is None or not pd.notna(value):
+                        continue
+                    try:
+                        clean[key] = float(value)
+                    except (TypeError, ValueError):
+                        clean[key] = str(value)
+                if clean:
+                    targets[ticker] = clean
         except Exception:
             continue
     return targets
@@ -190,6 +195,62 @@ def ensure_valuation_schema(valuation: pd.DataFrame, holdings: pd.DataFrame) -> 
             "margin_safety",
         ]
     ]
+
+
+def ensure_target_reports_schema(reports: pd.DataFrame, holdings: pd.DataFrame) -> pd.DataFrame:
+    holding_tickers = ensure_holdings_schema(holdings)["ticker"].dropna().astype(str).str.strip().tolist()
+    df = reports.copy() if reports is not None and not reports.empty else pd.DataFrame()
+    defaults = {
+        "ticker": holding_tickers[0] if holding_tickers else "",
+        "institution": "",
+        "report_date": "",
+        "rating": "",
+        "target_price": 0.0,
+        "source_url": "",
+        "note": "",
+    }
+    for col, default in defaults.items():
+        if col not in df.columns:
+            df[col] = default
+    df["ticker"] = df["ticker"].astype(str).str.strip()
+    df["target_price"] = pd.to_numeric(df["target_price"], errors="coerce").fillna(0.0)
+    return df[["ticker", "institution", "report_date", "rating", "target_price", "source_url", "note"]]
+
+
+def target_report_summary(reports: pd.DataFrame, holdings: pd.DataFrame) -> pd.DataFrame:
+    reports = ensure_target_reports_schema(reports, holdings)
+    valid = reports[reports["target_price"] > 0].copy()
+    if valid.empty:
+        return pd.DataFrame(columns=["ticker", "manual_count", "manual_mean", "manual_median", "manual_low", "manual_high", "manual_latest"])
+    valid["report_date_dt"] = pd.to_datetime(valid["report_date"], errors="coerce")
+    grouped = valid.groupby("ticker")["target_price"]
+    latest = (
+        valid.sort_values(["ticker", "report_date_dt"])
+        .dropna(subset=["report_date_dt"])
+        .groupby("ticker")
+        .tail(1)
+        .set_index("ticker")["target_price"]
+    )
+    summary = pd.DataFrame(
+        {
+            "manual_count": grouped.count(),
+            "manual_mean": grouped.mean(),
+            "manual_median": grouped.median(),
+            "manual_low": grouped.min(),
+            "manual_high": grouped.max(),
+        }
+    )
+    summary["manual_latest"] = latest
+    return summary.reset_index()
+
+
+def format_count(value) -> str:
+    if pd.isna(value):
+        return ""
+    try:
+        return f"{int(value)}"
+    except (TypeError, ValueError):
+        return str(value)
 
 
 def dcf_two_stage(
@@ -287,22 +348,31 @@ def valuation_settings_payload(valuation: pd.DataFrame) -> list[dict]:
     return payload[cols].to_dict("records")
 
 
-def app_settings_payload(holdings: pd.DataFrame, valuation: pd.DataFrame) -> dict:
+def target_reports_payload(reports: pd.DataFrame, holdings: pd.DataFrame) -> list[dict]:
+    reports = ensure_target_reports_schema(reports, holdings)
+    reports["target_price"] = pd.to_numeric(reports["target_price"], errors="coerce").fillna(0.0)
+    return reports.to_dict("records")
+
+
+def app_settings_payload(holdings: pd.DataFrame, valuation: pd.DataFrame, reports: pd.DataFrame | None = None) -> dict:
     holdings = ensure_holdings_schema(holdings)
     valuation = ensure_valuation_schema(valuation, holdings)
+    reports = ensure_target_reports_schema(reports if reports is not None else pd.DataFrame(), holdings)
     return {
         "holdings": portfolio_settings_payload(holdings),
         "valuation": valuation_settings_payload(valuation),
+        "target_reports": target_reports_payload(reports, holdings),
     }
 
 
-def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame]:
+def parse_settings_payload(settings) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if isinstance(settings, dict):
         holdings = ensure_holdings_schema(pd.DataFrame(settings.get("holdings", [])))
         valuation = ensure_valuation_schema(pd.DataFrame(settings.get("valuation", [])), holdings)
-        return holdings, valuation
+        reports = ensure_target_reports_schema(pd.DataFrame(settings.get("target_reports", [])), holdings)
+        return holdings, valuation, reports
     holdings = ensure_holdings_schema(pd.DataFrame(settings))
-    return holdings, ensure_valuation_schema(pd.DataFrame(), holdings)
+    return holdings, ensure_valuation_schema(pd.DataFrame(), holdings), ensure_target_reports_schema(pd.DataFrame(), holdings)
 
 
 def supabase_configured() -> bool:
@@ -352,7 +422,7 @@ def test_supabase_connection() -> tuple[bool, str]:
     return False, f"HTTP {response.status_code}: {response.text[:300]}"
 
 
-def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame] | None:
+def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     params = f"?user_key=eq.{quote(user_key)}&select=settings&limit=1"
     response = requests.get(url + params, headers=supabase_headers(), timeout=15)
@@ -363,12 +433,12 @@ def load_settings_from_db(user_key: str) -> tuple[pd.DataFrame, pd.DataFrame] | 
     return parse_settings_payload(rows[0]["settings"])
 
 
-def save_settings_to_db(user_key: str, holdings: pd.DataFrame, valuation: pd.DataFrame) -> None:
+def save_settings_to_db(user_key: str, holdings: pd.DataFrame, valuation: pd.DataFrame, reports: pd.DataFrame) -> None:
     url = f"{supabase_rest_url()}/portfolio_settings"
     headers = supabase_headers() | {"Prefer": "resolution=merge-duplicates"}
     body = {
         "user_key": user_key,
-        "settings": app_settings_payload(holdings, valuation),
+        "settings": app_settings_payload(holdings, valuation, reports),
     }
     response = requests.post(url, headers=headers, json=body, timeout=15)
     raise_supabase_error(response)
@@ -500,10 +570,18 @@ if "valuation_data" not in st.session_state:
     st.session_state.valuation_data = ensure_valuation_schema(pd.DataFrame(), st.session_state.editor_data)
 if "valuation_key" not in st.session_state:
     st.session_state.valuation_key = 0
+if "target_reports" not in st.session_state:
+    st.session_state.target_reports = ensure_target_reports_schema(pd.DataFrame(), st.session_state.editor_data)
+if "target_reports_key" not in st.session_state:
+    st.session_state.target_reports_key = 0
 if "latest_prices" not in st.session_state:
     st.session_state.latest_prices = {}
 st.session_state.valuation_data = ensure_valuation_schema(
     st.session_state.valuation_data,
+    st.session_state.editor_data,
+)
+st.session_state.target_reports = ensure_target_reports_schema(
+    st.session_state.target_reports,
     st.session_state.editor_data,
 )
 if "usd_twd" not in st.session_state:
@@ -575,12 +653,14 @@ with st.expander("每個人自己的預設設定", expanded=False):
                     if loaded is None:
                         st.warning("找不到這個保存代號的設定。")
                     else:
-                        loaded_holdings, loaded_valuation = loaded
+                        loaded_holdings, loaded_valuation, loaded_reports = loaded
                         st.session_state.holdings_default = ensure_holdings_schema(loaded_holdings)
                         st.session_state.editor_data = ensure_holdings_schema(loaded_holdings)
                         st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
+                        st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
                         st.session_state.editor_key += 1
                         st.session_state.valuation_key += 1
+                        st.session_state.target_reports_key += 1
                         st.success("已從資料庫載入設定。")
                         st.rerun()
                 except Exception as exc:
@@ -594,6 +674,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
                         st.session_state.user_key,
                         st.session_state.editor_data,
                         st.session_state.valuation_data,
+                        st.session_state.target_reports,
                     )
                     st.success("已儲存。之後用同一個保存代號即可載入。")
                 except Exception as exc:
@@ -605,7 +686,7 @@ with st.expander("每個人自己的預設設定", expanded=False):
     if uploaded is not None:
         try:
             rows = json.loads(uploaded.getvalue().decode("utf-8"))
-            loaded_holdings, loaded_valuation = parse_settings_payload(rows)
+            loaded_holdings, loaded_valuation, loaded_reports = parse_settings_payload(rows)
             required = ["name", "ticker", "amount", "currency"]
             if not set(required).issubset(loaded_holdings.columns):
                 st.error("設定檔需要包含 name、ticker、amount、currency 欄位。")
@@ -613,8 +694,10 @@ with st.expander("每個人自己的預設設定", expanded=False):
                 st.session_state.holdings_default = loaded_holdings.copy()
                 st.session_state.editor_data = loaded_holdings.copy()
                 st.session_state.valuation_data = ensure_valuation_schema(loaded_valuation, loaded_holdings)
+                st.session_state.target_reports = ensure_target_reports_schema(loaded_reports, loaded_holdings)
                 st.session_state.editor_key += 1
                 st.session_state.valuation_key += 1
+                st.session_state.target_reports_key += 1
                 st.success("已載入你的設定，本次使用這份作為預設。")
                 st.rerun()
         except Exception as exc:
@@ -623,7 +706,11 @@ with st.expander("每個人自己的預設設定", expanded=False):
     st.download_button(
         "下載目前預設設定 JSON",
         json.dumps(
-            app_settings_payload(st.session_state.editor_data, st.session_state.valuation_data),
+            app_settings_payload(
+                st.session_state.editor_data,
+                st.session_state.valuation_data,
+                st.session_state.target_reports,
+            ),
             ensure_ascii=False,
             indent=2,
         ).encode("utf-8"),
@@ -780,8 +867,34 @@ with st.expander("估值與研究", expanded=False):
         st.session_state.valuation_data = ensure_valuation_schema(valuation_raw, st.session_state.editor_data)
         st.success("已套用估值參數。")
 
+    st.markdown("**多筆法人目標價**")
+    st.caption("可以逐筆填入不同券商或研究來源。若 Yahoo 目標價缺資料，這張表會是主要參考。")
+    with st.form("target_reports_form"):
+        target_reports_raw = st.data_editor(
+            st.session_state.target_reports,
+            num_rows="dynamic",
+            use_container_width=True,
+            key=f"target_reports_editor_{st.session_state.target_reports_key}",
+            column_config={
+                "ticker": st.column_config.SelectboxColumn("Ticker", options=list(current_tickers)),
+                "institution": st.column_config.TextColumn("券商/來源"),
+                "report_date": st.column_config.TextColumn("日期"),
+                "rating": st.column_config.TextColumn("評等"),
+                "target_price": st.column_config.NumberColumn("目標價", min_value=0.0, step=1.0),
+                "source_url": st.column_config.LinkColumn("來源連結"),
+                "note": st.column_config.TextColumn("備註"),
+            },
+        )
+        apply_target_reports = st.form_submit_button("套用目標價資料")
+
+    if apply_target_reports:
+        st.session_state.target_reports = ensure_target_reports_schema(target_reports_raw, st.session_state.editor_data)
+        st.success("已套用目標價資料。")
+
     valuation = ensure_valuation_schema(st.session_state.valuation_data, st.session_state.editor_data)
     analyst_targets = st.session_state.get("analyst_targets", {})
+    manual_targets = target_report_summary(st.session_state.target_reports, st.session_state.editor_data)
+    manual_targets = manual_targets.set_index("ticker") if not manual_targets.empty else pd.DataFrame()
     rows = []
     for row in valuation.to_dict("records"):
         dcf = dcf_two_stage(
@@ -794,11 +907,24 @@ with st.expander("估值與研究", expanded=False):
         )
         ticker = row["ticker"]
         latest = st.session_state.latest_prices.get(ticker, np.nan)
-        yahoo_target = analyst_targets.get(ticker, {}).get("mean", np.nan)
-        if pd.isna(yahoo_target):
-            yahoo_target = analyst_targets.get(ticker, {}).get("current", np.nan)
+        yahoo_data = analyst_targets.get(ticker, {})
+        yahoo_current = yahoo_data.get("current", np.nan)
+        yahoo_low = yahoo_data.get("low", np.nan)
+        yahoo_high = yahoo_data.get("high", np.nan)
+        yahoo_mean = yahoo_data.get("mean", np.nan)
+        yahoo_median = yahoo_data.get("median", np.nan)
+        yahoo_count = yahoo_data.get("numberOfAnalystOpinions", np.nan)
         manual_target = float(row["target_price"])
-        preferred_target = manual_target if manual_target > 0 else yahoo_target
+        manual_count = manual_mean = manual_median = manual_low = manual_high = manual_latest = np.nan
+        if not manual_targets.empty and ticker in manual_targets.index:
+            manual_row = manual_targets.loc[ticker]
+            manual_count = manual_row.get("manual_count", np.nan)
+            manual_mean = manual_row.get("manual_mean", np.nan)
+            manual_median = manual_row.get("manual_median", np.nan)
+            manual_low = manual_row.get("manual_low", np.nan)
+            manual_high = manual_row.get("manual_high", np.nan)
+            manual_latest = manual_row.get("manual_latest", np.nan)
+        preferred_target = manual_mean if pd.notna(manual_mean) else manual_target if manual_target > 0 else yahoo_mean
         upside = preferred_target / latest - 1 if pd.notna(preferred_target) and pd.notna(latest) and latest > 0 else np.nan
         dcf_gap = dcf["fair_value"] / latest - 1 if pd.notna(dcf["fair_value"]) and pd.notna(latest) and latest > 0 else np.nan
         rows.append(
@@ -811,15 +937,43 @@ with st.expander("估值與研究", expanded=False):
                 "安全買進價": dcf["buy_below"],
                 "DCF空間": dcf_gap,
                 "手動目標價": manual_target if manual_target > 0 else np.nan,
-                "Yahoo目標價": yahoo_target,
+                "多筆目標價數": manual_count,
+                "多筆平均": manual_mean,
+                "多筆中位數": manual_median,
+                "多筆最低": manual_low,
+                "多筆最高": manual_high,
+                "最新一筆": manual_latest,
+                "Yahoo目前": yahoo_current,
+                "Yahoo平均": yahoo_mean,
+                "Yahoo中位數": yahoo_median,
+                "Yahoo最低": yahoo_low,
+                "Yahoo最高": yahoo_high,
+                "Yahoo分析師數": yahoo_count,
                 "目標價空間": upside,
                 "法說會": mops_link(ticker) if ticker.endswith((".TW", ".TWO")) else "",
             }
         )
 
     valuation_result = pd.DataFrame(rows)
-    for col in ["最新價", "DCF合理價", "安全買進價", "手動目標價", "Yahoo目標價"]:
+    for col in [
+        "最新價",
+        "DCF合理價",
+        "安全買進價",
+        "手動目標價",
+        "多筆平均",
+        "多筆中位數",
+        "多筆最低",
+        "多筆最高",
+        "最新一筆",
+        "Yahoo目前",
+        "Yahoo平均",
+        "Yahoo中位數",
+        "Yahoo最低",
+        "Yahoo最高",
+    ]:
         valuation_result[col] = valuation_result[col].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
+    valuation_result["多筆目標價數"] = valuation_result["多筆目標價數"].map(format_count)
+    valuation_result["Yahoo分析師數"] = valuation_result["Yahoo分析師數"].map(format_count)
     for col in ["DCF空間", "目標價空間"]:
         valuation_result[col] = valuation_result[col].map(lambda x: "" if pd.isna(x) else f"{x:.2%}")
 
@@ -830,7 +984,37 @@ with st.expander("估值與研究", expanded=False):
             "法說會": st.column_config.LinkColumn("法說會"),
         },
     )
-    st.caption("台股法說會連結會開到公開資訊觀測站；Yahoo 目標價對美股較常有資料，台股可能空白。")
+    if analyst_targets:
+        yahoo_rows = []
+        for ticker, data in analyst_targets.items():
+            yahoo_rows.append({"Ticker": ticker, **data})
+        yahoo_summary = pd.DataFrame(yahoo_rows)
+        price_cols = [col for col in yahoo_summary.columns if col != "Ticker"]
+        for col in price_cols:
+            yahoo_summary[col] = yahoo_summary[col].map(lambda x: "" if pd.isna(x) else f"{x:,.2f}")
+        st.markdown("**Yahoo 目標價摘要明細**")
+        st.dataframe(yahoo_summary, use_container_width=True)
+
+    detailed_reports = ensure_target_reports_schema(st.session_state.target_reports, st.session_state.editor_data)
+    detailed_reports = detailed_reports[detailed_reports["target_price"] > 0].copy()
+    if not detailed_reports.empty:
+        st.markdown("**目標價明細**")
+        st.dataframe(
+            detailed_reports.rename(
+                columns={
+                    "ticker": "Ticker",
+                    "institution": "券商/來源",
+                    "report_date": "日期",
+                    "rating": "評等",
+                    "target_price": "目標價",
+                    "source_url": "來源連結",
+                    "note": "備註",
+                }
+            ),
+            use_container_width=True,
+            column_config={"來源連結": st.column_config.LinkColumn("來源連結")},
+        )
+    st.caption("Yahoo 目標價是摘要資料，不一定含券商明細；若要有可追溯性，請在多筆法人目標價表填入來源連結。")
 
 if st.button("執行回測", type="primary"):
     with st.spinner("正在連接 yfinance 並計算..."):
