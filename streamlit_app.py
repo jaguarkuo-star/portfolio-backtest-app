@@ -538,6 +538,54 @@ st.markdown(
         border-radius: 8px;
     }
 
+    [data-testid="stSidebar"] [data-baseweb="tag"] *,
+    [data-testid="stSidebar"] [data-baseweb="popover"] *,
+    [data-testid="stSidebar"] [role="option"],
+    [data-testid="stSidebar"] [role="listbox"] * {
+        color: #111827 !important;
+    }
+
+    @media (max-width: 768px) {
+        [data-testid="stSidebar"] {
+            background: #ffffff;
+            border-right: 0;
+        }
+
+        [data-testid="stSidebar"] *,
+        [data-testid="stSidebar"] [data-testid="stWidgetLabel"] *,
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] *,
+        [data-testid="stSidebar"] [data-testid="stDateInput"] *,
+        [data-testid="stSidebar"] [data-baseweb="input"] *,
+        [data-testid="stSidebar"] [data-baseweb="select"] *,
+        [data-testid="stSidebar"] [data-baseweb="datepicker"] *,
+        [data-testid="stSidebar"] [data-baseweb="base-input"] *,
+        [data-testid="stSidebar"] [data-baseweb="tag"] * {
+            color: #111827 !important;
+        }
+
+        [data-testid="stSidebar"] [data-baseweb="input"],
+        [data-testid="stSidebar"] [data-baseweb="select"],
+        [data-testid="stSidebar"] [data-baseweb="datepicker"],
+        [data-testid="stSidebar"] [data-baseweb="base-input"] {
+            background: #f8fafc;
+            border: 1px solid #dbe2ea;
+        }
+
+        [data-testid="stAppViewContainer"] .main .block-container {
+            padding-left: 0.85rem;
+            padding-right: 0.85rem;
+            padding-top: 1rem;
+        }
+
+        .app-hero {
+            padding: 1rem;
+        }
+
+        .app-hero h1 {
+            font-size: 1.45rem;
+        }
+    }
+
     [data-testid="stAppViewContainer"] .main .block-container {
         max-width: 1440px;
         padding-top: 2.1rem;
